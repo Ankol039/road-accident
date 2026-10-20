@@ -1,0 +1,10 @@
+# Some XAMPP/Apache setups drop the Authorization header before PHP sees it.
+# These lines pass it through so "Authorization: Bearer <token>" works.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+Options -Indexes
