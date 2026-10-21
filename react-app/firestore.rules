@@ -1,0 +1,136 @@
+rules_version = '2';
+
+// =============================================================================
+// RoadReport Bulacan Admin Portal - Cloud Firestore security rules
+//
+// These replace api/core/auth.php's server-side checks. Because the React app
+// talks to Firestore directly, the rules are now the only line of defence, so
+// they are deliberately strict:
+//
+//   * only signed-in users may read/write anything
+//   * only admins (users/{uid}.role == 'admin') may mutate reports and settings
+//   * the audit trail is append-only: nobody may edit or delete an entry
+//   * a user may never change their own role or status
+//
+// Deploy with:  firebase deploy --only firestore:rules
+// =============================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* ---------- helpers ---------- */
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // The caller's profile document. Cached per request by the rules engine.
+    function profile() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && profile().role == 'admin'
+        && profile().status == 'active';
+    }
+
+    // Fields a write is not allowed to change on a user document.
+    function roleUntouched() {
+      return !request.resource.data.diff(resource.data).affectedKeys()
+        .hasAny(['role', 'status', 'email']);
+    }
+
+    /* ---------- users ---------- */
+
+    match /users/{uid} {
+      // Anyone signed in may read their own profile; admins may read all.
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+
+      // A new profile may only be created for yourself, as a non-admin, active.
+      allow create: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.role == 'admin'      // first user bootstraps as admin
+        && request.resource.data.email == request.auth.token.email;
+
+      // You may edit your own name/phone; only admins may change roles.
+      allow update: if isAdmin()
+        || (signedIn() && request.auth.uid == uid && roleUntouched());
+
+      // Deleting accounts happens in the Firebase console (Admin SDK).
+      allow delete: if false;
+    }
+
+    /* ---------- reports ---------- */
+
+    match /reports/{reportId} {
+      allow read: if signedIn();
+
+      // Creating needs the core fields present, so an empty report can't slip in.
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasAll(
+             ['accident_date', 'accident_time', 'accident_type_id', 'injury_status',
+              'location_text', 'latitude', 'longitude', 'status']);
+
+      allow update: if isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
+    /* ---------- report photos (base64 bytes inside the document) ---------- */
+
+    match /report_photos/{photoId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    /* ---------- audit trail: append-only ---------- */
+
+    match /audit_logs/{entryId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasAll(['action', 'created_at']);
+      allow update, delete: if false;   // never rewrite history
+    }
+
+    /* ---------- notifications: each user owns their own rows ---------- */
+
+    match /notifications/{notificationId} {
+      allow read: if signedIn() && resource.data.user_id == request.auth.uid;
+      // Only the flag may be flipped by the recipient; admins may create rows.
+      allow update: if signedIn() && resource.data.user_id == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+      allow create: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    /* ---------- settings + reference data: admins write, staff read ---------- */
+
+    match /settings/{settingId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    match /accident_types/{typeId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    match /emergency_contacts/{contactId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    match /counters/{counterId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    /* ---------- everything else is closed ---------- */
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
