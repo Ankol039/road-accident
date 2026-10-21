@@ -284,12 +284,14 @@ export function bucketBy(rows, period = 'month', { from, to } = {}) {
 
   const keys = new Set([...groups.keys(), ...periodKeysInRange(period, from, to)])
 
-  return [...keys.entries()]
-    .sort((a, b) => (a[0] < b[0] ? 1 : -1))
-    .map(([key, group]) => ({
+  /* `[...keys]` is an array of key strings, not a list of pairs — iterate the
+     keys directly and look the reports back up in `groups`. */
+  return [...keys]
+    .sort((a, b) => (a < b ? 1 : -1))
+    .map((key) => ({
       period: key,
       label: periodLabel(key, period),
-      ...periodStats(group || []),
+      ...periodStats(groups.get(key) || []),
     }))
 }
 
