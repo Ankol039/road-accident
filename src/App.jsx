@@ -18,6 +18,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import Reports from './pages/Reports.jsx'
 import ReportDetail from './pages/ReportDetail.jsx'
 import Users from './pages/Users.jsx'
+import Settings from './pages/Settings.jsx'
 import Pending from './pages/Pending.jsx'
 
 /* Opt into the v7 behaviours early so the console stays clean. */
@@ -52,7 +53,7 @@ export default function App() {
               <Route path="reports/:id" element={<ReportDetail />} />
               <Route path="summaries" element={<Pending title="Summaries and export" />} />
               <Route path="users" element={<Users />} />
-              <Route path="settings" element={<Pending title="Categories and settings" />} />
+              <Route path="settings" element={<Settings />} />
               <Route path="audit" element={<Pending title="Audit trail" />} />
               <Route path="notifications" element={<Pending title="Notifications" />} />
               <Route path="account" element={<Pending title="My account" />} />
