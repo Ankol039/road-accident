@@ -237,7 +237,13 @@ export async function createReport(fields, actor) {
     updated_at: serverTimestamp(),
   }
   const created = await addDoc(ref(COLLECTIONS.reports), payload)
-  await logAudit({ actor, action: 'report.create', entity: 'report', entityId: created.id, details: report_code })
+  await logAudit({
+    actor,
+    action: 'report.create',
+    entity: 'report',
+    entityId: created.id,
+    details: { report_code },
+  })
   return created.id
 }
 
@@ -348,7 +354,10 @@ export async function updateStatus(id, status, { note, reason, actor } = {}) {
     action: 'report.status',
     entity: 'report',
     entityId: id,
-    details: `${from} -> ${status}${historyNote ? `: ${historyNote}` : ''}`,
+    details: {
+      changed: { status: { from, to: status } },
+      ...(historyNote ? { note: historyNote } : {}),
+    },
   })
 
   // The officer hears about the administrator's decision.
@@ -440,7 +449,10 @@ export async function assignOfficer(id, officer, { note, actor } = {}) {
     action: 'report.assign',
     entity: 'report',
     entityId: id,
-    details: `${officer.full_name}${reassign ? ' (reassigned)' : ''}`,
+    details: {
+      officer: officer.full_name,
+      ...(reassign ? { reassigned: true } : {}),
+    },
   })
 
   await notifyOfficer(
@@ -492,7 +504,10 @@ export async function addRemark(id, { type = 'remark', content, is_internal = tr
     action: 'report.remark',
     entity: 'report',
     entityId: id,
-    details: `${type}${is_internal ? ' (internal)' : ''}`,
+    details: {
+      kind: type,
+      ...(is_internal ? { internal: true } : {}),
+    },
   })
 
   return remark
@@ -538,7 +553,10 @@ export async function setFlag(id, flagged, { reason, duplicate_of, actor } = {})
     action: flagged ? 'report.flag' : 'report.unflag',
     entity: 'report',
     entityId: id,
-    details: flagged ? flagReason : null,
+    details: {
+      flagged: Boolean(flagged),
+      reason: flagReason || null,
+    },
   })
 }
 

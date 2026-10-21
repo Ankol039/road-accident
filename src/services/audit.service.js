@@ -5,8 +5,15 @@
  * this app calls logAudit() so the Audit trail screen still shows who did what.
  * Firestore rules allow admins to create these but never to edit or delete them.
  */
-import { ref, addDoc, getDocs, query, where, orderBy, limit, startAfter, serverTimestamp } from '../lib/firestore.js'
+import { ref, addDoc, getDocs, query, where, orderBy, limit, serverTimestamp } from '../lib/firestore.js'
 import { COLLECTIONS } from '../lib/constants.js'
+
+/**
+ * How many entries one range may hold. The PHP app used the same number.
+ * A longer range needs a smaller window, so the screen says so instead of
+ * quietly showing half of the trail.
+ */
+const MAX_ROWS = 3000
 
 /** Record one action. Never throws — auditing must not break the main action. */
 export async function logAudit({ actor, action, entity, entityId, details }) {
@@ -28,25 +35,48 @@ export async function logAudit({ actor, action, entity, entityId, details }) {
 }
 
 /**
- * Page through the audit trail.
- * @param {{action?:string, from?:string, to?:string, pageSize?:number, cursor?:any}} opts
+ * Read the audit trail for a date range.
+ *
+ * api/audit/list.php read the whole range from Firestore and then narrowed it
+ * down in PHP. The same is done here: the date range is the only filter that
+ * runs in Firestore, so the query stays on the single-field index and the
+ * screen works whether or not the composite indexes have been deployed.
+ *
+ * @param {{action?:string, q?:string, from?:string, to?:string, page?:number, perPage?:number}} opts
  */
-export async function listAudit({ action, from, to, pageSize = 25, cursor } = {}) {
+export async function listAudit({ action, q, from, to, page = 1, perPage = 50 } = {}) {
   const parts = []
-  if (action) parts.push(where('action', '==', action))
   if (from) parts.push(where('created_at', '>=', new Date(`${from}T00:00:00`)))
   if (to) parts.push(where('created_at', '<=', new Date(`${to}T23:59:59`)))
   parts.push(orderBy('created_at', 'desc'))
-  if (cursor) parts.push(startAfter(cursor))
-  parts.push(limit(pageSize + 1))
+  parts.push(limit(MAX_ROWS))
 
   const snap = await getDocs(query(ref(COLLECTIONS.auditLogs), ...parts))
-  const docs = snap.docs
-  const hasMore = docs.length > pageSize
-  const page = hasMore ? docs.slice(0, pageSize) : docs
+  let rows = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+
+  // The action filter matches the start of the action, like the PHP one did.
+  if (action) {
+    rows = rows.filter((r) => String(r.action || '').startsWith(action))
+  }
+
+  // The search looks through the name, the details and the item it was about.
+  if (q) {
+    const needle = String(q).trim().toLowerCase()
+    rows = rows.filter((r) =>
+      [r.actor_name, r.entity_id, JSON.stringify(r.details ?? '')]
+        .filter((v) => v !== null && v !== undefined && v !== '')
+        .some((v) => String(v).toLowerCase().includes(needle)),
+    )
+  }
+
+  const total = rows.length
+  const totalPages = Math.max(1, Math.ceil(total / perPage))
+  const current = Math.min(Math.max(1, page), totalPages)
+
   return {
-    rows: page.map((d) => ({ id: d.id, ...d.data() })),
-    cursor: hasMore ? page[page.length - 1] : null,
-    total: null,
+    rows: rows.slice((current - 1) * perPage, current * perPage),
+    total,
+    page: current,
+    totalPages,
   }
 }

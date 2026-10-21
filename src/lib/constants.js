@@ -188,6 +188,31 @@ export const STATUS_COLORS = {
   duplicate: '#a0a5aa',
 }
 
+/**
+ * The audit trail vocabulary.
+ * Ported from api/core/audit.php AUDIT_ACTIONS, with the actions this app
+ * writes instead of the ones the PHP app wrote.
+ */
+export const AUDIT_ACTIONS = {
+  'report.create': 'Submitted a report',
+  'report.status': 'Changed report status',
+  'report.assign': 'Dispatched an officer',
+  'report.arrive': 'Officer confirmed arrival',
+  'report.remark': 'Added a remark',
+  'report.update': 'Edited report details',
+  'report.delete': 'Deleted a report',
+  'report.flag': 'Flagged or unflagged a report',
+  'user.create': 'Created a user',
+  'user.update': 'Updated a user',
+  'type.create': 'Added an accident category',
+  'type.update': 'Saved an accident category',
+  'type.toggle': 'Hid or showed an accident category',
+  'settings.update': 'Changed system settings',
+  'contact.create': 'Added an emergency contact',
+  'contact.update': 'Saved an emergency contact',
+  'contact.delete': 'Removed an emergency contact',
+}
+
 /** Firestore collection names (kept identical to the PHP app). */
 export const COLLECTIONS = {
   users: 'users',

@@ -182,6 +182,8 @@ export async function saveAccidentType(id, data, actor) {
   // Editing a category keeps it visible unless the caller says otherwise.
   const active = data.active === undefined ? old?.active !== false : Boolean(data.active)
 
+  // The new id is kept, so the audit entry can point at the category.
+  let savedId = id
   if (id) {
     await patchDoc(COLLECTIONS.accidentTypes, id, {
       name,
@@ -190,21 +192,27 @@ export async function saveAccidentType(id, data, actor) {
       updated_at: serverTimestamp(),
     })
   } else {
-    await createDoc(COLLECTIONS.accidentTypes, { name, description, active })
+    savedId = await createDoc(COLLECTIONS.accidentTypes, { name, description, active })
   }
   await logAudit({
     actor,
     action: id ? 'type.update' : 'type.create',
     entity: 'accident_type',
-    entityId: id,
+    entityId: savedId,
     details: { name, active, new: !id },
   })
-  return id
+  return savedId
 }
 
 export async function toggleAccidentType(id, active, actor) {
   await patchDoc(COLLECTIONS.accidentTypes, id, { active, updated_at: serverTimestamp() })
-  await logAudit({ actor, action: 'type.toggle', entity: 'accident_type', entityId: id, details: String(active) })
+  await logAudit({
+    actor,
+    action: 'type.toggle',
+    entity: 'accident_type',
+    entityId: id,
+    details: { active: Boolean(active) },
+  })
 }
 
 /* ---------- Emergency contacts ---------- */
@@ -232,19 +240,21 @@ export async function saveEmergencyContact(id, data, actor) {
     is_active: data.is_active === undefined ? true : Boolean(data.is_active),
   }
 
+  // The new id is kept, so the audit entry can point at the contact.
+  let savedId = id
   if (id) {
     await patchDoc(COLLECTIONS.emergencyContacts, id, contact)
   } else {
-    await createDoc(COLLECTIONS.emergencyContacts, contact)
+    savedId = await createDoc(COLLECTIONS.emergencyContacts, contact)
   }
   await logAudit({
     actor,
     action: id ? 'contact.update' : 'contact.create',
     entity: 'emergency_contact',
-    entityId: id,
+    entityId: savedId,
     details: { name: contact.name, new: !id },
   })
-  return id
+  return savedId
 }
 
 export async function deleteEmergencyContact(id, actor) {

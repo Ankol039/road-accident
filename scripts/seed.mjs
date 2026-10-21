@@ -362,10 +362,11 @@ try {
   /* ---------- emergency contacts ---------- */
 
   const contactBatch = db.batch()
+  const contacts = []
   for (const [name, phone, category, sort_order] of CONTACTS) {
-    contactBatch.set(db.collection('emergency_contacts').doc(), {
-      name, phone, category, sort_order, is_active: true,
-    })
+    const ref = db.collection('emergency_contacts').doc()
+    contactBatch.set(ref, { name, phone, category, sort_order, is_active: true })
+    contacts.push({ id: ref.id, name })
   }
   await contactBatch.commit()
 
@@ -488,25 +489,30 @@ try {
 
   const adminDoc = admins.docs[0]
   const adminName = adminDoc?.data()?.full_name || 'RoadReport Admin'
+
+  // Every entry points at a real document, the way the app writes it: the
+  // audit screen links to the item and shows its name.
+  const pick = (status) =>
+    reportIds.find((r) => r.report.status === status) || reportIds[0]
   const auditSeed = [
-    ['report.status', 'report', 'under_review'],
-    ['report.status', 'report', 'assigned'],
-    ['report.assign', 'report', 'Rina Reyes'],
-    ['report.remark', 'report', 'remark'],
-    ['report.flag', 'report', 'Duplicate'],
-    ['settings.update', 'settings', 'system'],
-    ['type.update', 'accident_type', 'Vehicle collision'],
-    ['contact.update', 'emergency_contact', 'Bulacan Provincial Rescue'],
+    ['report.status', 'report', pick('under_review').id, { changed: { status: { from: 'submitted', to: 'under_review' } } }],
+    ['report.status', 'report', pick('assigned').id, { changed: { status: { from: 'under_review', to: 'assigned' } } }],
+    ['report.assign', 'report', pick('assigned').id, { officer: officers[0]?.email || null }],
+    ['report.remark', 'report', pick('on_scene').id, { kind: 'remark', note: 'Called the reporter, the lane is confirmed.' }],
+    ['report.flag', 'report', pick('duplicate').id, { reason: 'Duplicate of an earlier report.' }],
+    ['settings.update', 'settings', 'system', { changed: { arrival_match_radius_m: { from: 100, to: 120 } } }],
+    ['type.update', 'accident_type', types[0].id, { name: types[0].name }],
+    ['contact.update', 'emergency_contact', contacts[0].id, { name: contacts[0].name }],
   ]
   for (let i = 0; i < auditSeed.length; i += 1) {
-    const [action, entity, details] = auditSeed[i]
+    const [action, entity, entityId, details] = auditSeed[i]
     await db.collection('audit_logs').doc().set({
       actor_id: adminDoc?.id || 'seed',
       actor_name: adminName,
       actor_role: 'admin',
       action,
       entity,
-      entity_id: details,
+      entity_id: entityId,
       details,
       created_at: Timestamp.fromDate(new Date(now - (i + 1) * 5400000)),
     })
