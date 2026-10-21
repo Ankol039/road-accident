@@ -27,30 +27,38 @@ function h(?string $text): string
     return htmlspecialchars((string)$text, ENT_QUOTES, 'UTF-8');
 }
 
-/** Prints <!doctype html> up to </head>. $css: keys of EXTRA_CSS, e.g. ['leaflet'] for pages with a map. */
-function page_head(string $title, array $css = []): void
+/**
+ * Prints <!doctype html> up to </head>.
+ * $css: keys of EXTRA_CSS, e.g. ['leaflet'] for pages with a map.
+ * $extraFiles: app-relative stylesheets loaded after css/app.css, e.g. ['css/landing.css'].
+ */
+function page_head(string $title, array $css = [], array $extraFiles = []): void
 {
     $title = h($title);
     $extra = '';
     foreach ($css as $name) {
         $extra .= '  <link href="' . h(EXTRA_CSS[$name]) . '" rel="stylesheet">' . "\n";
     }
+    $after = '';
+    foreach ($extraFiles as $file) {
+        $after .= '  <link href="' . h($file) . '" rel="stylesheet">' . "\n";
+    }
     echo <<<HTML
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#23272B">
+  <meta name="theme-color" content="#0e1214">
   <title>{$title}</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 {$extra}  <link href="css/app.css" rel="stylesheet">
-</head>
+{$after}</head>
 
 HTML;
 }

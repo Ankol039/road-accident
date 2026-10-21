@@ -6,8 +6,8 @@ import { $, busy, esc } from '../ui.js'
 await startPage({ roles: ['admin'] })
 const form = $('#summary-form')
 let chart = null
-Chart.defaults.font.family = "'Overpass', system-ui, sans-serif"
-Chart.defaults.color = '#5f676d'
+Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif"
+Chart.defaults.color = '#98a09c'
 
 const query = () => ({
   period: form.period.value,
@@ -39,18 +39,18 @@ async function load() {
           <td class="text-end">${r.fatalities}</td><td class="text-end">${r.no_injuries}</td><td class="text-end">${r.unknown_injuries}</td>
           <td class="text-end">${r.vehicles}</td><td class="text-end">${r.resolved}</td><td>${esc(r.top_type || '')}</td><td>${esc(r.top_municipality || '')}</td></tr>`)
         .join('') +
-      `<tr class="fw-bold table-light"><td>Total</td><td class="text-end">${t.total}</td><td class="text-end">${t.with_injuries}</td><td class="text-end">${t.fatalities}</td>
+      `<tr class="fw-bold table-dark"><td>Total</td><td class="text-end">${t.total}</td><td class="text-end">${t.with_injuries}</td><td class="text-end">${t.fatalities}</td>
         <td class="text-end">${t.no_injuries}</td><td class="text-end">${t.unknown_injuries}</td><td class="text-end">${t.vehicles}</td><td class="text-end">${t.resolved}</td><td></td><td></td></tr>`
 
     const rows = [...d.rows].reverse() // oldest first for the chart
     chart?.destroy()
     chart = new Chart($('#chart'), {
       type: 'bar',
-      data: { labels: rows.map((r) => r.label), datasets: [{ label: 'Accidents', data: rows.map((r) => r.total), backgroundColor: '#0f6b4c', borderRadius: 4, borderSkipped: 'start', maxBarThickness: 28 }] },
+      data: { labels: rows.map((r) => r.label), datasets: [{ label: 'Accidents', data: rows.map((r) => r.total), backgroundColor: '#e4572e', borderRadius: 4, borderSkipped: 'start', maxBarThickness: 28 }] },
       options: {
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
-        scales: { x: { grid: { display: false }, ticks: { maxRotation: 60, autoSkip: true } }, y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#e7e9e6' }, border: { display: false } } },
+        scales: { x: { grid: { display: false }, ticks: { maxRotation: 60, autoSkip: true } }, y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#2a3236' }, border: { display: false } } },
       },
     })
   } catch (e) {

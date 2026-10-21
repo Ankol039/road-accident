@@ -7,14 +7,14 @@ import { $, esc, formatDate, statusBadge } from '../ui.js'
 await startPage({ roles: ['admin'] })
 
 // One hue for every chart: these charts compare amounts, not identities.
-const INK = '#1d2124'
-const MUTED = '#5f676d'
-const GRID = '#e7e9e6'
-const BAR = '#0f6b4c' // guide green
-Chart.defaults.font.family = "'Overpass', system-ui, sans-serif"
+const INK = '#f0ece2'
+const MUTED = '#98a09c'
+const GRID = '#2a3236'
+const BAR = '#e4572e' // burnt-orange accent (landing palette)
+Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif"
 Chart.defaults.color = MUTED
 Chart.defaults.plugins.legend.display = false
-Chart.defaults.plugins.tooltip.backgroundColor = '#23272b'
+Chart.defaults.plugins.tooltip.backgroundColor = '#171c1f'
 Chart.defaults.plugins.tooltip.padding = 10
 Chart.defaults.maintainAspectRatio = false
 
@@ -25,7 +25,7 @@ function barChart(id, labels, values, { horizontal = false, title = 'Reports' } 
   charts[id]?.destroy()
   charts[id] = new Chart(document.getElementById(id), {
     type: 'bar',
-    data: { labels, datasets: [{ label: title, data: values, backgroundColor: BAR, hoverBackgroundColor: '#0b5039', borderRadius: 4, borderSkipped: 'start', maxBarThickness: 26 }] },
+    data: { labels, datasets: [{ label: title, data: values, backgroundColor: BAR, hoverBackgroundColor: '#c8441f', borderRadius: 4, borderSkipped: 'start', maxBarThickness: 26 }] },
     options: {
       indexAxis: horizontal ? 'y' : 'x',
       scales: {
@@ -125,7 +125,7 @@ function drawMap(points) {
       radius: official ? 8 : 6,
       color: '#fff',
       weight: 2,
-      fillColor: official ? BAR : '#8a9197',
+      fillColor: official ? BAR : '#98a09c',
       fillOpacity: 0.9,
     })
       .bindPopup(`<strong><a href="report.php?id=${p.id}">${esc(p.report_code)}</a></strong><br>${esc(p.accident_type)}, ${esc(formatDate(p.accident_date))}<br>${esc(p.location_text)}<br>${statusBadge(p.status, p.status_label)}`)
