@@ -29,7 +29,7 @@ ChartJS.register(
 )
 
 ChartJS.defaults.color = CHART_COLORS.muted
-ChartJS.defaults.font.family = "'DM Sans', system-ui, sans-serif"
+ChartJS.defaults.font.family = "'Inter', system-ui, sans-serif"
 ChartJS.defaults.borderColor = CHART_COLORS.grid
 
 /** Shared options so every chart has the same grid, legend and tooltip look. */

@@ -98,12 +98,32 @@ export default function Landing() {
 
     /* ---------- 3. feature cards + heading word reveal ---------- */
     try {
-      const fo = new IntersectionObserver(
-        (entries) => entries.forEach((e) => e.target.classList.toggle('on', e.isIntersecting)),
-        { rootMargin: '-42% 0px -42% 0px' },
-      )
-      root$.querySelectorAll('.feat div').forEach((d) => fo.observe(d))
-      cleanups.push(() => fo.disconnect())
+      const feat = root$.querySelector('.feat')
+      if (feat) {
+        /* The vision list lights up progressively as it scrolls past: a card
+           switches on once its top reaches the bottom tenth of the viewport
+           and stays on for the rest of the visit. */
+        const cards = [...feat.querySelectorAll('div')]
+        const lit = new Set()
+        const clamp = (v) => Math.max(0, Math.min(1, v))
+        const update = () => {
+          const vh = window.innerHeight
+          cards.forEach((c) => {
+            if (lit.has(c)) return
+            const r = c.getBoundingClientRect()
+            if (r.top < vh * 0.9) {
+              lit.add(c)
+              c.classList.add('on')
+            }
+          })
+          /* progress rail down the left edge of the list */
+          const fr = feat.getBoundingClientRect()
+          feat.style.setProperty('--p', clamp((vh * 0.58 - fr.top) / fr.height))
+        }
+        on(window, 'scroll', update, { passive: true })
+        on(window, 'resize', update)
+        update()
+      }
 
       let n = 0
       const split = (el) =>
@@ -325,6 +345,13 @@ export default function Landing() {
     const t0 = performance.now()
     let raf
     marquees.forEach((m) => {
+      /* Repeat the word group four times so the strip is wider than the
+         viewport; the loop then translates by exactly one group, which
+         makes the motion seamless instead of leaving a gap. */
+      if (m.dataset.wide !== '1') {
+        m.innerHTML = m.innerHTML.repeat(4)
+        m.dataset.wide = '1'
+      }
       m.style.animation = 'none'
     })
     const loop = (t) => {

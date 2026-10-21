@@ -82,17 +82,34 @@ export default function LandingMap() {
         <div className="mmap rv">
           <svg id="msvg" viewBox="0 0 600 525" role="img" aria-label="Map of Bulacan municipalities with accident pins">
             <g id="mm" dangerouslySetInnerHTML={{ __html: BULACAN_PATHS }} />
+            <text className="bay" x="30" y="325" transform="rotate(-60 30 325)">
+              Manila Bay
+            </text>
             <g id="mpins">
               {SAMPLE.map((r, i) => {
                 const on = i < visible && !off.has(r.sv)
+                /* The projected translate lives on the outer <g>; the animated
+                   transform lives on the inner .pin <g>. Keeping them apart
+                   matters: a CSS `transform` beats the SVG `transform`
+                   attribute, so merging them drops every pin at the origin. */
                 return (
-                  <g
-                    key={r.id}
-                    transform={`translate(${X(r.lng).toFixed(1)} ${Y(r.lat).toFixed(1)})`}
-                    className={`${on ? 'pin show' : 'pin'}${i === visible - 1 && on ? ' new' : ''}${off.has(r.sv) ? ' off' : ''}`}
-                  >
-                    <circle r="6" fill={SEVERITY[r.sv]} stroke="#0e1214" strokeWidth="2" />
-                    <title>{`${r.id} · ${r.type} · ${r.town}`}</title>
+                  <g key={r.id} transform={`translate(${X(r.lng).toFixed(1)} ${Y(r.lat).toFixed(1)})`}>
+                    <g
+                      className={`${on ? 'pin show' : 'pin'}${i === visible - 1 && on ? ' new' : ''}${off.has(r.sv) ? ' off' : ''}`}
+                    >
+                      {[0, 1, 2, 3, 4].map((k) => (
+                        <circle
+                          key={k}
+                          className="sw"
+                          r="6"
+                          stroke={SEVERITY[r.sv]}
+                          fill={SEVERITY[r.sv]}
+                          style={{ animationDelay: `${(k * 0.7).toFixed(2)}s` }}
+                        />
+                      ))}
+                      <circle r="6" fill={SEVERITY[r.sv]} stroke="#0e1214" strokeWidth="2" />
+                      <title>{`${r.id} · ${r.type} · ${r.town}`}</title>
+                    </g>
                   </g>
                 )
               })}

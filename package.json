@@ -15,6 +15,7 @@
     "check:users": "node scripts/check-user-management.mjs",
     "check:settings": "node scripts/check-settings.mjs",
     "check:audit": "node scripts/check-audit.mjs",
+    "check:landing": "node scripts/check-landing.mjs",
     "check:db": "node scripts/smoke-test.mjs",
     "check:indexes": "node scripts/probe-indexes.mjs",
     "deploy": "npm run build && firebase deploy --only hosting"
