@@ -21,6 +21,7 @@ import Users from './pages/Users.jsx'
 import Settings from './pages/Settings.jsx'
 import Audit from './pages/Audit.jsx'
 import Summaries from './pages/Summaries.jsx'
+import Notifications from './pages/Notifications.jsx'
 import Pending from './pages/Pending.jsx'
 
 /* Opt into the v7 behaviours early so the console stays clean. */
@@ -57,7 +58,7 @@ export default function App() {
               <Route path="users" element={<Users />} />
               <Route path="settings" element={<Settings />} />
               <Route path="audit" element={<Audit />} />
-              <Route path="notifications" element={<Pending title="Notifications" />} />
+              <Route path="notifications" element={<Notifications />} />
               <Route path="account" element={<Pending title="My account" />} />
             </Route>
 
