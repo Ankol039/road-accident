@@ -20,6 +20,7 @@ import ReportDetail from './pages/ReportDetail.jsx'
 import Users from './pages/Users.jsx'
 import Settings from './pages/Settings.jsx'
 import Audit from './pages/Audit.jsx'
+import Summaries from './pages/Summaries.jsx'
 import Pending from './pages/Pending.jsx'
 
 /* Opt into the v7 behaviours early so the console stays clean. */
@@ -52,7 +53,7 @@ export default function App() {
               <Route index element={<Dashboard />} />
               <Route path="reports" element={<Reports />} />
               <Route path="reports/:id" element={<ReportDetail />} />
-              <Route path="summaries" element={<Pending title="Summaries and export" />} />
+              <Route path="summaries" element={<Summaries />} />
               <Route path="users" element={<Users />} />
               <Route path="settings" element={<Settings />} />
               <Route path="audit" element={<Audit />} />
