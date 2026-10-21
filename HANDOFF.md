@@ -2,7 +2,8 @@
 
 **Status:** scaffold + core screens built and verified. Remaining screens listed below.
 **Last updated:** 2026-10-21
-**App location:** `react-app/` (the original PHP app is untouched at the repo root)
+**App location:** the **repo root** (the React app). The original PHP app now lives in
+`legacy/` as read-only reference — see §4.
 
 ---
 
@@ -70,27 +71,39 @@ chart/map behaviour carry over from the PHP app with minimal change.
 
 ## 4. Folder structure
 
+The repo root **is** the React app. Everything below is relative to the repo root:
+
 ```
-react-app/
+<repo root>/
 ├── index.html                 # Vite entry; loads fonts, sets theme-color
-├── vite.config.js             # manualChunks splits firebase/charts/maps
+├── vite.config.js             # manualChunks splits firebase/charts/maps; outDir: dist
 ├── firebase.json              # Hosting (public: dist, SPA rewrite) + rules refs
 ├── .firebaserc                # project: group3finalproj-9761b
 ├── firestore.rules            # ← the real backend; review before every deploy
 ├── firestore.indexes.json
 ├── .env / .env.example        # Firebase web config (see §6)
+├── public/                    # static assets served as-is (favicon, etc.)
 ├── scripts/
 │   ├── create-user.mjs        # create an admin (Auth user + profile)
 │   └── seed.mjs               # fresh sample data
-└── src/
-    ├── components/            # Layout, RequireAuth, StatusBadge, Charts, MapView, Pager, States, Brand
-    ├── hooks/                 # useAuth (AuthContext), useAsync, useUnread, useToast
-    ├── lib/                   # firebase.js (init), firestore.js (query helpers), constants.js, errors.js, time.js
-    ├── pages/                 # Landing, LandingMap, Login, Dashboard, Reports, Pending
-    ├── services/              # auth, reports, users, audit, settings, notifications, stats
-    ├── styles/                # app.css (theme), landing.css, landing-markup.js (extracted markup)
-    └── utils/                 # date, format, validation (+haversine), imageCompress
+├── src/
+│   ├── components/            # Layout, RequireAuth, StatusBadge, Charts, MapView, Pager, States, Brand
+│   ├── hooks/                 # useAuth (AuthContext), useAsync, useUnread, useToast
+│   ├── lib/                   # firebase.js (init), firestore.js (query helpers), constants.js, errors.js, time.js
+│   ├── pages/                 # Landing, LandingMap, Login, Dashboard, Reports, Pending
+│   ├── services/              # auth, reports, users, audit, settings, notifications, stats
+│   ├── styles/                # app.css (theme), landing.css, landing-markup.js (extracted markup)
+│   └── utils/                 # date, format, validation (+haversine), imageCompress
+└── legacy/                    # ← the ORIGINAL PHP app. READ-ONLY reference. Do not modify.
+    ├── *.php                  # index, login, admin*, report, account, notifications
+    ├── api/  includes/        # PHP backend
+    ├── css/  js/              # original styles + page scripts
+    └── js-release-20261020b/  # the release bundle (pages/*.js)
 ```
+
+> **`legacy/` is read-only.** It is kept in-repo only as the reference for the
+> remaining unported screens (§11). Never edit, restructure or delete anything
+> inside it — when the last screen ships, `legacy/` is removed in its own commit.
 
 ---
 
@@ -124,13 +137,13 @@ Get it from:
 > Firebase console → ⚙️ Project settings → **General** → *Your apps* → Web app (`</>`)
 > If no Web app exists, click **`</>` Add app**, register one, then copy the config.
 
-Then edit `react-app/.env`:
+Then edit `.env` (at the repo root):
 
 ```dotenv
 VITE_FIREBASE_API_KEY=AIza...
 VITE_FIREBASE_AUTH_DOMAIN=group3finalproj-9761b.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=group3finalproj-9761b
-VITE_FIREBASE_STORAGE_BUCKET=group3finalproj-9761b.appspot.com
+VITE_FIREBASE_STORAGE_BUCKET=group3finalproj-9761b.firebasestorage.app
 VITE_FIREBASE_MESSAGING_SENDER_ID=123456789012
 VITE_FIREBASE_APP_ID=1:123456789012:web:abc123
 ```
@@ -138,6 +151,14 @@ VITE_FIREBASE_APP_ID=1:123456789012:web:abc123
 > ⚠️ The key in `~/private/firebase-service-account.json` is a **service account**
 > key (server-side, for the scripts). It is **not** the web config and must never
 > be put in `.env` or shipped to the browser.
+>
+> `scripts/seed.mjs` and `scripts/create-user.mjs` locate it as
+> `resolve(here, '../../private/firebase-service-account.json')`. Since `scripts/`
+> sits exactly two levels below `~/`, this path is **correct as-is — do not change
+> it to `../private`**, which would resolve to a non-existent
+> `<repo>/private/` and break both scripts. Verify with `node scripts/create-user.mjs`
+> (no args): you should see the usage message, not a "could not find a
+> service-account key" error.
 
 ### 6.2 Enable Auth and create the first admin
 
@@ -145,7 +166,6 @@ VITE_FIREBASE_APP_ID=1:123456789012:web:abc123
 2. Create the first admin (needs the service-account key in place):
 
 ```bash
-cd react-app
 npm run create-user -- admin@example.com "a-long-password" "Jan Russel" admin
 ```
 
@@ -170,7 +190,6 @@ npm run preview  # check the production build locally
 ```bash
 npm i -g firebase-tools
 firebase login
-cd react-app
 npm run deploy                     # build + deploy hosting
 firebase deploy --only firestore:rules
 ```
@@ -326,12 +345,30 @@ reauthentication).
 - **`landing-markup.js` is generated** from the old `index.php` — if the landing
   copy changes, edit that file directly rather than trying to re-extract.
 - **Do not put the service-account key in `.env`.** It is a server credential.
+- **Testing with headless Chrome**: do **not** judge auth-gated routes using
+  `chrome --headless --dump-dom --virtual-time-budget=N`. That flag fast-forwards
+  timers but starves network-backed promises, so `onAuthStateChanged` never
+  settles and `/login` and `/admin` appear stuck on `Loading…` /
+  `Checking your session…`. **This is a test artifact, not a bug** — do not
+  "fix" it by weakening the auth guard. Verify instead with a real event loop
+  (e.g. Chrome DevTools Protocol, or just open the page in a normal browser).
+  Expected results: `/` renders the landing page; `/login` renders the login
+  card; `/admin` with no session **redirects to `/login?next=%2Fadmin`**.
 
 ---
 
-## 13. Original PHP app
+## 13. Original PHP app (`legacy/`)
 
-Left untouched at the repo root as the reference implementation
-(`api/`, `js/`, `js-release-20261020b/`, `css/`, the `*.php` page shells).
-Nothing in `react-app/` imports from it. Once the rewrite is verified in
-production, the PHP app can be archived or removed.
+The original PHP implementation now lives in **`legacy/`** at the repo root
+(`api/`, `includes/`, `js/`, `js-release-20261020b/`, `css/`, the `*.php` page
+shells). It is **read-only reference** for the seven remaining unported screens
+(§11) — nothing in `src/` imports from it, and it must not be modified.
+
+`legacy/` is kept in-repo deliberately so the remaining screens can be ported
+with fidelity (validation messages, field order, edge cases). Once the last
+screen ships, remove it in its own commit — by then it is fully recoverable from
+git history.
+
+Note that the PHP app's internal asset paths are relative
+(e.g. `js-release-20261020b/pages/admin.js`), so it must stay together as one
+unit while it remains in the repo.
