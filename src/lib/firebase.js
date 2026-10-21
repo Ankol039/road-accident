@@ -29,6 +29,14 @@ export const isFirebaseConfigured = Boolean(
     firebaseConfig.projectId,
 )
 
+/**
+ * The Web API key. It is not a secret — it ships inside the client bundle and
+ * only identifies the project — but it is the one credential the Identity
+ * Toolkit REST API accepts, so the Users screen needs it to open a sign-in
+ * account for a new staff member.
+ */
+export const apiKey = firebaseConfig.apiKey
+
 export const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 

@@ -48,11 +48,14 @@ service cloud.firestore {
       // Anyone signed in may read their own profile; admins may read all.
       allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
 
-      // A new profile may only be created for yourself, as a non-admin, active.
-      allow create: if signedIn()
-        && request.auth.uid == uid
-        && request.resource.data.role == 'admin'      // first user bootstraps as admin
-        && request.resource.data.email == request.auth.token.email;
+      // An administrator may open the profile for a staff member they have
+      // just created (the Users screen does exactly that). Anybody else may
+      // only backfill their own profile, and only as the first (admin) user.
+      allow create: if isAdmin()
+        || (signedIn()
+          && request.auth.uid == uid
+          && request.resource.data.role == 'admin'    // first user bootstraps as admin
+          && request.resource.data.email == request.auth.token.email);
 
       // You may edit your own name/phone; only admins may change roles.
       allow update: if isAdmin()
