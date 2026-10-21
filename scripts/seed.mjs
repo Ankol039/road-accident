@@ -264,6 +264,10 @@ async function ensureAuthUser({ email, name, role }) {
  * The legacy PHP app stored raw JPEG bytes in report_photos. We keep the real
  * photographs (so the gallery shows actual scene photos) but re-encode them as
  * base64 strings under the React field names.
+ *
+ * Older runs of this script stored the base64 text base64-encoded a second
+ * time, so the reader also unwraps that: the photograph has to decode to an
+ * image, not to more base64 text.
  */
 async function grabLegacyPhotos() {
   const snap = await db.collection('report_photos').get()
@@ -271,15 +275,39 @@ async function grabLegacyPhotos() {
   for (const d of snap.docs) {
     const data = d.data()
     if (!data || data.data == null) continue
-    const raw = Buffer.isBuffer(data.data) ? data.data : Buffer.from(data.data)
-    if (raw.length < 1000) continue
+
+    let base64 = null
+    if (Buffer.isBuffer(data.data)) {
+      // The legacy PHP app stored the raw JPEG bytes.
+      const raw = data.data
+      if (raw.length < 1000) continue
+      base64 = raw.toString('base64')
+    } else {
+      base64 = String(data.data)
+      if (base64.length < 1000) continue
+      // Unwrap one level if the value turns out to be base64 text.
+      const unwrapped = Buffer.from(base64, 'base64').toString('utf8')
+      if (unwrapped !== base64 && /^[A-Za-z0-9+/=\s]+$/.test(unwrapped)) base64 = unwrapped
+    }
+
+    // The photograph must decode to an image.
+    const bytes = Buffer.from(base64, 'base64')
+    const isImage =
+      (bytes[0] === 0xff && bytes[1] === 0xd8) || // JPEG
+      (bytes[0] === 0x89 && bytes[1] === 0x50) || // PNG
+      (bytes[0] === 0x47 && bytes[1] === 0x49) // GIF
+    if (!isImage) {
+      console.warn(`  skipped a photo that does not decode to an image (${d.id})`)
+      continue
+    }
+
     out.push({
       category: data.category || 'scene',
       source: data.source || 'camera',
       mime: data.mime_type || data.mime || 'image/jpeg',
       width: data.width || 0,
       height: data.height || 0,
-      base64: raw.toString('base64'),
+      base64,
     })
   }
   return out
@@ -389,6 +417,9 @@ try {
   let photoCount = 0
   for (const r of reportIds) {
     const wanted = ['scene', 'plate', 'damage']
+    // Reports with casualties also carry the sensitive "people" photo, so the
+    // blurred / revealed section is exercised in the admin portal.
+    if (['fatal', 'serious'].includes(r.report.injury_status)) wanted.push('people')
     for (const category of wanted) {
       const source = photos.find((p) => p.category === category) || photos[0]
       if (!source?.base64) continue

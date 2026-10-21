@@ -22,6 +22,7 @@ import {
   serverTimestamp,
   writeBatch,
   increment,
+  runTransaction,
 } from 'firebase/firestore'
 import { db } from './firebase.js'
 import { COLLECTIONS } from './constants.js'
@@ -50,6 +51,7 @@ export {
   serverTimestamp,
   writeBatch,
   increment,
+  runTransaction,
 }
 
 /**

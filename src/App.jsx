@@ -16,6 +16,7 @@ import Landing from './pages/Landing.jsx'
 import Login from './pages/Login.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Reports from './pages/Reports.jsx'
+import ReportDetail from './pages/ReportDetail.jsx'
 import Pending from './pages/Pending.jsx'
 
 /* Opt into the v7 behaviours early so the console stays clean. */
@@ -47,7 +48,7 @@ export default function App() {
             >
               <Route index element={<Dashboard />} />
               <Route path="reports" element={<Reports />} />
-              <Route path="reports/:id" element={<Pending title="Report detail" />} />
+              <Route path="reports/:id" element={<ReportDetail />} />
               <Route path="summaries" element={<Pending title="Summaries and export" />} />
               <Route path="users" element={<Pending title="Users" />} />
               <Route path="settings" element={<Pending title="Categories and settings" />} />

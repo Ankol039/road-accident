@@ -5,12 +5,14 @@
 import {
   ref,
   getDocs,
+  addDoc,
   query,
   where,
   orderBy,
   limit,
   patchDoc,
   writeBatch,
+  serverTimestamp,
 } from '../lib/firestore.js'
 import { db } from '../lib/firebase.js'
 import { COLLECTIONS } from '../lib/constants.js'
@@ -44,3 +46,39 @@ export async function markAllRead(uid) {
   await batch.commit()
   return snap.size
 }
+
+/**
+ * Send a notification to one user.
+ *
+ * The PHP API wrote these rows in the same batch as the status change; here
+ * the rules only let admins create them, so the portal does it and a failure
+ * never breaks the action that triggered it.
+ */
+export async function notifyUser(uid, { title, message, kind = 'info', report_code = null }) {
+  if (!uid) return null
+  try {
+    const created = await addDoc(ref(COLLECTIONS.notifications), {
+      user_id: uid,
+      report_code,
+      title,
+      message,
+      kind,
+      read: false,
+      created_at: serverTimestamp(),
+    })
+    return created.id
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn('Could not write notification:', error?.message)
+    return null
+  }
+}
+
+/** Convenience wrapper for the traffic officer who is working a report. */
+export const notifyOfficer = (officerId, title, message, report) =>
+  notifyUser(officerId, {
+    title,
+    message,
+    kind: 'status',
+    report_code: report?.report_code || null,
+  })

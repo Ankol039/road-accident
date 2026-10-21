@@ -72,6 +72,52 @@ export const STATUS_HELP = {
   duplicate: 'Disregarded automatically: an earlier open report exists at the same spot.',
 }
 
+/**
+ * The workflow: which status an administrator may move a report to.
+ * Ported from api/core/status.php STATUS_TRANSITIONS.
+ *
+ *   submitted     -> under_review | assigned | rejected | duplicate
+ *   under_review  -> info_required | assigned | rejected | duplicate
+ *   info_required -> under_review | rejected
+ *   assigned      -> on_scene | rejected          (on_scene is the officer's own step)
+ *   on_scene      -> verified | assigned | rejected
+ *   verified      -> in_progress | resolved
+ *   in_progress   -> resolved
+ *   duplicate     -> submitted                      (admin: "not a duplicate")
+ *   resolved, rejected are terminal
+ */
+export const STATUS_TRANSITIONS = {
+  submitted: ['under_review', 'assigned', 'rejected', 'duplicate'],
+  under_review: ['info_required', 'assigned', 'rejected', 'duplicate'],
+  info_required: ['under_review', 'rejected'],
+  assigned: ['on_scene', 'rejected'],
+  on_scene: ['verified', 'assigned', 'rejected'],
+  verified: ['in_progress', 'resolved'],
+  in_progress: ['resolved'],
+  resolved: [],
+  rejected: [],
+  duplicate: ['submitted'],
+}
+
+/**
+ * Statuses that have their own step instead of the plain status form.
+ * Ported from api/core/status.php SPECIAL_ENDPOINT_STATUSES.
+ */
+export const SPECIAL_ENDPOINT_STATUSES = {
+  assigned: 'Dispatch an officer',
+  on_scene: 'The officer reported arrival',
+}
+
+/** Statuses where an officer is still working on the report. */
+export const OFFICER_ACTIVE_STATUSES = ['assigned', 'on_scene', 'verified', 'in_progress']
+
+/** Labels for the remark kinds the admin can add. */
+export const REMARK_LABELS = {
+  remark: 'Remark',
+  finding: 'Finding',
+  action: 'Action taken',
+}
+
 /** Statuses counted as verified accident records. */
 export const OFFICIAL_STATUSES = ['verified', 'in_progress', 'resolved']
 
@@ -96,11 +142,36 @@ export const VEHICLE_TYPES = [
 
 /** Photo evidence categories (api/core/images.php PHOTO_CATEGORIES). */
 export const PHOTO_CATEGORIES = [
-  { key: 'scene', label: 'Scene', required: true },
-  { key: 'plate', label: 'Plate', required: true },
-  { key: 'damage', label: 'Damage', required: true },
-  { key: 'people', label: 'People (sensitive)', required: false, sensitive: true },
-  { key: 'other', label: 'Other', required: false },
+  {
+    key: 'scene',
+    label: 'Scene',
+    required: true,
+    hint: 'Stand back and take the whole scene: the vehicles, the road and nearby landmarks.',
+  },
+  {
+    key: 'plate',
+    label: 'Plate',
+    required: true,
+    hint: 'One clear photo for each vehicle plate involved.',
+  },
+  {
+    key: 'damage',
+    label: 'Damage',
+    required: true,
+    hint: 'Where the vehicles hit each other, or the damaged part.',
+  },
+  {
+    key: 'people',
+    label: 'People (sensitive)',
+    required: false,
+    sensitive: true,
+    hint: 'Optional. Help the injured and call 911 first.',
+    privacy_note:
+      'Optional and sensitive. Only take these if it is safe and respectful. They are seen only by ' +
+      'the administrator and the assigned traffic officer, are never shown to the public, and are ' +
+      'not included in exports.',
+  },
+  { key: 'other', label: 'Other', required: false, hint: 'Anything else that helps: road signs, skid marks, traffic lights.' },
 ]
 
 /** Color for each status (Leaflet markers + badges), ported from js/map.js. */
