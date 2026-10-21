@@ -22,6 +22,7 @@ import Settings from './pages/Settings.jsx'
 import Audit from './pages/Audit.jsx'
 import Summaries from './pages/Summaries.jsx'
 import Notifications from './pages/Notifications.jsx'
+import Account from './pages/Account.jsx'
 import Pending from './pages/Pending.jsx'
 
 /* Opt into the v7 behaviours early so the console stays clean. */
@@ -59,7 +60,7 @@ export default function App() {
               <Route path="settings" element={<Settings />} />
               <Route path="audit" element={<Audit />} />
               <Route path="notifications" element={<Notifications />} />
-              <Route path="account" element={<Pending title="My account" />} />
+              <Route path="account" element={<Account />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />
