@@ -4,8 +4,8 @@
  * Public: landing + login. Everything under /admin is wrapped in RequireAuth
  * and the staff Layout, mirroring the guard in js/app.js.
  *
- * The screens listed in HANDOFF.md that are not built yet resolve to <Pending/>,
- * a small placeholder so the navigation never dead-ends.
+ * Every screen is ported. An unknown path falls through to the landing page,
+ * so a mistyped admin URL never dead-ends on a blank screen.
  */
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './hooks/useAuth.jsx'
@@ -23,7 +23,6 @@ import Audit from './pages/Audit.jsx'
 import Summaries from './pages/Summaries.jsx'
 import Notifications from './pages/Notifications.jsx'
 import Account from './pages/Account.jsx'
-import Pending from './pages/Pending.jsx'
 
 /* Opt into the v7 behaviours early so the console stays clean. */
 const ROUTER_FUTURE = { v7_startTransition: true, v7_relativeSplatPath: true }

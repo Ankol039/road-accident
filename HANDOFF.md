@@ -1,7 +1,7 @@
 # RoadReport Bulacan Admin Portal — Handoff
 
-**Status:** scaffold + core screens built and verified. Remaining screens listed below.
-**Last updated:** 2026-10-21
+**Status:** every screen is ported, verified and committed. See §5 and §11.
+**Last updated:** 2026-10-23
 **App location:** the **repo root** (the React app). The original PHP app now lives in
 `legacy/` as read-only reference — see §4.
 
@@ -90,7 +90,8 @@ The repo root **is** the React app. Everything below is relative to the repo roo
 │   ├── components/            # Layout, RequireAuth, StatusBadge, Charts, MapView, Pager, States, Brand
 │   ├── hooks/                 # useAuth (AuthContext), useAsync, useUnread, useToast
 │   ├── lib/                   # firebase.js (init), firestore.js (query helpers), constants.js, errors.js, time.js
-│   ├── pages/                 # Landing, LandingMap, Login, Dashboard, Reports, Pending
+│   ├── pages/                 # Landing, LandingMap, Login, Dashboard, Reports, ReportDetail,
+│   │                          #   Users, Settings, Audit, Summaries, Notifications, Account
 │   ├── services/              # auth, reports, users, audit, settings, notifications, stats
 │   ├── styles/                # app.css (theme), landing.css, landing-markup.js (extracted markup)
 │   └── utils/                 # date, format, validation (+haversine), imageCompress
@@ -101,15 +102,16 @@ The repo root **is** the React app. Everything below is relative to the repo roo
     └── js-release-20261020b/  # the release bundle (pages/*.js)
 ```
 
-> **`legacy/` is read-only.** It is kept in-repo only as the reference for the
-> remaining unported screens (§11). Never edit, restructure or delete anything
-> inside it — when the last screen ships, `legacy/` is removed in its own commit.
+> **`legacy/` is read-only.** It is kept in-repo as the reference every screen was
+> ported from (§10, §11). Never edit, restructure or delete anything inside it.
+> Removing `legacy/` is a separate decision, not part of a normal change.
 
 ---
 
 ## 5. What is done
 
-Built, wired and **verified to render** (headless Chrome, no runtime errors):
+Every screen is built and **verified in a real browser** (headless Chrome driving
+the live Firestore project — no runtime or console errors on any route):
 
 - **Scaffold** — Vite config, folder structure, `.env` handling, `.gitignore`
 - **Theme** — `src/styles/app.css` ported verbatim from `css/app.css` (all tokens, badges, tables, buttons, print styles); `landing.css` likewise
@@ -122,8 +124,17 @@ Built, wired and **verified to render** (headless Chrome, no runtime errors):
 - **Storage shell** — sidebar with the original 8 items, active states, unread-count pill, logout
 - **Dashboard** (`/admin`) — date-range filter, 9 stat cards, 6 charts, points map + legend, accident-prone spots, recent-reports table
 - **Reports list** (`/admin/reports`) — filter bar (search/status/type/town/dates/flagged/verified-only), paged table, CSV export, print
+- **Report detail** (`/admin/reports/:id`) — see §11.1
+- **Users** (`/admin/users`) — see §11.2
+- **Settings** (`/admin/settings`) — see §11.3
+- **Audit trail** (`/admin/audit`) — see §11.4
+- **Summaries** (`/admin/summaries`) — see §11.5
+- **Notifications** (`/admin/notifications`) — see §11.6
+- **Account** (`/admin/account`) — see §11.7
 - **Security rules** — written and documented (`firestore.rules`)
+- **Indexes** — all composite indexes deployed (`firestore.indexes.json`); `scripts/probe-indexes.mjs` exercises 55 query shapes and confirms none needs a missing index
 - **Seed + admin scripts** — `scripts/seed.mjs`, `scripts/create-user.mjs`
+- **Browser checks** — a suite of puppeteer-driven checks that drive the real UI and read Firestore back with the Admin SDK (`npm run check:*`)
 
 ---
 
@@ -264,70 +275,71 @@ anyone editing or deleting audit entries.
 | `js/api.js`, `js/config.js` | `src/lib/firebase.js`, `src/services/*` | ✅ done |
 | `js/ui.js` (toasts, formatters) | `useToast.jsx`, `utils/format.js`, `utils/date.js` | ✅ done |
 | `js/map.js` | `src/components/MapView.jsx` | ✅ done |
-| `report.php` + `pages/report.js` | `src/pages/ReportDetail.jsx` | ⛔ **to build** |
-| `admin-users.php` + `pages/admin-users.js` | `src/pages/Users.jsx` | ⛔ **to build** |
-| `admin-settings.php` + `pages/admin-settings.js` | `src/pages/Settings.jsx` | ⛔ **to build** |
-| `admin-audit.php` + `pages/admin-audit.js` | `src/pages/Audit.jsx` | ⛔ **to build** |
-| `admin-summaries.php` + `pages/admin-summaries.js` | `src/pages/Summaries.jsx` | ⛔ **to build** |
-| `notifications.php` + `pages/notifications.js` | `src/pages/Notifications.jsx` | ⛔ **to build** |
-| `account.php` + `pages/account.js` | `src/pages/Account.jsx` | ⛔ **to build** |
+| `report.php` + `pages/report.js` | `src/pages/ReportDetail.jsx` | ✅ done |
+| `admin-users.php` + `pages/admin-users.js` | `src/pages/Users.jsx` | ✅ done |
+| `admin-settings.php` + `pages/admin-settings.js` | `src/pages/Settings.jsx` | ✅ done |
+| `admin-audit.php` + `pages/admin-audit.js` | `src/pages/Audit.jsx` | ✅ done |
+| `admin-summaries.php` + `pages/admin-summaries.js` | `src/pages/Summaries.jsx` | ✅ done |
+| `notifications.php` + `pages/notifications.js` | `src/pages/Notifications.jsx` | ✅ done |
+| `account.php` + `pages/account.js` | `src/pages/Account.jsx` | ✅ done |
 
-Every "to build" route currently renders `src/pages/Pending.jsx` so the sidebar
-never dead-ends.
+Every old page has a React equivalent. An unknown path falls through to the
+landing page, so a mistyped admin URL never dead-ends.
 
 ---
 
-## 11. Next steps for the new session
+## 11. The seven admin screens
 
-Build these seven screens. **All the data access already exists** — these are
-mostly markup plus wiring, using `useAsync`, the components in
-`src/components/`, and the services in `src/services/`.
+All seven are built, wired and verified. Each route lives in `src/App.jsx`
+under the `RequireAuth` + `Layout` wrapper.
 
-Each route is already registered in `src/App.jsx`; replace the `<Pending/>`
-element with the real page.
+### 11.1 `ReportDetail.jsx` — `/admin/reports/:id`
+Port of `report.php`. `OnePinMap` for the pin + officer arrival point; workflow
+action panels driven by `updateStatus(...)` / `setFlag(...)`; status timeline
+from `status_history`; photo sections by category with the sensitive-photo blur
+and reveal; inline edit modal → `updateReport(...)`; arrival-distance check via
+`distanceMeters()` + `settings.arrival_match_radius_m`.
 
-### 11.1 `ReportDetail.jsx` (highest priority, largest)
-Route `/admin/reports/:id`. Reference: `report.php`, `js-release-20261020b/pages/report.js`.
-- `OnePinMap` (already built) for the pin + officer arrival point
-- Workflow action panels: approve / request info / mark false / restore / assign / remark / flag — each calls `updateStatus(...)` or `setFlag(...)`
-- Status timeline from `report.status_history`
-- Photo sections by category with the sensitive-photo blur + reveal (classes already in `app.css`: `.photo-section.is-sensitive.is-revealed`)
-- Inline edit modal → `updateReport(...)`
-- Arrival-distance check via `distanceMeters()` + `settings.arrival_match_radius_m`
+The "Update status" panel only renders its `#next-status` select when the
+report's current status has somewhere left to go — `STATUS_FORM_HIDDEN` pauses
+it for the officer-only steps.
 
 ### 11.2 `Users.jsx` — `/admin/users`
-Reference: `admin-users.php`, `pages/admin-users.js`. Use `listUsers`, `updateUser`.
-Editing is profile-only; creating accounts stays with `scripts/create-user.mjs`.
+Port of `admin-users.php`. `listUsers` / `updateUser`. Editing is profile-only;
+creating accounts stays with `scripts/create-user.mjs`.
 
 ### 11.3 `Settings.jsx` — `/admin/settings`
-Reference: `admin-settings.php`. Three panels: accident categories
-(`listAccidentTypes` / `saveAccidentType` / `toggleAccidentType`), system settings
-(`getSystemSettings` / `saveSystemSettings`), emergency contacts
+Port of `admin-settings.php`. Three panels: accident categories
+(`listAccidentTypes` / `saveAccidentType` / `toggleAccidentType`), system
+settings (`getSystemSettings` / `saveSystemSettings`), emergency contacts
 (`listEmergencyContacts` / `saveEmergencyContact` / `deleteEmergencyContact`).
 
 ### 11.4 `Audit.jsx` — `/admin/audit`
-Reference: `admin-audit.php`. `listAudit({action, from, to, cursor})` already
-pages and filters. Add an action `<select>` and date range to the filter bar.
+Port of `admin-audit.php`. `listAudit()` pages 50 rows at a time; the action
+filter and the free-text search run in JS so the screen works without extra
+composite indexes, and only the date range goes to Firestore.
 
 ### 11.5 `Summaries.jsx` — `/admin/summaries`
-Reference: `admin-summaries.php`, `pages/admin-summaries.js`. Use `loadRange` +
-`bucketBy(rows, period)` from `stats.service.js`; render with `Trend`/`Bars`
-and the CSV/print buttons already demonstrated in `Reports.jsx`.
+Port of `admin-summaries.php`. `loadRange` + `bucketBy(rows, period)` from
+`stats.service.js`, rendered with `Trend`/`Bars`; client-side CSV and
+`window.print()` for PDF, matching `Reports.jsx`.
 
 ### 11.6 `Notifications.jsx` — `/admin/notifications`
-Reference: `notifications.php`. `listNotifications`, `markRead`, `markAllRead`.
-Calls `refresh()` from `useUnread()` after marking so the sidebar pill updates.
+Port of `notifications.php`. `listNotifications`, `markRead`, `markAllRead`;
+clicking an unread row marks it read and navigates to `/admin/reports`. Calls
+`refresh()` from `useUnread()` so the sidebar pill updates.
 
 ### 11.7 `Account.jsx` — `/admin/account`
-Reference: `account.php`. Profile form → `updateUser(uid, ...)`;
-password change → `changePassword()` in `auth.service.js` (already handles
-reauthentication).
+Port of `account.php`. Profile form → `updateUser(uid, ...)`; password change →
+`changePassword()` in `auth.service.js`. Email is a read-only field — changing it
+is an administrator's job.
 
-### 11.8 Then
-1. Review `firestore.rules` against the final field names.
-2. Add composite indexes if Firestore asks for them (it logs a console link).
-3. Fill `.env`, seed, create the admin, and walk through every screen once.
-4. `npm run deploy` + `firebase deploy --only firestore:rules`.
+### 11.8 Verifying and shipping
+1. `npm run check:db` — proves the live schema matches what the app expects.
+2. `npm run check:indexes` — exercises every query shape; must report no missing index.
+3. `npm run check:landing`, `check:audit`, `check:settings`, `check:users`, `check:status` — drive the real UI and read Firestore back.
+4. `npm run deploy` — build + `firebase deploy --only hosting`.
+   Rules and indexes deploy separately: `firebase deploy --only firestore:rules,firestore:indexes`.
 
 ---
 
@@ -361,13 +373,12 @@ reauthentication).
 
 The original PHP implementation now lives in **`legacy/`** at the repo root
 (`api/`, `includes/`, `js/`, `js-release-20261020b/`, `css/`, the `*.php` page
-shells). It is **read-only reference** for the seven remaining unported screens
-(§11) — nothing in `src/` imports from it, and it must not be modified.
+shells). It is **read-only reference** for everything that was ported (§10, §11)
+— nothing in `src/` imports from it, and it must not be modified.
 
-`legacy/` is kept in-repo deliberately so the remaining screens can be ported
-with fidelity (validation messages, field order, edge cases). Once the last
-screen ships, remove it in its own commit — by then it is fully recoverable from
-git history.
+`legacy/` is kept in-repo deliberately so the port can be checked for fidelity
+(validation messages, field order, edge cases). Removing it is its own commit
+and its own decision — it stays fully recoverable from git history either way.
 
 Note that the PHP app's internal asset paths are relative
 (e.g. `js-release-20261020b/pages/admin.js`), so it must stay together as one
