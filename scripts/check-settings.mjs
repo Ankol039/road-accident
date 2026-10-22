@@ -17,7 +17,7 @@ import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import puppeteer from 'puppeteer-core'
 import { initializeApp, cert } from 'firebase-admin/app'
-import { getFirestore } from 'firebase-admin/firestore'
+import { getFirestore, Timestamp } from 'firebase-admin/firestore'
 
 const CHROME_PATHS = [
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
@@ -169,6 +169,9 @@ const clickInRow = async (rowText, buttonText) =>
 let probeCategoryId = null
 let probeContactId = null
 let originalRadius = null
+/* When the probe settings edit happened, so cleanup can drop exactly the
+   audit rows it caused without touching an operator's real entries. */
+let settingsEditAt = null
 
 const cleanup = async () => {
   /* The app wrote an audit entry for every probe change. Deleting the probe
@@ -215,6 +218,33 @@ const cleanup = async () => {
       console.log(`Restored arrival_match_radius_m to ${originalRadius}`)
     } catch (error) {
       console.error(`Could not restore the setting: ${error.message}`)
+    }
+  }
+  /* The "Save settings" click logged a settings.update row on the fixed
+     `system` scope. It names a live scope, so it is not an orphan and the
+     orphan sweep keeps it — but the value was restored, so the run left no
+     real change behind. Drop the rows this run wrote.
+     The boundary is taken from the SERVER clock, because created_at is a
+     server timestamp; a client clock running behind would otherwise miss the
+     very row we are looking for. The few seconds of slack only ever widen the
+     window back over this run, which is seconds long. */
+  if (settingsEditAt) {
+    try {
+      /* Query on entity_id only: the action and the timestamp are filtered in
+         JS, so this needs no composite index. */
+      const entries = await db.collection('audit_logs').where('entity_id', '==', 'system').get()
+      const mine = entries.docs.filter((doc) => {
+        const x = doc.data()
+        return (
+          x.action === 'settings.update' &&
+          x.created_at?.toMillis?.() != null &&
+          x.created_at.toMillis() >= settingsEditAt.toMillis()
+        )
+      })
+      for (const doc of mine) await doc.ref.delete()
+      if (mine.length) console.log(`Cleaned up ${mine.length} settings.update audit entries`)
+    } catch (error) {
+      console.error(`Could not clean up the settings audit entries: ${error.message}`)
     }
   }
 }
@@ -304,6 +334,10 @@ try {
   console.log('\nChanging the arrival radius…')
   const before = await db.collection('settings').doc('arrival_match_radius_m').get()
   originalRadius = before.data()?.value ?? null
+  /* Anchor to the SERVER clock (created_at is a server timestamp), backed off
+     a little so ordering within the same second cannot slip the row before
+     the boundary. */
+  settingsEditAt = Timestamp.fromMillis((before.updateTime?.toMillis() ?? Date.now()) - 3000)
   await setInput('#s-match', '95')
   toasts = await lastToast()
   await page.evaluate(() => {
