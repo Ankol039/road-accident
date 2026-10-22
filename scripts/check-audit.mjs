@@ -77,6 +77,21 @@ const readRows = () =>
     [...document.querySelectorAll('.table tbody tr')].map((tr) => tr.innerText.trim()),
   )
 
+/** The value of a named input, set the way React sees it. */
+const setInput = async (name, value) => {
+  await page.evaluate(
+    (n, v) => {
+      const el = document.querySelector(`input[name=${n}]`)
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set
+      setter.call(el, v)
+      el.dispatchEvent(new Event('input', { bubbles: true }))
+    },
+    name,
+    value,
+  )
+  await settle(1500)
+}
+
 /** The "N total, page X of Y" line under the table. */
 const summary = () =>
   page.evaluate(() => {
@@ -135,12 +150,16 @@ try {
   await settle(1200)
 
   /* ---------- the entry is there ---------- */
+  /* The trail is append-only and grows with every run of the other checks, so
+     the probe entry is not necessarily on page 1. Search for it instead of
+     assuming a position. */
+  await setInput('q', 'Probe Auditor')
   let rows = await readRows()
-  console.log(`\nRows on the first page: ${rows.length}`)
+  console.log(`\nRows for "Probe Auditor": ${rows.length}`)
   console.log(`Summary: ${await summary()}`)
   const probeRow = rows.find((r) => r.includes('Probe Auditor'))
   if (!probeRow) {
-    fail.push('the probe entry is not on the first page')
+    fail.push('the search did not find the probe entry')
   } else {
     console.log(`Found: ${probeRow.replace(/\n/g, ' | ')}`)
     if (!probeRow.includes('Changed report status')) {
@@ -153,6 +172,13 @@ try {
       fail.push('the report link is missing')
     }
   }
+
+  /* ---------- an unfiltered page still renders ---------- */
+  await setInput('q', '')
+  await settle(600)
+  const firstPage = await readRows()
+  console.log(`\nRows on the first unfiltered page: ${firstPage.length}`)
+  if (!firstPage.length) fail.push('the unfiltered table is empty')
 
   /* ---------- the action filter ---------- */
   console.log('\nFiltering by action…')
@@ -173,15 +199,7 @@ try {
 
   /* ---------- the date range ---------- */
   console.log('\nMoving the date range…')
-  const setFrom = async (value) => {
-    await page.evaluate((val) => {
-      const el = document.querySelector('input[name=date_from]')
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set
-      setter.call(el, val)
-      el.dispatchEvent(new Event('input', { bubbles: true }))
-    }, value)
-    await settle(1500)
-  }
+  const setFrom = (value) => setInput('date_from', value)
 
   // A range that starts after today holds nothing at all.
   await setFrom(isoDate(1))
@@ -197,16 +215,11 @@ try {
   if (!rows.some((r) => r.includes('Probe Auditor'))) {
     fail.push('the entry did not come back with a wider date range')
   }
+  await setInput('date_from', '')
 
   /* ---------- the search ---------- */
   console.log('\nSearching…')
-  await page.evaluate(() => {
-    const el = document.querySelector('input[name=q]')
-    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set
-    setter.call(el, 'Probe Auditor')
-    el.dispatchEvent(new Event('input', { bubbles: true }))
-  })
-  await settle(1800)
+  await setInput('q', 'Probe Auditor')
   rows = await readRows()
   console.log(`Rows for "Probe Auditor": ${rows.length}`)
   if (rows.length !== 1) fail.push(`the search found ${rows.length} rows, expected 1`)
@@ -214,13 +227,7 @@ try {
     fail.push('the search found the wrong entry')
   }
 
-  await page.evaluate(() => {
-    const el = document.querySelector('input[name=q]')
-    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set
-    setter.call(el, '')
-    el.dispatchEvent(new Event('input', { bubbles: true }))
-  })
-  await settle(1500)
+  await setInput('q', '')
 
   /* ---------- the pager ---------- */
   console.log('\nChecking the pager…')

@@ -167,9 +167,23 @@ const clickInRow = async (rowText, buttonText) =>
   )
 
 let probeCategoryId = null
+let probeContactId = null
 let originalRadius = null
 
 const cleanup = async () => {
+  /* The app wrote an audit entry for every probe change. Deleting the probe
+     entities would leave those entries pointing at nothing, so drop them too.
+     Only entries naming one of our probe ids are touched. */
+  const probeIds = [probeCategoryId, probeContactId].filter(Boolean)
+  for (const entityId of probeIds) {
+    try {
+      const entries = await db.collection('audit_logs').where('entity_id', '==', entityId).get()
+      for (const doc of entries.docs) await doc.ref.delete()
+      if (entries.size) console.log(`Cleaned up ${entries.size} audit entries for ${entityId}`)
+    } catch (error) {
+      console.error(`Could not clean up the audit entries: ${error.message}`)
+    }
+  }
   if (probeCategoryId) {
     try {
       await db.collection('accident_types').doc(probeCategoryId).delete()
@@ -186,6 +200,9 @@ const cleanup = async () => {
       .where('name', '<=', `${PROBE_CONTACT}z`)
       .get()
     for (const doc of leftovers.docs) {
+      /* Sweep the audit entries of anything this catch-all finds too. */
+      const entries = await db.collection('audit_logs').where('entity_id', '==', doc.id).get()
+      for (const entry of entries.docs) await entry.ref.delete()
       await doc.ref.delete()
       console.log(`Cleaned up the contact ${doc.data().name}`)
     }
@@ -336,6 +353,7 @@ try {
   if (contactSnap.empty) {
     fail.push('the contact was not written to Firestore')
   } else {
+    probeContactId = contactSnap.docs[0].id
     const contact = contactSnap.docs[0].data()
     console.log(`Firestore emergency_contacts: ${JSON.stringify(contact)}`)
     if (contact.phone !== '(044) 555 0100') fail.push('the phone was not saved')

@@ -315,9 +315,14 @@ try {
 async function cleanUp() {
   if (!testUid) return
   try {
+    /* The app wrote user.create / user.update audit entries for this probe.
+       Removing the account would leave them pointing at nothing. */
+    const entries = await db.collection('audit_logs').where('entity_id', '==', testUid).get()
+    for (const doc of entries.docs) await doc.ref.delete()
     await adminAuth.deleteUser(testUid)
     await db.collection('users').doc(testUid).delete()
-    console.log(`Cleaned up: ${TEST_EMAIL} (${testUid})`)
+    const also = entries.size ? ` and ${entries.size} audit entries` : ''
+    console.log(`Cleaned up: ${TEST_EMAIL} (${testUid})${also}`)
   } catch (error) {
     console.error(`Could not clean up ${TEST_EMAIL}: ${error.message}`)
   }
