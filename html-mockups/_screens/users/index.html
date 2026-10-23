@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0e1214" />
+    <title>Users — RoadReport mockup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../_shared/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../_shared/leaflet.css" />
+    <link rel="stylesheet" href="../../_shared/app.css" />
+    <link rel="stylesheet" href="../../_shared/mock.css" />
+    <link rel="stylesheet" href="./screen.css" />
+  </head>
+  <body>
+    <!--
+  ROADREPORT UI MOCKUP — Users
+  Route: /admin/users
+  Source: src/pages/Users.jsx
+
+  This file is a static visual reference. Edit this file and ./screen.css ONLY.
+  Do not edit _shared/app.css, other screens, or add new frameworks/fonts.
+  Read ../../README.md before changing anything.
+  Preserve data-rr-* attributes and {{ ... }} expressions.
+  Links point at the sibling mockups; data-rr-href remembers the real SPA route.
+-->
+    <div id="mock-root">
+      <div class="staff-shell" data-rr-screen="users" data-rr-source="src/pages/Users.jsx">
+        <a class="skip-link" href="#page">Skip to content</a>
+        <aside class="sidebar" data-rr-region="shell/sidebar">
+          <div class="px-3 pt-3 pb-4">
+            <a class="text-decoration-none" href="../dashboard/index.html" data-rr-href="/admin"
+              ><span class="brand brand-light"
+                ><svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
+                  <rect
+                    x="10"
+                    y="10"
+                    width="44"
+                    height="44"
+                    rx="6"
+                    transform="rotate(45 32 32)"
+                    fill="#F2B705"
+                    stroke="#23272B"
+                    stroke-width="4"
+                  ></rect>
+                  <rect x="29" y="18" width="6" height="18" rx="3" fill="#23272B"></rect>
+                  <circle cx="32" cy="43" r="3.5" fill="#23272B"></circle></svg
+                ><span>RoadReport</span></span
+              ></a
+            >
+            <div class="small text-white-50 mt-2">Administrator</div>
+          </div>
+          <nav class="side-nav" aria-label="Main" data-rr-region="shell/nav">
+            <a href="../dashboard/index.html" data-rr-href="/admin">Dashboard</a
+            ><a href="../reports/index.html" data-rr-href="/admin/reports">Accident reports</a
+            ><a href="../summaries/index.html" data-rr-href="/admin/summaries"
+              >Summaries and export</a
+            ><a
+              aria-current="page"
+              class="active"
+              href="../users/index.html"
+              data-rr-href="/admin/users"
+              >Users</a
+            ><a href="../settings/index.html" data-rr-href="/admin/settings"
+              >Categories and settings</a
+            ><a href="../audit/index.html" data-rr-href="/admin/audit">Audit trail</a
+            ><a href="../notifications/index.html" data-rr-href="/admin/notifications"
+              >Notifications<span class="count-pill">3</span></a
+            ><a href="../account/index.html" data-rr-href="/admin/account">My account</a>
+          </nav>
+          <div class="sidebar-foot">
+            <div class="small text-white mb-2 text-truncate" data-user-name="true">Demo User</div>
+            <button type="button" class="btn btn-sm btn-outline-light w-100">Log out</button>
+          </div>
+        </aside>
+        <main id="page" class="staff-main" tabindex="-1" data-rr-region="page/root">
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <h1 class="h3 mb-0" data-rr-region="page/title">Users</h1>
+            <button type="button" class="btn btn-guide">Add a user</button>
+          </div>
+          <form class="filter-bar" role="search" data-rr-region="filter-bar">
+            <input
+              type="search"
+              class="form-control"
+              name="q"
+              placeholder="Search name, email or badge"
+              aria-label="Search users"
+              value=""
+            /><select class="form-select" name="role" aria-label="Role">
+              <option value="">All roles</option>
+              <option value="admin">Administrators</option>
+              <option value="officer">Traffic officers</option>
+              <option value="reporter">Public users</option></select
+            ><select class="form-select" name="status" aria-label="Status">
+              <option value="">Active and inactive</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option></select
+            ><button type="submit" class="btn btn-outline-secondary btn-sm">Search</button>
+          </form>
+          <div class="table-responsive panel p-0" data-rr-region="table">
+            <table class="table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th>Joined</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-rr-region="table-row" data-rr-repeat="rows">
+                  <td>
+                    <strong>admin</strong
+                    ><span class="small text-secondary d-block">admin@example.gov.ph</span>
+                  </td>
+                  <td>Administrator</td>
+                  <td></td>
+                  <td>
+                    <span
+                      class="status-badge status-verified"
+                      data-rr-component="StatusBadge"
+                      data-status="verified"
+                      >Active</span
+                    >
+                  </td>
+                  <td class="small">Oct 21, 2026</td>
+                  <td class="text-end">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                  </td>
+                </tr>
+                <tr data-rr-region="table-row" data-rr-repeat="rows">
+                  <td>
+                    <strong>Demo User</strong><span class="small text-secondary"> (you)</span
+                    ><span class="small text-secondary d-block">admin@example.gov.ph</span>
+                  </td>
+                  <td>Administrator</td>
+                  <td></td>
+                  <td>
+                    <span
+                      class="status-badge status-verified"
+                      data-rr-component="StatusBadge"
+                      data-status="verified"
+                      >Active</span
+                    >
+                  </td>
+                  <td class="small">Oct 21, 2026</td>
+                  <td class="text-end">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                  </td>
+                </tr>
+                <tr data-rr-region="table-row" data-rr-repeat="rows">
+                  <td>
+                    <strong>Demo User</strong
+                    ><span class="small text-secondary d-block">admin@example.gov.ph</span>
+                  </td>
+                  <td>Administrator</td>
+                  <td></td>
+                  <td>
+                    <span
+                      class="status-badge status-verified"
+                      data-rr-component="StatusBadge"
+                      data-status="verified"
+                      >Active</span
+                    >
+                  </td>
+                  <td class="small">Oct 23, 2026</td>
+                  <td class="text-end">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                  </td>
+                </tr>
+                <tr data-rr-region="table-row" data-rr-repeat="rows">
+                  <td>
+                    <strong>Demo User</strong
+                    ><span class="small text-secondary d-block">admin@example.gov.ph</span>
+                  </td>
+                  <td>
+                    Traffic officer<span class="small text-secondary d-block">Badge TPB-0207</span>
+                  </td>
+                  <td>(044) 000-0000</td>
+                  <td>
+                    <span
+                      class="status-badge status-verified"
+                      data-rr-component="StatusBadge"
+                      data-status="verified"
+                      >Active</span
+                    ><span class="small text-secondary d-block">4 open case(s)</span>
+                  </td>
+                  <td class="small">Oct 21, 2026</td>
+                  <td class="text-end">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                  </td>
+                </tr>
+                <tr data-rr-region="table-row" data-rr-repeat="rows">
+                  <td>
+                    <strong>Demo User</strong
+                    ><span class="small text-secondary d-block">admin@example.gov.ph</span>
+                  </td>
+                  <td>
+                    Traffic officer<span class="small text-secondary d-block">Badge TPB-0142</span>
+                  </td>
+                  <td>(044) 000-0000</td>
+                  <td>
+                    <span
+                      class="status-badge status-verified"
+                      data-rr-component="StatusBadge"
+                      data-status="verified"
+                      >Active</span
+                    ><span class="small text-secondary d-block">5 open case(s)</span>
+                  </td>
+                  <td class="small">Oct 21, 2026</td>
+                  <td class="text-end">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap mt-3">
+            <span class="text-secondary small">5 total, page 1 of 1</span>
+            <div class="btn-group" data-rr-region="pager">
+              <button type="button" class="btn btn-sm btn-outline-secondary" disabled="">
+                Previous</button
+              ><button type="button" class="btn btn-sm btn-outline-secondary" disabled="">
+                Next
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

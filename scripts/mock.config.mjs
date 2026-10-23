@@ -1,0 +1,242 @@
+/**
+ * Screen catalogue for the HTML mockup round trip.
+ *
+ * Each entry drives `scripts/mock-export.mjs`:
+ *   route    - where to capture it in the running app
+ *   wait     - selector that proves the screen has rendered
+ *   capture  - element to snapshot
+ *   source   - files the integrator will need when the screen comes back
+ *   css      - extra stylesheet from src/styles to copy into _shared
+ *
+ * Keep this list in the same order as the admin navigation.
+ */
+
+export const DEFAULT_BASE = process.env.APP_BASE || 'http://127.0.0.1:5173'
+export const DEFAULT_EMAIL = process.env.ADMIN_EMAIL || 'admin@roadreport.dev'
+export const DEFAULT_PASSWORD = process.env.ADMIN_PASSWORD || 'RoadReport!Admin2026'
+
+/** Files every admin handoff needs, regardless of screen. */
+export const SHARED_SOURCES = [
+  'index.html',
+  'src/main.jsx',
+  'src/App.jsx',
+  'src/styles/app.css',
+  'src/components/Layout.jsx',
+  'src/components/Brand.jsx',
+  'src/components/States.jsx',
+  'src/hooks/useAuth.jsx',
+  'src/hooks/useUnread.js',
+  'src/hooks/useToast.jsx',
+  'src/hooks/useAsync.js',
+  'src/lib/constants.js',
+  'src/lib/errors.js',
+  'src/utils/date.js',
+  'src/utils/format.js',
+]
+
+export const SCREENS = [
+  {
+    id: 'landing',
+    label: 'Public landing',
+    route: '/',
+    wait: '#livemap svg',
+    capture: '#root',
+    captureMode: 'inner',
+    auth: false,
+    freezeLanding: true,
+    source: [
+      'src/pages/Landing.jsx',
+      'src/pages/LandingMap.jsx',
+      'src/styles/landing-markup.js',
+      'src/styles/landing.css',
+      'index.html',
+    ],
+    css: ['landing.css'],
+    note: 'Scroll animations are frozen for the mockup. Edit layout and CSS; the animation JS stays in Landing.jsx.',
+  },
+  {
+    id: 'login',
+    label: 'Login',
+    route: '/login',
+    wait: '#login-form',
+    capture: '#root',
+    captureMode: 'inner',
+    auth: false,
+    source: ['src/pages/Login.jsx', 'src/components/Brand.jsx', 'src/styles/app.css'],
+    css: [],
+  },
+  {
+    id: 'dashboard',
+    label: 'Dashboard',
+    route: '/admin',
+    wait: '.stat-grid',
+    extraWait: ['.chart-box canvas', '.leaflet-container'],
+    capture: '.staff-shell',
+    captureMode: 'outer',
+    auth: true,
+    source: [
+      'src/pages/Dashboard.jsx',
+      'src/components/Charts.jsx',
+      'src/components/MapView.jsx',
+      'src/components/StatusBadge.jsx',
+      'src/components/States.jsx',
+      'src/lib/constants.js',
+      'src/utils/date.js',
+      'src/utils/format.js',
+      'src/styles/app.css',
+    ],
+    css: [],
+  },
+  {
+    id: 'reports',
+    label: 'Accident reports',
+    route: '/admin/reports',
+    wait: '.filter-bar',
+    extraWait: ['tbody tr'],
+    capture: '.staff-shell',
+    captureMode: 'outer',
+    auth: true,
+    source: [
+      'src/pages/Reports.jsx',
+      'src/components/StatusBadge.jsx',
+      'src/components/Pager.jsx',
+      'src/lib/constants.js',
+      'src/utils/date.js',
+      'src/utils/format.js',
+      'src/styles/app.css',
+    ],
+    css: [],
+  },
+  {
+    id: 'report-detail',
+    label: 'Report detail',
+    route: '/admin/reports',
+    resolveRoute: true, // exporter swaps in a real report id
+    wait: '.status-help',
+    extraWait: ['.timeline'],
+    capture: '.staff-shell',
+    captureMode: 'outer',
+    auth: true,
+    source: [
+      'src/pages/ReportDetail.jsx',
+      'src/components/StatusBadge.jsx',
+      'src/components/MapView.jsx',
+      'src/components/States.jsx',
+      'src/components/Modal.jsx',
+      'src/lib/constants.js',
+      'src/utils/date.js',
+      'src/utils/format.js',
+      'src/styles/app.css',
+    ],
+    css: [],
+    note: 'This page is 1,185 lines. Treat it as sections (header, photos, timeline, status forms, arrival check) when reviewing changes.',
+  },
+  {
+    id: 'summaries',
+    label: 'Summaries and export',
+    route: '/admin/summaries',
+    wait: '#summary-form',
+    extraWait: ['.chart-box canvas', 'tbody tr'],
+    capture: '.staff-shell',
+    captureMode: 'outer',
+    auth: true,
+    source: [
+      'src/pages/Summaries.jsx',
+      'src/components/Charts.jsx',
+      'src/lib/constants.js',
+      'src/utils/date.js',
+      'src/styles/app.css',
+    ],
+    css: [],
+  },
+  {
+    id: 'users',
+    label: 'Users',
+    route: '/admin/users',
+    wait: '.filter-bar',
+    extraWait: ['tbody tr'],
+    capture: '.staff-shell',
+    captureMode: 'outer',
+    auth: true,
+    source: [
+      'src/pages/Users.jsx',
+      'src/components/Modal.jsx',
+      'src/components/Pager.jsx',
+      'src/components/StatusBadge.jsx',
+      'src/utils/date.js',
+      'src/lib/errors.js',
+      'src/styles/app.css',
+    ],
+    css: [],
+  },
+  {
+    id: 'settings',
+    label: 'Categories and settings',
+    route: '/admin/settings',
+    wait: '.panel',
+    capture: '.staff-shell',
+    captureMode: 'outer',
+    auth: true,
+    source: [
+      'src/pages/Settings.jsx',
+      'src/components/Modal.jsx',
+      'src/lib/errors.js',
+      'src/styles/app.css',
+    ],
+    css: [],
+  },
+  {
+    id: 'audit',
+    label: 'Audit trail',
+    route: '/admin/audit',
+    wait: '.filter-bar',
+    extraWait: ['tbody tr'],
+    capture: '.staff-shell',
+    captureMode: 'outer',
+    auth: true,
+    source: [
+      'src/pages/Audit.jsx',
+      'src/components/Pager.jsx',
+      'src/lib/constants.js',
+      'src/utils/date.js',
+      'src/styles/app.css',
+    ],
+    css: [],
+  },
+  {
+    id: 'notifications',
+    label: 'Notifications',
+    route: '/admin/notifications',
+    wait: 'h1',
+    capture: '.staff-shell',
+    captureMode: 'outer',
+    auth: true,
+    source: [
+      'src/pages/Notifications.jsx',
+      'src/components/States.jsx',
+      'src/utils/date.js',
+      'src/hooks/useUnread.js',
+      'src/styles/app.css',
+    ],
+    css: [],
+  },
+  {
+    id: 'account',
+    label: 'My account',
+    route: '/admin/account',
+    wait: '#profile-form',
+    capture: '.staff-shell',
+    captureMode: 'outer',
+    auth: true,
+    source: [
+      'src/pages/Account.jsx',
+      'src/hooks/useAuth.jsx',
+      'src/hooks/useToast.jsx',
+      'src/lib/errors.js',
+      'src/styles/app.css',
+    ],
+    css: [],
+  },
+]
+
+export const screenById = (id) => SCREENS.find((s) => s.id === id)

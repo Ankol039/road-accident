@@ -1,0 +1,105 @@
+/*
+ * Mockup-only chrome. Loaded AFTER the real app stylesheets.
+ * Nothing in this file is imported by the React app.
+ */
+
+html,
+body {
+  min-height: 100%;
+}
+
+#mock-root {
+  min-height: 100vh;
+}
+
+/* Charts and maps are replaced by screenshots in the static mockup. */
+.rr-static-canvas,
+.rr-static-map {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: inherit;
+}
+
+/* Keep the table scrollable instead of stretching the whole page. */
+#mock-root .table-responsive {
+  overflow-x: auto;
+}
+
+/*
+ * The landing page is scroll-driven: tall spacer tracks, sticky sections and
+ * transforms applied by JS. For a static, editable mockup we collapse those
+ * tracks and show every section in its final revealed state.
+ */
+.rr-frozen .track,
+.rr-frozen .mtrack,
+.rr-frozen .foot {
+  height: auto;
+}
+
+.rr-frozen .hero,
+.rr-frozen .mstick,
+.rr-frozen .stk {
+  position: relative;
+  top: auto;
+  height: auto;
+  min-height: 100vh;
+}
+
+.rr-frozen .mmap,
+.rr-frozen .mmap svg,
+.rr-frozen .dash {
+  clip-path: none;
+}
+
+.rr-frozen .rv,
+.rr-frozen .w,
+.rr-frozen .bar,
+.rr-frozen .pin,
+.rr-frozen .feat div,
+.rr-frozen .steps .card,
+.rr-frozen .stats div {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.rr-frozen .hero-in > *,
+.rr-frozen .cv {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.rr-frozen .nav {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: auto;
+  max-width: 1180px;
+  margin: 0 auto;
+  transform: none;
+}
+
+/* A tiny, unobtrusive marker so an edited file is obviously a mockup. */
+.rr-mock-badge {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 9999;
+  padding: 6px 10px;
+  border: 1px solid rgba(243, 239, 230, 0.25);
+  border-radius: 999px;
+  background: rgba(14, 18, 20, 0.82);
+  color: #f0ece2;
+  font: 600 11px/1 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+
+@media print {
+  .rr-mock-badge {
+    display: none;
+  }
+}

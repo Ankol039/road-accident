@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0e1214" />
+    <title>My account — RoadReport mockup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../_shared/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../_shared/leaflet.css" />
+    <link rel="stylesheet" href="../../_shared/app.css" />
+    <link rel="stylesheet" href="../../_shared/mock.css" />
+    <link rel="stylesheet" href="./screen.css" />
+  </head>
+  <body>
+    <!--
+  ROADREPORT UI MOCKUP — My account
+  Route: /admin/account
+  Source: src/pages/Account.jsx
+
+  This file is a static visual reference. Edit this file and ./screen.css ONLY.
+  Do not edit _shared/app.css, other screens, or add new frameworks/fonts.
+  Read ../../README.md before changing anything.
+  Preserve data-rr-* attributes and {{ ... }} expressions.
+  Links point at the sibling mockups; data-rr-href remembers the real SPA route.
+-->
+    <div id="mock-root">
+      <div class="staff-shell" data-rr-screen="account" data-rr-source="src/pages/Account.jsx">
+        <a class="skip-link" href="#page">Skip to content</a>
+        <aside class="sidebar" data-rr-region="shell/sidebar">
+          <div class="px-3 pt-3 pb-4">
+            <a class="text-decoration-none" href="../dashboard/index.html" data-rr-href="/admin"
+              ><span class="brand brand-light"
+                ><svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
+                  <rect
+                    x="10"
+                    y="10"
+                    width="44"
+                    height="44"
+                    rx="6"
+                    transform="rotate(45 32 32)"
+                    fill="#F2B705"
+                    stroke="#23272B"
+                    stroke-width="4"
+                  ></rect>
+                  <rect x="29" y="18" width="6" height="18" rx="3" fill="#23272B"></rect>
+                  <circle cx="32" cy="43" r="3.5" fill="#23272B"></circle></svg
+                ><span>RoadReport</span></span
+              ></a
+            >
+            <div class="small text-white-50 mt-2">Administrator</div>
+          </div>
+          <nav class="side-nav" aria-label="Main" data-rr-region="shell/nav">
+            <a href="../dashboard/index.html" data-rr-href="/admin">Dashboard</a
+            ><a href="../reports/index.html" data-rr-href="/admin/reports">Accident reports</a
+            ><a href="../summaries/index.html" data-rr-href="/admin/summaries"
+              >Summaries and export</a
+            ><a href="../users/index.html" data-rr-href="/admin/users">Users</a
+            ><a href="../settings/index.html" data-rr-href="/admin/settings"
+              >Categories and settings</a
+            ><a href="../audit/index.html" data-rr-href="/admin/audit">Audit trail</a
+            ><a href="../notifications/index.html" data-rr-href="/admin/notifications"
+              >Notifications<span class="count-pill">3</span></a
+            ><a
+              aria-current="page"
+              class="active"
+              href="../account/index.html"
+              data-rr-href="/admin/account"
+              >My account</a
+            >
+          </nav>
+          <div class="sidebar-foot">
+            <div class="small text-white mb-2 text-truncate" data-user-name="true">Demo User</div>
+            <button type="button" class="btn btn-sm btn-outline-light w-100">Log out</button>
+          </div>
+        </aside>
+        <main id="page" class="staff-main" tabindex="-1" data-rr-region="page/root">
+          <div class="form-page">
+            <h1 class="h3 mb-1" data-rr-region="page/title">My account</h1>
+            <p class="text-secondary">Administrator</p>
+            <div class="row g-4">
+              <div class="col-md-7">
+                <form class="panel" id="profile-form" novalidate="">
+                  <h2 class="h5">Profile</h2>
+                  <div class="mb-3">
+                    <label class="form-label" for="full_name">Full name</label
+                    ><input
+                      id="full_name"
+                      class="form-control"
+                      autocomplete="name"
+                      value="Demo User"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="email">Email</label
+                    ><input
+                      id="email"
+                      type="email"
+                      class="form-control"
+                      readonly=""
+                      value="admin@example.gov.ph"
+                    />
+                    <div class="form-text">Email changes are made by an administrator.</div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="phone">Mobile number</label
+                    ><input
+                      id="phone"
+                      type="tel"
+                      class="form-control"
+                      placeholder="09XXXXXXXXX"
+                      autocomplete="tel"
+                      value=""
+                    />
+                  </div>
+                  <button class="btn btn-guide" type="submit">Save profile</button>
+                </form>
+              </div>
+              <div class="col-md-5">
+                <form class="panel" id="password-form" novalidate="">
+                  <h2 class="h5">Change password</h2>
+                  <div class="mb-3">
+                    <label class="form-label" for="pw-current">Current password</label
+                    ><input
+                      id="pw-current"
+                      type="password"
+                      class="form-control"
+                      autocomplete="current-password"
+                      value=""
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="pw-new">New password</label
+                    ><input
+                      id="pw-new"
+                      type="password"
+                      class="form-control"
+                      autocomplete="new-password"
+                      value=""
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="pw-confirm">Confirm new password</label
+                    ><input
+                      id="pw-confirm"
+                      type="password"
+                      class="form-control"
+                      autocomplete="new-password"
+                      value=""
+                    />
+                  </div>
+                  <button class="btn btn-guide" type="submit">Change password</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

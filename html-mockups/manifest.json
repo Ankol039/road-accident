@@ -1,0 +1,346 @@
+{
+  "generatedAt": "2026-10-23T14:24:17.932Z",
+  "base": "http://127.0.0.1:5173",
+  "note": "Static visual mockups. Edit index.html + screen.css only. See README.md.",
+  "shared": [
+    "index.html",
+    "src/main.jsx",
+    "src/App.jsx",
+    "src/styles/app.css",
+    "src/components/Layout.jsx",
+    "src/components/Brand.jsx",
+    "src/components/States.jsx",
+    "src/hooks/useAuth.jsx",
+    "src/hooks/useUnread.js",
+    "src/hooks/useToast.jsx",
+    "src/hooks/useAsync.js",
+    "src/lib/constants.js",
+    "src/lib/errors.js",
+    "src/utils/date.js",
+    "src/utils/format.js"
+  ],
+  "screens": [
+    {
+      "id": "landing",
+      "label": "Public landing",
+      "route": "/",
+      "mockup": "_screens/landing/index.html",
+      "css": "_screens/landing/screen.css",
+      "notes": "_screens/landing/notes.md",
+      "previews": {
+        "desktop": "_screens/landing/preview-desktop.png",
+        "mobile": "_screens/landing/preview-mobile.png"
+      },
+      "source": [
+        "src/pages/Landing.jsx",
+        "src/pages/LandingMap.jsx",
+        "src/styles/landing-markup.js",
+        "src/styles/landing.css",
+        "index.html"
+      ],
+      "regions": [
+        "page/title"
+      ],
+      "note": "Scroll animations are frozen for the mockup. Edit layout and CSS; the animation JS stays in Landing.jsx."
+    },
+    {
+      "id": "login",
+      "label": "Login",
+      "route": "/login",
+      "mockup": "_screens/login/index.html",
+      "css": "_screens/login/screen.css",
+      "notes": "_screens/login/notes.md",
+      "previews": {
+        "desktop": "_screens/login/preview-desktop.png",
+        "mobile": "_screens/login/preview-mobile.png"
+      },
+      "source": [
+        "src/pages/Login.jsx",
+        "src/components/Brand.jsx",
+        "src/styles/app.css"
+      ],
+      "regions": [
+        "page/title"
+      ],
+      "note": null
+    },
+    {
+      "id": "dashboard",
+      "label": "Dashboard",
+      "route": "/admin",
+      "mockup": "_screens/dashboard/index.html",
+      "css": "_screens/dashboard/screen.css",
+      "notes": "_screens/dashboard/notes.md",
+      "previews": {
+        "desktop": "_screens/dashboard/preview-desktop.png",
+        "mobile": "_screens/dashboard/preview-mobile.png"
+      },
+      "source": [
+        "src/pages/Dashboard.jsx",
+        "src/components/Charts.jsx",
+        "src/components/MapView.jsx",
+        "src/components/StatusBadge.jsx",
+        "src/components/States.jsx",
+        "src/lib/constants.js",
+        "src/utils/date.js",
+        "src/utils/format.js",
+        "src/styles/app.css"
+      ],
+      "regions": [
+        "shell/sidebar",
+        "shell/nav",
+        "page/root",
+        "page/title",
+        "filter-bar",
+        "stat-grid",
+        "stat-card",
+        "panel",
+        "chart",
+        "map",
+        "table",
+        "table-row"
+      ],
+      "note": null
+    },
+    {
+      "id": "reports",
+      "label": "Accident reports",
+      "route": "/admin/reports",
+      "mockup": "_screens/reports/index.html",
+      "css": "_screens/reports/screen.css",
+      "notes": "_screens/reports/notes.md",
+      "previews": {
+        "desktop": "_screens/reports/preview-desktop.png",
+        "mobile": "_screens/reports/preview-mobile.png"
+      },
+      "source": [
+        "src/pages/Reports.jsx",
+        "src/components/StatusBadge.jsx",
+        "src/components/Pager.jsx",
+        "src/lib/constants.js",
+        "src/utils/date.js",
+        "src/utils/format.js",
+        "src/styles/app.css"
+      ],
+      "regions": [
+        "shell/sidebar",
+        "shell/nav",
+        "page/root",
+        "page/title",
+        "filter-bar",
+        "table",
+        "table-row",
+        "pager"
+      ],
+      "note": null
+    },
+    {
+      "id": "report-detail",
+      "label": "Report detail",
+      "route": "/admin/reports/report-0001",
+      "mockup": "_screens/report-detail/index.html",
+      "css": "_screens/report-detail/screen.css",
+      "notes": "_screens/report-detail/notes.md",
+      "previews": {
+        "desktop": "_screens/report-detail/preview-desktop.png",
+        "mobile": "_screens/report-detail/preview-mobile.png"
+      },
+      "source": [
+        "src/pages/ReportDetail.jsx",
+        "src/components/StatusBadge.jsx",
+        "src/components/MapView.jsx",
+        "src/components/States.jsx",
+        "src/components/Modal.jsx",
+        "src/lib/constants.js",
+        "src/utils/date.js",
+        "src/utils/format.js",
+        "src/styles/app.css"
+      ],
+      "regions": [
+        "shell/sidebar",
+        "shell/nav",
+        "page/root",
+        "page/title",
+        "panel",
+        "map",
+        "photo-section",
+        "timeline"
+      ],
+      "note": "This page is 1,185 lines. Treat it as sections (header, photos, timeline, status forms, arrival check) when reviewing changes."
+    },
+    {
+      "id": "summaries",
+      "label": "Summaries and export",
+      "route": "/admin/summaries",
+      "mockup": "_screens/summaries/index.html",
+      "css": "_screens/summaries/screen.css",
+      "notes": "_screens/summaries/notes.md",
+      "previews": {
+        "desktop": "_screens/summaries/preview-desktop.png",
+        "mobile": "_screens/summaries/preview-mobile.png"
+      },
+      "source": [
+        "src/pages/Summaries.jsx",
+        "src/components/Charts.jsx",
+        "src/lib/constants.js",
+        "src/utils/date.js",
+        "src/styles/app.css"
+      ],
+      "regions": [
+        "shell/sidebar",
+        "shell/nav",
+        "page/root",
+        "page/title",
+        "filter-bar",
+        "panel",
+        "chart",
+        "table",
+        "table-row"
+      ],
+      "note": null
+    },
+    {
+      "id": "users",
+      "label": "Users",
+      "route": "/admin/users",
+      "mockup": "_screens/users/index.html",
+      "css": "_screens/users/screen.css",
+      "notes": "_screens/users/notes.md",
+      "previews": {
+        "desktop": "_screens/users/preview-desktop.png",
+        "mobile": "_screens/users/preview-mobile.png"
+      },
+      "source": [
+        "src/pages/Users.jsx",
+        "src/components/Modal.jsx",
+        "src/components/Pager.jsx",
+        "src/components/StatusBadge.jsx",
+        "src/utils/date.js",
+        "src/lib/errors.js",
+        "src/styles/app.css"
+      ],
+      "regions": [
+        "shell/sidebar",
+        "shell/nav",
+        "page/root",
+        "page/title",
+        "filter-bar",
+        "table",
+        "table-row",
+        "pager"
+      ],
+      "note": null
+    },
+    {
+      "id": "settings",
+      "label": "Categories and settings",
+      "route": "/admin/settings",
+      "mockup": "_screens/settings/index.html",
+      "css": "_screens/settings/screen.css",
+      "notes": "_screens/settings/notes.md",
+      "previews": {
+        "desktop": "_screens/settings/preview-desktop.png",
+        "mobile": "_screens/settings/preview-mobile.png"
+      },
+      "source": [
+        "src/pages/Settings.jsx",
+        "src/components/Modal.jsx",
+        "src/lib/errors.js",
+        "src/styles/app.css"
+      ],
+      "regions": [
+        "shell/sidebar",
+        "shell/nav",
+        "page/root",
+        "page/title",
+        "panel",
+        "table",
+        "table-row"
+      ],
+      "note": null
+    },
+    {
+      "id": "audit",
+      "label": "Audit trail",
+      "route": "/admin/audit",
+      "mockup": "_screens/audit/index.html",
+      "css": "_screens/audit/screen.css",
+      "notes": "_screens/audit/notes.md",
+      "previews": {
+        "desktop": "_screens/audit/preview-desktop.png",
+        "mobile": "_screens/audit/preview-mobile.png"
+      },
+      "source": [
+        "src/pages/Audit.jsx",
+        "src/components/Pager.jsx",
+        "src/lib/constants.js",
+        "src/utils/date.js",
+        "src/styles/app.css"
+      ],
+      "regions": [
+        "shell/sidebar",
+        "shell/nav",
+        "page/root",
+        "page/title",
+        "filter-bar",
+        "table",
+        "table-row",
+        "pager"
+      ],
+      "note": null
+    },
+    {
+      "id": "notifications",
+      "label": "Notifications",
+      "route": "/admin/notifications",
+      "mockup": "_screens/notifications/index.html",
+      "css": "_screens/notifications/screen.css",
+      "notes": "_screens/notifications/notes.md",
+      "previews": {
+        "desktop": "_screens/notifications/preview-desktop.png",
+        "mobile": "_screens/notifications/preview-mobile.png"
+      },
+      "source": [
+        "src/pages/Notifications.jsx",
+        "src/components/States.jsx",
+        "src/utils/date.js",
+        "src/hooks/useUnread.js",
+        "src/styles/app.css"
+      ],
+      "regions": [
+        "shell/sidebar",
+        "shell/nav",
+        "page/root",
+        "page/title",
+        "notification-row"
+      ],
+      "note": null
+    },
+    {
+      "id": "account",
+      "label": "My account",
+      "route": "/admin/account",
+      "mockup": "_screens/account/index.html",
+      "css": "_screens/account/screen.css",
+      "notes": "_screens/account/notes.md",
+      "previews": {
+        "desktop": "_screens/account/preview-desktop.png",
+        "mobile": "_screens/account/preview-mobile.png"
+      },
+      "source": [
+        "src/pages/Account.jsx",
+        "src/hooks/useAuth.jsx",
+        "src/hooks/useToast.jsx",
+        "src/lib/errors.js",
+        "src/styles/app.css"
+      ],
+      "regions": [
+        "shell/sidebar",
+        "shell/nav",
+        "page/root",
+        "page/title"
+      ],
+      "note": null
+    }
+  ]
+}

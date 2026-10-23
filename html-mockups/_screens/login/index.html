@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0e1214" />
+    <title>Login — RoadReport mockup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../_shared/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../_shared/leaflet.css" />
+    <link rel="stylesheet" href="../../_shared/app.css" />
+    <link rel="stylesheet" href="../../_shared/mock.css" />
+    <link rel="stylesheet" href="./screen.css" />
+  </head>
+  <body>
+    <!--
+  ROADREPORT UI MOCKUP — Login
+  Route: /login
+  Source: src/pages/Login.jsx
+
+  This file is a static visual reference. Edit this file and ./screen.css ONLY.
+  Do not edit _shared/app.css, other screens, or add new frameworks/fonts.
+  Read ../../README.md before changing anything.
+  Preserve data-rr-* attributes and {{ ... }} expressions.
+  Links point at the sibling mockups; data-rr-href remembers the real SPA route.
+-->
+    <div id="mock-root">
+      <div class="auth-page">
+        <form class="auth-card" id="login-form" novalidate="">
+          <a
+            class="text-decoration-none d-inline-block mb-3"
+            href="../landing/index.html"
+            data-rr-href="/"
+            ><span class="brand"
+              ><svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
+                <rect
+                  x="10"
+                  y="10"
+                  width="44"
+                  height="44"
+                  rx="6"
+                  transform="rotate(45 32 32)"
+                  fill="#F2B705"
+                  stroke="#23272B"
+                  stroke-width="4"
+                ></rect>
+                <rect x="29" y="18" width="6" height="18" rx="3" fill="#23272B"></rect>
+                <circle cx="32" cy="43" r="3.5" fill="#23272B"></circle></svg
+              ><span>RoadReport</span></span
+            ></a
+          >
+          <h1 class="h4" data-rr-region="page/title">Administrator log in</h1>
+          <p class="small text-secondary">
+            This portal is for Bulacan traffic administrators. Officers and reporters use the
+            RoadReport mobile app.
+          </p>
+          <div class="mb-3">
+            <label class="form-label" for="email">Email</label
+            ><input
+              id="email"
+              name="email"
+              type="email"
+              class="form-control"
+              autocomplete="username"
+              required=""
+              value=""
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="password">Password</label
+            ><input
+              id="password"
+              name="password"
+              type="password"
+              class="form-control"
+              autocomplete="current-password"
+              required=""
+              value=""
+            />
+          </div>
+          <button type="submit" class="btn btn-guide w-100">Log in</button>
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <button type="button" class="btn btn-link btn-sm p-0">Forgot password</button
+            ><a class="small text-secondary" href="../landing/index.html" data-rr-href="/"
+              >Back to home</a
+            >
+          </div>
+        </form>
+      </div>
+      <div class="toast-box" aria-live="polite" aria-atomic="true"></div>
+    </div>
+  </body>
+</html>

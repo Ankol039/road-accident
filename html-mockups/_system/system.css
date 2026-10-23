@@ -1,0 +1,147 @@
+/*
+ * Design-system page layout.
+ *
+ * This file is editable. Shared component styles stay in ../_shared/app.css;
+ * only the gallery-specific layout and any deliberate token overrides belong
+ * here.
+ */
+
+.rr-system {
+  max-width: 1120px;
+}
+
+.rr-system-head {
+  margin-bottom: 1.5rem;
+}
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--acc);
+}
+
+.rr-system-section {
+  margin-bottom: 1.5rem;
+}
+
+.rr-system-section h2 {
+  margin-bottom: 0.35rem;
+}
+
+.rr-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+/* Colour swatches */
+.rr-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.rr-swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.rr-swatch i {
+  display: block;
+  height: 46px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  margin-bottom: 0.25rem;
+}
+
+.rr-swatch b {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.rr-swatch span {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Type specimens */
+.rr-type > div {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.rr-type > div:last-child {
+  border-bottom: 0;
+}
+
+.rr-type h1,
+.rr-type h2,
+.rr-type h3,
+.rr-type h5 {
+  margin: 0;
+}
+
+.rr-type h1 {
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+}
+
+.rr-type h2 {
+  font-size: 1.7rem;
+}
+
+.rr-type h3 {
+  font-size: 1.35rem;
+}
+
+.rr-type-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Static modal preview: no Bootstrap JS, no fixed overlay. */
+.rr-modal-preview {
+  max-width: 580px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 0.75rem;
+}
+
+.rr-modal-preview .modal-content {
+  border: 0;
+}
+
+/* Footer */
+.rr-system-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+@media (max-width: 640px) {
+  .rr-type > div {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}

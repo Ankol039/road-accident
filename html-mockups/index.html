@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RoadReport UI mockups</title>
+<style>
+  :root { color-scheme: dark; --bg:#0e1214; --card:#171c1f; --line:#2a3236; --ink:#f0ece2; --mut:#98a09c; --acc:#e4572e; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.55 Inter, system-ui, sans-serif; }
+  header { padding:48px max(24px, calc((100vw - 1180px)/2)) 24px; border-bottom:1px solid var(--line); }
+  h1 { font:500 40px/1.1 Jost, system-ui, sans-serif; margin:0 0 10px; }
+  p { color:var(--mut); max-width:70ch; margin:0 0 10px; }
+  a { color:var(--acc); }
+  .wrap { max-width:1180px; margin:0 auto; padding:24px; }
+  .toolbar { display:flex; gap:12px; flex-wrap:wrap; margin-top:16px; }
+  .toolbar a { text-decoration:none; border:1px solid var(--line); padding:8px 12px; border-radius:999px; font-size:13px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; display:flex; flex-direction:column; }
+  .shot { display:block; aspect-ratio:16/10; overflow:hidden; background:#0a0c0d; border-bottom:1px solid var(--line); }
+  .shot img { width:100%; height:100%; object-fit:cover; object-position:top; display:block; }
+  .noimg { display:grid; place-items:center; height:100%; color:var(--mut); font-size:13px; }
+  .body { padding:14px 16px 16px; display:flex; flex-direction:column; gap:10px; flex:1; }
+  .head { display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+  h2 { font-size:17px; margin:0; }
+  code { color:var(--mut); font-size:12px; }
+  .card p { font-size:13px; margin:0; }
+  .actions { display:flex; gap:10px; flex-wrap:wrap; font-size:13px; }
+  details { font-size:12px; color:var(--mut); }
+  summary { cursor:pointer; }
+  ul { margin:8px 0 0; padding-left:18px; }
+  footer { padding:30px 24px 50px; text-align:center; color:var(--mut); font-size:12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>RoadReport UI mockups</h1>
+  <p>Static, standalone snapshots of every screen. Open a screen, edit its <code>index.html</code> and <code>screen.css</code>, then hand it back. Read <a href="README.md">README.md</a> first.</p>
+  <div class="toolbar">
+    <a href="_system/index.html">Design system</a>
+    <a href="README.md">Handoff rules</a>
+    <a href="manifest.json">manifest.json</a>
+  </div>
+</header>
+<main class="wrap">
+  <div class="grid">
+<article class="card">
+  <a class="shot" href="_system/index.html" target="_blank" rel="noreferrer" style="display:grid;place-items:center;height:100%;color:var(--ink);text-decoration:none;font:500 26px Jost,system-ui,sans-serif;background:radial-gradient(60% 70% at 50% 50%,rgba(228,87,46,.18),transparent)">Design system &amp; shell</a>
+  <div class="body">
+    <div class="head"><h2>Design system</h2><code>_system/index.html</code></div>
+    <p>Buttons, forms, badges, tables, cards, alerts, modal, pager and shell. Design this first, then the screens.</p>
+    <div class="actions"><a href="_system/index.html" target="_blank" rel="noreferrer">Open style guide</a><a href="_system/system.css" target="_blank" rel="noreferrer">system.css</a></div>
+  </div>
+</article>
+<article class="card">
+  <a class="shot" href="_screens/landing/index.html" target="_blank" rel="noreferrer"><img src="_screens/landing/preview-desktop.png" alt="Public landing desktop preview" loading="lazy" /></a>
+  <div class="body">
+    <div class="head"><h2>Public landing</h2><code>/</code></div>
+    <p>Scroll animations are frozen for the mockup. Edit layout and CSS; the animation JS stays in Landing.jsx.</p>
+    <div class="actions">
+      <a href="_screens/landing/index.html" target="_blank" rel="noreferrer">Open mockup</a>
+      <a href="_screens/landing/screen.css" target="_blank" rel="noreferrer">screen.css</a>
+      <a href="_screens/landing/notes.md" target="_blank" rel="noreferrer">notes.md</a>
+      <a href="_screens/landing/preview-desktop.png" target="_blank" rel="noreferrer">desktop</a>
+      <a href="_screens/landing/preview-mobile.png" target="_blank" rel="noreferrer">mobile</a>
+    </div>
+    <details><summary>Source files</summary><ul><li><code>src/pages/Landing.jsx</code></li><li><code>src/pages/LandingMap.jsx</code></li><li><code>src/styles/landing-markup.js</code></li><li><code>src/styles/landing.css</code></li><li><code>index.html</code></li></ul></details>
+  </div>
+</article>
+<article class="card">
+  <a class="shot" href="_screens/login/index.html" target="_blank" rel="noreferrer"><img src="_screens/login/preview-desktop.png" alt="Login desktop preview" loading="lazy" /></a>
+  <div class="body">
+    <div class="head"><h2>Login</h2><code>/login</code></div>
+    <p>&nbsp;</p>
+    <div class="actions">
+      <a href="_screens/login/index.html" target="_blank" rel="noreferrer">Open mockup</a>
+      <a href="_screens/login/screen.css" target="_blank" rel="noreferrer">screen.css</a>
+      <a href="_screens/login/notes.md" target="_blank" rel="noreferrer">notes.md</a>
+      <a href="_screens/login/preview-desktop.png" target="_blank" rel="noreferrer">desktop</a>
+      <a href="_screens/login/preview-mobile.png" target="_blank" rel="noreferrer">mobile</a>
+    </div>
+    <details><summary>Source files</summary><ul><li><code>src/pages/Login.jsx</code></li><li><code>src/components/Brand.jsx</code></li><li><code>src/styles/app.css</code></li></ul></details>
+  </div>
+</article>
+<article class="card">
+  <a class="shot" href="_screens/dashboard/index.html" target="_blank" rel="noreferrer"><img src="_screens/dashboard/preview-desktop.png" alt="Dashboard desktop preview" loading="lazy" /></a>
+  <div class="body">
+    <div class="head"><h2>Dashboard</h2><code>/admin</code></div>
+    <p>&nbsp;</p>
+    <div class="actions">
+      <a href="_screens/dashboard/index.html" target="_blank" rel="noreferrer">Open mockup</a>
+      <a href="_screens/dashboard/screen.css" target="_blank" rel="noreferrer">screen.css</a>
+      <a href="_screens/dashboard/notes.md" target="_blank" rel="noreferrer">notes.md</a>
+      <a href="_screens/dashboard/preview-desktop.png" target="_blank" rel="noreferrer">desktop</a>
+      <a href="_screens/dashboard/preview-mobile.png" target="_blank" rel="noreferrer">mobile</a>
+    </div>
+    <details><summary>Source files</summary><ul><li><code>src/pages/Dashboard.jsx</code></li><li><code>src/components/Charts.jsx</code></li><li><code>src/components/MapView.jsx</code></li><li><code>src/components/StatusBadge.jsx</code></li><li><code>src/components/States.jsx</code></li><li><code>src/lib/constants.js</code></li><li><code>src/utils/date.js</code></li><li><code>src/utils/format.js</code></li><li><code>src/styles/app.css</code></li></ul></details>
+  </div>
+</article>
+<article class="card">
+  <a class="shot" href="_screens/reports/index.html" target="_blank" rel="noreferrer"><img src="_screens/reports/preview-desktop.png" alt="Accident reports desktop preview" loading="lazy" /></a>
+  <div class="body">
+    <div class="head"><h2>Accident reports</h2><code>/admin/reports</code></div>
+    <p>&nbsp;</p>
+    <div class="actions">
+      <a href="_screens/reports/index.html" target="_blank" rel="noreferrer">Open mockup</a>
+      <a href="_screens/reports/screen.css" target="_blank" rel="noreferrer">screen.css</a>
+      <a href="_screens/reports/notes.md" target="_blank" rel="noreferrer">notes.md</a>
+      <a href="_screens/reports/preview-desktop.png" target="_blank" rel="noreferrer">desktop</a>
+      <a href="_screens/reports/preview-mobile.png" target="_blank" rel="noreferrer">mobile</a>
+    </div>
+    <details><summary>Source files</summary><ul><li><code>src/pages/Reports.jsx</code></li><li><code>src/components/StatusBadge.jsx</code></li><li><code>src/components/Pager.jsx</code></li><li><code>src/lib/constants.js</code></li><li><code>src/utils/date.js</code></li><li><code>src/utils/format.js</code></li><li><code>src/styles/app.css</code></li></ul></details>
+  </div>
+</article>
+<article class="card">
+  <a class="shot" href="_screens/report-detail/index.html" target="_blank" rel="noreferrer"><img src="_screens/report-detail/preview-desktop.png" alt="Report detail desktop preview" loading="lazy" /></a>
+  <div class="body">
+    <div class="head"><h2>Report detail</h2><code>/admin/reports/report-0001</code></div>
+    <p>This page is 1,185 lines. Treat it as sections (header, photos, timeline, status forms, arrival check) when reviewing changes.</p>
+    <div class="actions">
+      <a href="_screens/report-detail/index.html" target="_blank" rel="noreferrer">Open mockup</a>
+      <a href="_screens/report-detail/screen.css" target="_blank" rel="noreferrer">screen.css</a>
+      <a href="_screens/report-detail/notes.md" target="_blank" rel="noreferrer">notes.md</a>
+      <a href="_screens/report-detail/preview-desktop.png" target="_blank" rel="noreferrer">desktop</a>
+      <a href="_screens/report-detail/preview-mobile.png" target="_blank" rel="noreferrer">mobile</a>
+    </div>
+    <details><summary>Source files</summary><ul><li><code>src/pages/ReportDetail.jsx</code></li><li><code>src/components/StatusBadge.jsx</code></li><li><code>src/components/MapView.jsx</code></li><li><code>src/components/States.jsx</code></li><li><code>src/components/Modal.jsx</code></li><li><code>src/lib/constants.js</code></li><li><code>src/utils/date.js</code></li><li><code>src/utils/format.js</code></li><li><code>src/styles/app.css</code></li></ul></details>
+  </div>
+</article>
+<article class="card">
+  <a class="shot" href="_screens/summaries/index.html" target="_blank" rel="noreferrer"><img src="_screens/summaries/preview-desktop.png" alt="Summaries and export desktop preview" loading="lazy" /></a>
+  <div class="body">
+    <div class="head"><h2>Summaries and export</h2><code>/admin/summaries</code></div>
+    <p>&nbsp;</p>
+    <div class="actions">
+      <a href="_screens/summaries/index.html" target="_blank" rel="noreferrer">Open mockup</a>
+      <a href="_screens/summaries/screen.css" target="_blank" rel="noreferrer">screen.css</a>
+      <a href="_screens/summaries/notes.md" target="_blank" rel="noreferrer">notes.md</a>
+      <a href="_screens/summaries/preview-desktop.png" target="_blank" rel="noreferrer">desktop</a>
+      <a href="_screens/summaries/preview-mobile.png" target="_blank" rel="noreferrer">mobile</a>
+    </div>
+    <details><summary>Source files</summary><ul><li><code>src/pages/Summaries.jsx</code></li><li><code>src/components/Charts.jsx</code></li><li><code>src/lib/constants.js</code></li><li><code>src/utils/date.js</code></li><li><code>src/styles/app.css</code></li></ul></details>
+  </div>
+</article>
+<article class="card">
+  <a class="shot" href="_screens/users/index.html" target="_blank" rel="noreferrer"><img src="_screens/users/preview-desktop.png" alt="Users desktop preview" loading="lazy" /></a>
+  <div class="body">
+    <div class="head"><h2>Users</h2><code>/admin/users</code></div>
+    <p>&nbsp;</p>
+    <div class="actions">
+      <a href="_screens/users/index.html" target="_blank" rel="noreferrer">Open mockup</a>
+      <a href="_screens/users/screen.css" target="_blank" rel="noreferrer">screen.css</a>
+      <a href="_screens/users/notes.md" target="_blank" rel="noreferrer">notes.md</a>
+      <a href="_screens/users/preview-desktop.png" target="_blank" rel="noreferrer">desktop</a>
+      <a href="_screens/users/preview-mobile.png" target="_blank" rel="noreferrer">mobile</a>
+    </div>
+    <details><summary>Source files</summary><ul><li><code>src/pages/Users.jsx</code></li><li><code>src/components/Modal.jsx</code></li><li><code>src/components/Pager.jsx</code></li><li><code>src/components/StatusBadge.jsx</code></li><li><code>src/utils/date.js</code></li><li><code>src/lib/errors.js</code></li><li><code>src/styles/app.css</code></li></ul></details>
+  </div>
+</article>
+<article class="card">
+  <a class="shot" href="_screens/settings/index.html" target="_blank" rel="noreferrer"><img src="_screens/settings/preview-desktop.png" alt="Categories and settings desktop preview" loading="lazy" /></a>
+  <div class="body">
+    <div class="head"><h2>Categories and settings</h2><code>/admin/settings</code></div>
+    <p>&nbsp;</p>
+    <div class="actions">
+      <a href="_screens/settings/index.html" target="_blank" rel="noreferrer">Open mockup</a>
+      <a href="_screens/settings/screen.css" target="_blank" rel="noreferrer">screen.css</a>
+      <a href="_screens/settings/notes.md" target="_blank" rel="noreferrer">notes.md</a>
+      <a href="_screens/settings/preview-desktop.png" target="_blank" rel="noreferrer">desktop</a>
+      <a href="_screens/settings/preview-mobile.png" target="_blank" rel="noreferrer">mobile</a>
+    </div>
+    <details><summary>Source files</summary><ul><li><code>src/pages/Settings.jsx</code></li><li><code>src/components/Modal.jsx</code></li><li><code>src/lib/errors.js</code></li><li><code>src/styles/app.css</code></li></ul></details>
+  </div>
+</article>
+<article class="card">
+  <a class="shot" href="_screens/audit/index.html" target="_blank" rel="noreferrer"><img src="_screens/audit/preview-desktop.png" alt="Audit trail desktop preview" loading="lazy" /></a>
+  <div class="body">
+    <div class="head"><h2>Audit trail</h2><code>/admin/audit</code></div>
+    <p>&nbsp;</p>
+    <div class="actions">
+      <a href="_screens/audit/index.html" target="_blank" rel="noreferrer">Open mockup</a>
+      <a href="_screens/audit/screen.css" target="_blank" rel="noreferrer">screen.css</a>
+      <a href="_screens/audit/notes.md" target="_blank" rel="noreferrer">notes.md</a>
+      <a href="_screens/audit/preview-desktop.png" target="_blank" rel="noreferrer">desktop</a>
+      <a href="_screens/audit/preview-mobile.png" target="_blank" rel="noreferrer">mobile</a>
+    </div>
+    <details><summary>Source files</summary><ul><li><code>src/pages/Audit.jsx</code></li><li><code>src/components/Pager.jsx</code></li><li><code>src/lib/constants.js</code></li><li><code>src/utils/date.js</code></li><li><code>src/styles/app.css</code></li></ul></details>
+  </div>
+</article>
+<article class="card">
+  <a class="shot" href="_screens/notifications/index.html" target="_blank" rel="noreferrer"><img src="_screens/notifications/preview-desktop.png" alt="Notifications desktop preview" loading="lazy" /></a>
+  <div class="body">
+    <div class="head"><h2>Notifications</h2><code>/admin/notifications</code></div>
+    <p>&nbsp;</p>
+    <div class="actions">
+      <a href="_screens/notifications/index.html" target="_blank" rel="noreferrer">Open mockup</a>
+      <a href="_screens/notifications/screen.css" target="_blank" rel="noreferrer">screen.css</a>
+      <a href="_screens/notifications/notes.md" target="_blank" rel="noreferrer">notes.md</a>
+      <a href="_screens/notifications/preview-desktop.png" target="_blank" rel="noreferrer">desktop</a>
+      <a href="_screens/notifications/preview-mobile.png" target="_blank" rel="noreferrer">mobile</a>
+    </div>
+    <details><summary>Source files</summary><ul><li><code>src/pages/Notifications.jsx</code></li><li><code>src/components/States.jsx</code></li><li><code>src/utils/date.js</code></li><li><code>src/hooks/useUnread.js</code></li><li><code>src/styles/app.css</code></li></ul></details>
+  </div>
+</article>
+<article class="card">
+  <a class="shot" href="_screens/account/index.html" target="_blank" rel="noreferrer"><img src="_screens/account/preview-desktop.png" alt="My account desktop preview" loading="lazy" /></a>
+  <div class="body">
+    <div class="head"><h2>My account</h2><code>/admin/account</code></div>
+    <p>&nbsp;</p>
+    <div class="actions">
+      <a href="_screens/account/index.html" target="_blank" rel="noreferrer">Open mockup</a>
+      <a href="_screens/account/screen.css" target="_blank" rel="noreferrer">screen.css</a>
+      <a href="_screens/account/notes.md" target="_blank" rel="noreferrer">notes.md</a>
+      <a href="_screens/account/preview-desktop.png" target="_blank" rel="noreferrer">desktop</a>
+      <a href="_screens/account/preview-mobile.png" target="_blank" rel="noreferrer">mobile</a>
+    </div>
+    <details><summary>Source files</summary><ul><li><code>src/pages/Account.jsx</code></li><li><code>src/hooks/useAuth.jsx</code></li><li><code>src/hooks/useToast.jsx</code></li><li><code>src/lib/errors.js</code></li><li><code>src/styles/app.css</code></li></ul></details>
+  </div>
+</article>
+  </div>
+</main>
+<footer>Generated 10/23/2026, 10:24:17 PM · 11 screens</footer>
+</body>
+</html>

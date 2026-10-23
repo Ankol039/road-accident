@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0e1214" />
+    <title>Accident reports — RoadReport mockup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../_shared/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../_shared/leaflet.css" />
+    <link rel="stylesheet" href="../../_shared/app.css" />
+    <link rel="stylesheet" href="../../_shared/mock.css" />
+    <link rel="stylesheet" href="./screen.css" />
+  </head>
+  <body>
+    <!--
+  ROADREPORT UI MOCKUP — Accident reports
+  Route: /admin/reports
+  Source: src/pages/Reports.jsx
+
+  This file is a static visual reference. Edit this file and ./screen.css ONLY.
+  Do not edit _shared/app.css, other screens, or add new frameworks/fonts.
+  Read ../../README.md before changing anything.
+  Preserve data-rr-* attributes and {{ ... }} expressions.
+  Links point at the sibling mockups; data-rr-href remembers the real SPA route.
+-->
+    <div id="mock-root">
+      <div class="staff-shell" data-rr-screen="reports" data-rr-source="src/pages/Reports.jsx">
+        <a class="skip-link" href="#page">Skip to content</a>
+        <aside class="sidebar" data-rr-region="shell/sidebar">
+          <div class="px-3 pt-3 pb-4">
+            <a class="text-decoration-none" href="../dashboard/index.html" data-rr-href="/admin"
+              ><span class="brand brand-light"
+                ><svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
+                  <rect
+                    x="10"
+                    y="10"
+                    width="44"
+                    height="44"
+                    rx="6"
+                    transform="rotate(45 32 32)"
+                    fill="#F2B705"
+                    stroke="#23272B"
+                    stroke-width="4"
+                  ></rect>
+                  <rect x="29" y="18" width="6" height="18" rx="3" fill="#23272B"></rect>
+                  <circle cx="32" cy="43" r="3.5" fill="#23272B"></circle></svg
+                ><span>RoadReport</span></span
+              ></a
+            >
+            <div class="small text-white-50 mt-2">Administrator</div>
+          </div>
+          <nav class="side-nav" aria-label="Main" data-rr-region="shell/nav">
+            <a href="../dashboard/index.html" data-rr-href="/admin">Dashboard</a
+            ><a
+              aria-current="page"
+              class="active"
+              href="../reports/index.html"
+              data-rr-href="/admin/reports"
+              >Accident reports</a
+            ><a href="../summaries/index.html" data-rr-href="/admin/summaries"
+              >Summaries and export</a
+            ><a href="../users/index.html" data-rr-href="/admin/users">Users</a
+            ><a href="../settings/index.html" data-rr-href="/admin/settings"
+              >Categories and settings</a
+            ><a href="../audit/index.html" data-rr-href="/admin/audit">Audit trail</a
+            ><a href="../notifications/index.html" data-rr-href="/admin/notifications"
+              >Notifications<span class="count-pill">3</span></a
+            ><a href="../account/index.html" data-rr-href="/admin/account">My account</a>
+          </nav>
+          <div class="sidebar-foot">
+            <div class="small text-white mb-2 text-truncate" data-user-name="true">Demo User</div>
+            <button type="button" class="btn btn-sm btn-outline-light w-100">Log out</button>
+          </div>
+        </aside>
+        <main id="page" class="staff-main" tabindex="-1" data-rr-region="page/root">
+          <h1 class="h3 no-print" data-rr-region="page/title">Accident reports</h1>
+          <form class="filter-bar no-print" role="search" data-rr-region="filter-bar">
+            <input
+              type="search"
+              class="form-control"
+              name="q"
+              placeholder="Search report ID, place or description"
+              value=""
+            /><select class="form-select">
+              <option value="">Any status</option>
+              <option value="submitted">Submitted</option>
+              <option value="under_review">Under Review</option>
+              <option value="info_required">Additional Information Required</option>
+              <option value="assigned">Assigned</option>
+              <option value="on_scene">Officer On Scene</option>
+              <option value="verified">Verified</option>
+              <option value="in_progress">In Progress</option>
+              <option value="resolved">Resolved / Closed</option>
+              <option value="rejected">Rejected</option>
+              <option value="duplicate">Duplicate</option></select
+            ><select class="form-select">
+              <option value="">Any type</option>
+              <option value="u9MJVV8qb7eRnTjU94uZ">Hit and run</option>
+              <option value="OQ83zvPqyN6XtQRUQ3JZ">Motorcycle crash</option>
+              <option value="q9jqgEv6WINFpsTx35xW">Pedestrian struck</option>
+              <option value="EtTYtLXARVaaDhkIotG8">Road obstruction</option>
+              <option value="nJGDUUue1LisICIfe4Vd">Rollover</option>
+              <option value="VQ6cCeDciQswPd2dbYRp">Vehicle collision</option></select
+            ><input
+              class="form-control"
+              name="municipality"
+              list="rt-towns"
+              placeholder="Municipality"
+              value=""
+            /><datalist id="rt-towns">
+              <option value="Angat"></option>
+              <option value="Balagtas"></option>
+              <option value="Baliwag"></option>
+              <option value="Bocaue"></option>
+              <option value="Bulakan"></option>
+              <option value="Bustos"></option>
+              <option value="Calumpit"></option>
+              <option value="Doña Remedios Trinidad"></option>
+              <option value="Guiguinto"></option>
+              <option value="Hagonoy"></option>
+              <option value="Malolos"></option>
+              <option value="Marilao"></option>
+              <option value="Meycauayan"></option>
+              <option value="Norzagaray"></option>
+              <option value="Obando"></option>
+              <option value="Pandi"></option>
+              <option value="Paombong"></option>
+              <option value="Plaridel"></option>
+              <option value="Pulilan"></option>
+              <option value="San Ildefonso"></option>
+              <option value="San Jose del Monte"></option>
+              <option value="San Miguel"></option>
+              <option value="San Rafael"></option>
+              <option value="Santa Maria"></option></datalist
+            ><input type="date" class="form-control" aria-label="From date" value="" /><input
+              type="date"
+              class="form-control"
+              aria-label="To date"
+              value=""
+            /><label class="form-check d-inline-flex align-items-center gap-1"
+              ><input type="checkbox" class="form-check-input" />Flagged</label
+            ><label class="form-check d-inline-flex align-items-center gap-1"
+              ><input type="checkbox" class="form-check-input" />Verified only</label
+            ><button type="submit" class="btn btn-guide btn-sm">Filter</button
+            ><button type="button" class="btn btn-outline-secondary btn-sm">Clear</button>
+          </form>
+          <div class="d-flex justify-content-end gap-2 mb-2 no-print">
+            <button type="button" class="btn btn-sm btn-outline-guide">
+              Export this page (CSV)</button
+            ><button type="button" class="btn btn-sm btn-outline-guide">Print / PDF</button>
+          </div>
+          <div class="table-responsive panel p-0 print-area" data-rr-region="table">
+            <table class="table table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Report ID</th>
+                  <th>Accident date</th>
+                  <th>Location</th>
+                  <th>Type</th>
+                  <th>Officer</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0003"
+                      >RA-2026-000003</a
+                    >
+                  </td>
+                  <td>Oct 19, 2026</td>
+                  <td>Paseo del Congreso, Marilao, Barangay 3, Marilao</td>
+                  <td>Rollover</td>
+                  <td>—</td>
+                  <td>
+                    <span
+                      class="status-badge status-under_review"
+                      data-rr-component="StatusBadge"
+                      data-status="under_review"
+                      >Under Review</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0014"
+                      >RA-2026-000014</a
+                    >
+                  </td>
+                  <td>Oct 11, 2026</td>
+                  <td>Quirino Hwy, San Jose del Monte, Barangay 2, San Jose del Monte</td>
+                  <td>Hit and run</td>
+                  <td>Demo User</td>
+                  <td>
+                    <span
+                      class="status-badge status-verified"
+                      data-rr-component="StatusBadge"
+                      data-status="verified"
+                      >Verified</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0009"
+                      >RA-2026-000009</a
+                    >
+                  </td>
+                  <td>Oct 10, 2026</td>
+                  <td>Quirino Hwy, Malolos, Barangay 9, Malolos</td>
+                  <td>Rollover</td>
+                  <td>—</td>
+                  <td>
+                    <span
+                      class="status-badge status-rejected"
+                      data-rr-component="StatusBadge"
+                      data-status="rejected"
+                      >Rejected</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0005"
+                      >RA-2026-000005</a
+                    >
+                  </td>
+                  <td>Oct 10, 2026</td>
+                  <td>Bulacan–Candaba Hwy, Santa Maria, Barangay 5, Santa Maria</td>
+                  <td>Motorcycle crash</td>
+                  <td>Demo User</td>
+                  <td>
+                    <span
+                      class="status-badge status-assigned"
+                      data-rr-component="StatusBadge"
+                      data-status="assigned"
+                      >Assigned</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0020"
+                      >RA-2026-000020</a
+                    >
+                  </td>
+                  <td>Oct 9, 2026</td>
+                  <td>Bulacan–Candaba Hwy, Bocaue, Barangay 8, Bocaue</td>
+                  <td>Hit and run</td>
+                  <td>Demo User</td>
+                  <td>
+                    <span
+                      class="status-badge status-resolved"
+                      data-rr-component="StatusBadge"
+                      data-status="resolved"
+                      >Resolved / Closed</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0002"
+                      >RA-2026-000002</a
+                    >
+                  </td>
+                  <td>Oct 6, 2026</td>
+                  <td>Maharlika Hwy, Meycauayan, Barangay 2, Meycauayan</td>
+                  <td>Hit and run</td>
+                  <td>Demo User</td>
+                  <td>
+                    <span
+                      class="status-badge status-verified"
+                      data-rr-component="StatusBadge"
+                      data-status="verified"
+                      >Verified</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0016"
+                      >RA-2026-000016</a
+                    >
+                  </td>
+                  <td>Oct 4, 2026</td>
+                  <td>MacArthur Hwy, Guiguinto, Barangay 4, Guiguinto</td>
+                  <td>Pedestrian struck</td>
+                  <td>—</td>
+                  <td>
+                    <span
+                      class="status-badge status-under_review"
+                      data-rr-component="StatusBadge"
+                      data-status="under_review"
+                      >Under Review</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0017"
+                      >RA-2026-000017</a
+                    >
+                  </td>
+                  <td>Oct 3, 2026</td>
+                  <td>Maharlika Hwy, Malolos, Barangay 5, Malolos</td>
+                  <td>Motorcycle crash</td>
+                  <td>—</td>
+                  <td>
+                    <span
+                      class="status-badge status-submitted"
+                      data-rr-component="StatusBadge"
+                      data-status="submitted"
+                      >Submitted</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0008"
+                      >RA-2026-000008</a
+                    >
+                  </td>
+                  <td>Sep 30, 2026</td>
+                  <td>Paseo del Congreso, Guiguinto, Barangay 8, Guiguinto</td>
+                  <td>Hit and run</td>
+                  <td>Demo User</td>
+                  <td>
+                    <span
+                      class="status-badge status-resolved"
+                      data-rr-component="StatusBadge"
+                      data-status="resolved"
+                      >Resolved / Closed</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0012"
+                      >RA-2026-000012</a
+                    ><span class="flag-dot">flagged</span>
+                  </td>
+                  <td>Sep 29, 2026</td>
+                  <td>Maharlika Hwy, Bocaue, Barangay 12, Bocaue</td>
+                  <td>Road obstruction</td>
+                  <td>—</td>
+                  <td>
+                    <span
+                      class="status-badge status-under_review"
+                      data-rr-component="StatusBadge"
+                      data-status="under_review"
+                      >Under Review</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0004"
+                      >RA-2026-000004</a
+                    >
+                  </td>
+                  <td>Sep 28, 2026</td>
+                  <td>Quirino Hwy, Bocaue, Barangay 4, Bocaue</td>
+                  <td>Pedestrian struck</td>
+                  <td>—</td>
+                  <td>
+                    <span
+                      class="status-badge status-under_review"
+                      data-rr-component="StatusBadge"
+                      data-status="under_review"
+                      >Under Review</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0015"
+                      >RA-2026-000015</a
+                    >
+                  </td>
+                  <td>Sep 20, 2026</td>
+                  <td>Bulacan–Candaba Hwy, Baliwag, Barangay 3, Baliwag</td>
+                  <td>Rollover</td>
+                  <td>Demo User</td>
+                  <td>
+                    <span
+                      class="status-badge status-resolved"
+                      data-rr-component="StatusBadge"
+                      data-status="resolved"
+                      >Resolved / Closed</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0006"
+                      >RA-2026-000006</a
+                    >
+                  </td>
+                  <td>Sep 19, 2026</td>
+                  <td>MacArthur Hwy, San Jose del Monte, Barangay 6, San Jose del Monte</td>
+                  <td>Road obstruction</td>
+                  <td>Demo User</td>
+                  <td>
+                    <span
+                      class="status-badge status-verified"
+                      data-rr-component="StatusBadge"
+                      data-status="verified"
+                      >Verified</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0007"
+                      >RA-2026-000007</a
+                    >
+                  </td>
+                  <td>Sep 18, 2026</td>
+                  <td>Maharlika Hwy, Baliwag, Barangay 7, Baliwag</td>
+                  <td>Vehicle collision</td>
+                  <td>Demo User</td>
+                  <td>
+                    <span
+                      class="status-badge status-in_progress"
+                      data-rr-component="StatusBadge"
+                      data-status="in_progress"
+                      >In Progress</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0011"
+                      >RA-2026-000011</a
+                    >
+                  </td>
+                  <td>Sep 13, 2026</td>
+                  <td>MacArthur Hwy, Marilao, Barangay 11, Marilao</td>
+                  <td>Motorcycle crash</td>
+                  <td>—</td>
+                  <td>
+                    <span
+                      class="status-badge status-info_required"
+                      data-rr-component="StatusBadge"
+                      data-status="info_required"
+                      >Additional Information Required</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0001"
+                      >RA-2026-000001</a
+                    ><span class="flag-dot">flagged</span>
+                  </td>
+                  <td>Sep 13, 2026</td>
+                  <td>MacArthur Hwy, Malolos, Barangay 1, Malolos</td>
+                  <td>Vehicle collision</td>
+                  <td>Demo User</td>
+                  <td>
+                    <span
+                      class="status-badge status-on_scene"
+                      data-rr-component="StatusBadge"
+                      data-status="on_scene"
+                      >Officer On Scene</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0019"
+                      >RA-2026-000019</a
+                    >
+                  </td>
+                  <td>Sep 6, 2026</td>
+                  <td>Quirino Hwy, Marilao, Barangay 7, Marilao</td>
+                  <td>Vehicle collision</td>
+                  <td>Demo User</td>
+                  <td>
+                    <span
+                      class="status-badge status-verified"
+                      data-rr-component="StatusBadge"
+                      data-status="verified"
+                      >Verified</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0018"
+                      >RA-2026-000018</a
+                    >
+                  </td>
+                  <td>Sep 3, 2026</td>
+                  <td>Paseo del Congreso, Meycauayan, Barangay 6, Meycauayan</td>
+                  <td>Road obstruction</td>
+                  <td>Demo User</td>
+                  <td>
+                    <span
+                      class="status-badge status-on_scene"
+                      data-rr-component="StatusBadge"
+                      data-status="on_scene"
+                      >Officer On Scene</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0013"
+                      >RA-2026-000013</a
+                    >
+                  </td>
+                  <td>Aug 23, 2026</td>
+                  <td>Paseo del Congreso, Santa Maria, Barangay 1, Santa Maria</td>
+                  <td>Vehicle collision</td>
+                  <td>Demo User</td>
+                  <td>
+                    <span
+                      class="status-badge status-assigned"
+                      data-rr-component="StatusBadge"
+                      data-status="assigned"
+                      >Assigned</span
+                    >
+                  </td>
+                </tr>
+                <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                  <td class="code-cell">
+                    <a href="../report-detail/index.html" data-rr-href="/admin/reports/report-0010"
+                      >RA-2026-000010</a
+                    ><span class="flag-dot">flagged</span>
+                  </td>
+                  <td>Aug 23, 2026</td>
+                  <td>Bulacan–Candaba Hwy, Meycauayan, Barangay 10, Meycauayan</td>
+                  <td>Pedestrian struck</td>
+                  <td>—</td>
+                  <td>
+                    <span
+                      class="status-badge status-duplicate"
+                      data-rr-component="StatusBadge"
+                      data-status="duplicate"
+                      >Duplicate</span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="no-print">
+            <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap mt-3">
+              <span class="text-secondary small">20 total, page 1 of 1</span>
+              <div class="btn-group" data-rr-region="pager">
+                <button type="button" class="btn btn-sm btn-outline-secondary" disabled="">
+                  Previous</button
+                ><button type="button" class="btn btn-sm btn-outline-secondary" disabled="">
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

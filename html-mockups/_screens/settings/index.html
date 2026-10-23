@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0e1214" />
+    <title>Categories and settings — RoadReport mockup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../_shared/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../_shared/leaflet.css" />
+    <link rel="stylesheet" href="../../_shared/app.css" />
+    <link rel="stylesheet" href="../../_shared/mock.css" />
+    <link rel="stylesheet" href="./screen.css" />
+  </head>
+  <body>
+    <!--
+  ROADREPORT UI MOCKUP — Categories and settings
+  Route: /admin/settings
+  Source: src/pages/Settings.jsx
+
+  This file is a static visual reference. Edit this file and ./screen.css ONLY.
+  Do not edit _shared/app.css, other screens, or add new frameworks/fonts.
+  Read ../../README.md before changing anything.
+  Preserve data-rr-* attributes and {{ ... }} expressions.
+  Links point at the sibling mockups; data-rr-href remembers the real SPA route.
+-->
+    <div id="mock-root">
+      <div class="staff-shell" data-rr-screen="settings" data-rr-source="src/pages/Settings.jsx">
+        <a class="skip-link" href="#page">Skip to content</a>
+        <aside class="sidebar" data-rr-region="shell/sidebar">
+          <div class="px-3 pt-3 pb-4">
+            <a class="text-decoration-none" href="../dashboard/index.html" data-rr-href="/admin"
+              ><span class="brand brand-light"
+                ><svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
+                  <rect
+                    x="10"
+                    y="10"
+                    width="44"
+                    height="44"
+                    rx="6"
+                    transform="rotate(45 32 32)"
+                    fill="#F2B705"
+                    stroke="#23272B"
+                    stroke-width="4"
+                  ></rect>
+                  <rect x="29" y="18" width="6" height="18" rx="3" fill="#23272B"></rect>
+                  <circle cx="32" cy="43" r="3.5" fill="#23272B"></circle></svg
+                ><span>RoadReport</span></span
+              ></a
+            >
+            <div class="small text-white-50 mt-2">Administrator</div>
+          </div>
+          <nav class="side-nav" aria-label="Main" data-rr-region="shell/nav">
+            <a href="../dashboard/index.html" data-rr-href="/admin">Dashboard</a
+            ><a href="../reports/index.html" data-rr-href="/admin/reports">Accident reports</a
+            ><a href="../summaries/index.html" data-rr-href="/admin/summaries"
+              >Summaries and export</a
+            ><a href="../users/index.html" data-rr-href="/admin/users">Users</a
+            ><a
+              aria-current="page"
+              class="active"
+              href="../settings/index.html"
+              data-rr-href="/admin/settings"
+              >Categories and settings</a
+            ><a href="../audit/index.html" data-rr-href="/admin/audit">Audit trail</a
+            ><a href="../notifications/index.html" data-rr-href="/admin/notifications"
+              >Notifications<span class="count-pill">3</span></a
+            ><a href="../account/index.html" data-rr-href="/admin/account">My account</a>
+          </nav>
+          <div class="sidebar-foot">
+            <div class="small text-white mb-2 text-truncate" data-user-name="true">Demo User</div>
+            <button type="button" class="btn btn-sm btn-outline-light w-100">Log out</button>
+          </div>
+        </aside>
+        <main id="page" class="staff-main" tabindex="-1" data-rr-region="page/root">
+          <h1 class="h3 mb-3" data-rr-region="page/title">Categories and settings</h1>
+          <div class="row g-4">
+            <div class="col-xl-7">
+              <section class="panel" data-rr-region="panel">
+                <h2 class="h5">Accident categories</h2>
+                <p class="small text-secondary">
+                  Categories that reports already use cannot be deleted. Hide them instead: they
+                  disappear from the report form but old reports keep them.
+                </p>
+                <div class="table-responsive" data-rr-region="table">
+                  <table class="table align-middle">
+                    <thead>
+                      <tr>
+                        <th>Category</th>
+                        <th class="text-end">Reports</th>
+                        <th>Form</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="" data-rr-region="table-row" data-rr-repeat="rows">
+                        <td>
+                          <strong>Hit and run</strong
+                          ><span class="small text-secondary d-block"
+                            >A vehicle struck someone or something and left the scene.</span
+                          >
+                        </td>
+                        <td class="text-end">4</td>
+                        <td>Shown on the form</td>
+                        <td class="text-end text-nowrap">
+                          <button type="button" class="btn btn-sm btn-outline-secondary">
+                            Edit</button
+                          ><button type="button" class="btn btn-sm btn-outline-secondary">
+                            Hide
+                          </button>
+                        </td>
+                      </tr>
+                      <tr class="" data-rr-region="table-row" data-rr-repeat="rows">
+                        <td>
+                          <strong>Motorcycle crash</strong
+                          ><span class="small text-secondary d-block"
+                            >A motorcycle or tricycle was involved.</span
+                          >
+                        </td>
+                        <td class="text-end">3</td>
+                        <td>Shown on the form</td>
+                        <td class="text-end text-nowrap">
+                          <button type="button" class="btn btn-sm btn-outline-secondary">
+                            Edit</button
+                          ><button type="button" class="btn btn-sm btn-outline-secondary">
+                            Hide
+                          </button>
+                        </td>
+                      </tr>
+                      <tr class="" data-rr-region="table-row" data-rr-repeat="rows">
+                        <td>
+                          <strong>Pedestrian struck</strong
+                          ><span class="small text-secondary d-block"
+                            >A pedestrian was hit by a vehicle.</span
+                          >
+                        </td>
+                        <td class="text-end">3</td>
+                        <td>Shown on the form</td>
+                        <td class="text-end text-nowrap">
+                          <button type="button" class="btn btn-sm btn-outline-secondary">
+                            Edit</button
+                          ><button type="button" class="btn btn-sm btn-outline-secondary">
+                            Hide
+                          </button>
+                        </td>
+                      </tr>
+                      <tr class="" data-rr-region="table-row" data-rr-repeat="rows">
+                        <td>
+                          <strong>Road obstruction</strong
+                          ><span class="small text-secondary d-block"
+                            >Debris, spillage or a stalled vehicle blocking the road.</span
+                          >
+                        </td>
+                        <td class="text-end">3</td>
+                        <td>Shown on the form</td>
+                        <td class="text-end text-nowrap">
+                          <button type="button" class="btn btn-sm btn-outline-secondary">
+                            Edit</button
+                          ><button type="button" class="btn btn-sm btn-outline-secondary">
+                            Hide
+                          </button>
+                        </td>
+                      </tr>
+                      <tr class="" data-rr-region="table-row" data-rr-repeat="rows">
+                        <td>
+                          <strong>Rollover</strong
+                          ><span class="small text-secondary d-block">A vehicle tipped over.</span>
+                        </td>
+                        <td class="text-end">3</td>
+                        <td>Shown on the form</td>
+                        <td class="text-end text-nowrap">
+                          <button type="button" class="btn btn-sm btn-outline-secondary">
+                            Edit</button
+                          ><button type="button" class="btn btn-sm btn-outline-secondary">
+                            Hide
+                          </button>
+                        </td>
+                      </tr>
+                      <tr class="" data-rr-region="table-row" data-rr-repeat="rows">
+                        <td>
+                          <strong>Vehicle collision</strong
+                          ><span class="small text-secondary d-block"
+                            >Two or more vehicles collided on the road.</span
+                          >
+                        </td>
+                        <td class="text-end">4</td>
+                        <td>Shown on the form</td>
+                        <td class="text-end text-nowrap">
+                          <button type="button" class="btn btn-sm btn-outline-secondary">
+                            Edit</button
+                          ><button type="button" class="btn btn-sm btn-outline-secondary">
+                            Hide
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <form class="row g-2 align-items-end" novalidate="">
+                  <div class="col-sm-4">
+                    <label class="form-label small mb-1" for="t-name">Name</label
+                    ><input id="t-name" name="name" class="form-control" value="" />
+                  </div>
+                  <div class="col-sm-5">
+                    <label class="form-label small mb-1" for="t-desc">Description</label
+                    ><input id="t-desc" name="description" class="form-control" value="" />
+                  </div>
+                  <div class="col-sm-3 d-flex gap-1">
+                    <button class="btn btn-guide flex-grow-1" type="submit">Add category</button>
+                  </div>
+                </form>
+              </section>
+            </div>
+            <div class="col-xl-5">
+              <form class="panel" novalidate="">
+                <h2 class="h5">System settings</h2>
+                <div class="mb-3">
+                  <label class="form-label" for="s-name">System name</label
+                  ><input
+                    id="s-name"
+                    name="system_name"
+                    class="form-control"
+                    value="RoadReport Bulacan"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="s-photos"
+                    >Photos allowed per report (all sections)</label
+                  ><input
+                    id="s-photos"
+                    name="max_photos_per_report"
+                    type="number"
+                    min="3"
+                    max="15"
+                    class="form-control"
+                    value="6"
+                  />
+                  <div class="form-text">
+                    Sections: scene, plate number, damage (required), people affected, other. Up to
+                    3 per section.
+                  </div>
+                </div>
+                <fieldset>
+                  <legend class="form-label fs-6 mb-1">Duplicate rule (FR-08)</legend>
+                  <p class="small text-secondary mb-2">
+                    Nearby reports with the same accident type and close incident times are flagged
+                    as possible duplicates. An admin reviews and confirms them; they are not
+                    automatically closed.
+                  </p>
+                  <div class="mb-3">
+                    <label class="form-label" for="s-window">Incident time window (minutes)</label
+                    ><input
+                      id="s-window"
+                      name="duplicate_window_minutes"
+                      type="number"
+                      min="1"
+                      max="1440"
+                      class="form-control"
+                      value="120"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label small mb-1" for="s-radius"
+                      >Duplicate radius (meters)</label
+                    ><input
+                      id="s-radius"
+                      name="duplicate_radius_m"
+                      type="number"
+                      min="1"
+                      max="500"
+                      step="1"
+                      class="form-control"
+                      value="150"
+                    />
+                    <div class="form-text">
+                      Phone GPS is often 5 to 20 m off, so some real duplicates may be farther
+                      apart. You can still flag those by hand.
+                    </div>
+                  </div>
+                </fieldset>
+                <fieldset>
+                  <legend class="form-label fs-6 mb-1">Officer arrival check</legend>
+                  <p class="small text-secondary mb-2">
+                    When the officer taps "I've arrived", the locations match if he is this close to
+                    the reporter's pin. GPS supports the review. If the pins differ or accuracy is
+                    uncertain, record supporting evidence to approve or ask for another arrival.
+                  </p>
+                  <div class="mb-3">
+                    <label class="form-label small mb-1" for="s-match"
+                      >Match distance (meters)</label
+                    ><input
+                      id="s-match"
+                      name="arrival_match_radius_m"
+                      type="number"
+                      min="5"
+                      max="500"
+                      step="1"
+                      class="form-control"
+                      value="120"
+                    />
+                  </div>
+                </fieldset>
+                <button class="btn btn-guide" type="submit">Save settings</button>
+              </form>
+            </div>
+            <div class="col-12">
+              <section class="panel" data-rr-region="panel">
+                <h2 class="h5">Emergency contacts</h2>
+                <p class="small text-secondary">
+                  Shown on the home screen of the mobile app. Add your local MDRRMO, PNP station and
+                  hospitals.
+                </p>
+                <div class="table-responsive" data-rr-region="table">
+                  <table class="table align-middle">
+                    <thead>
+                      <tr>
+                        <th>Order</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Shown</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="" data-rr-region="table-row" data-rr-repeat="rows">
+                        <td>1</td>
+                        <td>
+                          <strong>Bulacan Provincial Rescue</strong
+                          ><span class="small text-secondary d-block">emergency</span>
+                        </td>
+                        <td>911</td>
+                        <td>Shown</td>
+                        <td class="text-end text-nowrap">
+                          <button type="button" class="btn btn-sm btn-outline-secondary">
+                            Edit</button
+                          ><button
+                            type="button"
+                            class="btn btn-sm btn-outline-danger"
+                            aria-label="Remove Bulacan Provincial Rescue"
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                      <tr class="" data-rr-region="table-row" data-rr-repeat="rows">
+                        <td>2</td>
+                        <td>
+                          <strong>DPWH Bulacan District Office</strong
+                          ><span class="small text-secondary d-block">government</span>
+                        </td>
+                        <td>(044) 791-0000</td>
+                        <td>Shown</td>
+                        <td class="text-end text-nowrap">
+                          <button type="button" class="btn btn-sm btn-outline-secondary">
+                            Edit</button
+                          ><button
+                            type="button"
+                            class="btn btn-sm btn-outline-danger"
+                            aria-label="Remove DPWH Bulacan District Office"
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                      <tr class="" data-rr-region="table-row" data-rr-repeat="rows">
+                        <td>3</td>
+                        <td>
+                          <strong>Provincial Traffic Management</strong
+                          ><span class="small text-secondary d-block">traffic</span>
+                        </td>
+                        <td>(044) 791-1111</td>
+                        <td>Shown</td>
+                        <td class="text-end text-nowrap">
+                          <button type="button" class="btn btn-sm btn-outline-secondary">
+                            Edit</button
+                          ><button
+                            type="button"
+                            class="btn btn-sm btn-outline-danger"
+                            aria-label="Remove Provincial Traffic Management"
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <form class="row g-2 align-items-end" novalidate="">
+                  <div class="col-md-3">
+                    <label class="form-label small mb-1" for="c-name">Name</label
+                    ><input id="c-name" name="name" class="form-control" value="" />
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label small mb-1" for="c-phone">Phone</label
+                    ><input id="c-phone" name="phone" class="form-control" value="" />
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label small mb-1" for="c-cat">Category</label
+                    ><input
+                      id="c-cat"
+                      name="category"
+                      class="form-control"
+                      list="c-cats"
+                      value=""
+                    /><datalist id="c-cats">
+                      <option value="Emergency"></option>
+                      <option value="Police"></option>
+                      <option value="Rescue"></option>
+                      <option value="Medical"></option>
+                      <option value="Fire"></option>
+                    </datalist>
+                  </div>
+                  <div class="col-md-1">
+                    <label class="form-label small mb-1" for="c-order">Order</label
+                    ><input
+                      id="c-order"
+                      name="sort_order"
+                      type="number"
+                      class="form-control"
+                      value="0"
+                    />
+                  </div>
+                  <div class="col-md-1">
+                    <div class="form-check mb-2">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="c-active"
+                        name="is_active"
+                        checked=""
+                      /><label class="form-check-label small" for="c-active">Shown</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 d-flex gap-1">
+                    <button class="btn btn-guide flex-grow-1" type="submit">Add contact</button>
+                  </div>
+                </form>
+              </section>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
