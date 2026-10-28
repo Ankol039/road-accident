@@ -113,10 +113,10 @@ export default function Reports() {
 
   return (
     <>
-      <h1 className="h3">Accident reports</h1>
+      <h1 className="h3 no-print">Accident reports</h1>
 
       <form
-        className="filter-bar"
+        className="filter-bar no-print"
         role="search"
         onSubmit={(e) => {
           e.preventDefault()
@@ -202,21 +202,26 @@ export default function Reports() {
       </form>
 
       {error && (
-        <div className="alert alert-danger" role="alert">
+        <div className="alert alert-danger no-print" role="alert">
           {error.message || 'Could not load reports.'}
         </div>
       )}
 
-      <div className="d-flex justify-content-end gap-2 mb-2">
+      <div className="d-flex justify-content-end gap-2 mb-2 no-print">
         <button type="button" className="btn btn-sm btn-outline-guide" onClick={onExport} disabled={!rows.length}>
           Export this page (CSV)
         </button>
-        <button type="button" className="btn btn-sm btn-outline-guide" onClick={() => window.print()}>
+        <button
+          type="button"
+          className="btn btn-sm btn-outline-guide"
+          onClick={() => window.print()}
+          disabled={loading}
+        >
           Print / PDF
         </button>
       </div>
 
-      <div className="table-responsive panel p-0">
+      <div className="table-responsive panel p-0 print-area">
         <table className="table table-hover align-middle mb-0">
           <thead>
             <tr>
@@ -262,15 +267,17 @@ export default function Reports() {
         </table>
       </div>
 
-      <Pager
-        page={page}
-        totalPages={page + (data?.hasMore ? 1 : 0)}
-        total={rows.length}
-        onPrev={goPrev}
-        onNext={goNext}
-        hasPrev={page > 1}
-        hasNext={Boolean(data?.hasMore)}
-      />
+      <div className="no-print">
+        <Pager
+          page={page}
+          totalPages={page + (data?.hasMore ? 1 : 0)}
+          total={rows.length}
+          onPrev={goPrev}
+          onNext={goNext}
+          hasPrev={page > 1}
+          hasNext={Boolean(data?.hasMore)}
+        />
+      </div>
     </>
   )
 }

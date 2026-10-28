@@ -571,12 +571,46 @@ details > summary { cursor: pointer; color: var(--acc); }
 .toast-msg.is-leaving { opacity: 0; transform: translateY(8px); }
 
 @media print {
+  @page { margin: 12mm; }
   body { background: #fff; color: #000; }
   .sidebar, .topbar, .no-print, .skip-link, .toast-box { display: none !important; }
   .staff-shell { display: block; background: #fff; }
   .staff-main { padding: 0; }
   .panel { border: 0; padding: 0; }
   .panel, .stat-card, .notif-row, .report-row, .table, .auth-card { background: #fff !important; color: #000 !important; }
+
+  /* Reports table is the only printed content: expand it and make it legible. */
+  .print-area,
+  .print-area .table-responsive { overflow: visible !important; }
+  .print-area .table {
+    width: 100% !important;
+    border-collapse: collapse;
+    font-size: 10pt;
+    --bs-table-color: #000;
+    --bs-table-bg: #fff;
+    --bs-table-border-color: #888;
+    --bs-table-striped-color: #000;
+  }
+  .print-area .table > :not(caption) > * > * {
+    background: #fff !important;
+    color: #000 !important;
+    border-color: #888 !important;
+    padding: 4pt 6pt;
+  }
+  .print-area .table thead th {
+    background: #f2f2f2 !important;
+    color: #000 !important;
+  }
+  .print-area .table a { color: #000 !important; text-decoration: none; }
+  .print-area .status-badge,
+  .print-area .flag-dot {
+    background: #fff !important;
+    color: #000 !important;
+    border: 1px solid #888 !important;
+  }
+  .print-area tr.clickable { cursor: auto; }
+  .print-area tr { break-inside: avoid; }
+  .print-area thead { display: table-header-group; }
 }
 
 
