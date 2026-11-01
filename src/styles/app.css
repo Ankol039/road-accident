@@ -2090,6 +2090,92 @@ hr { border-color: var(--line); opacity: 1; }
   white-space: nowrap;
 }
 
+/* Explicit report actions; native links remain the keyboard entry points. */
+@media screen and (min-width: 768px) {
+  .rr-reports-page .table,
+  .rr-dashboard-recent .table { width: 100%; table-layout: fixed; }
+
+  .rr-reports-page .rr-reports-table .table :is(th, td) { padding-left: 12px; padding-right: 12px; }
+  .rr-reports-page .rr-reports-table .table :is(th, td):nth-child(1) { width: 164px; white-space: normal; }
+  .rr-reports-page .rr-reports-table .table :is(th, td):nth-child(2) { width: 104px; white-space: normal; }
+  .rr-reports-page .rr-reports-table .table :is(th, td):nth-child(3) { width: auto; min-width: 0; overflow-wrap: anywhere; }
+  .rr-reports-page .rr-reports-table .table :is(th, td):nth-child(4) { width: 106px; min-width: 0; overflow-wrap: anywhere; }
+  .rr-reports-page .rr-reports-table .table :is(th, td):nth-child(5) { width: 98px; white-space: normal; overflow-wrap: anywhere; }
+  .rr-reports-page .rr-reports-table .table :is(th, td):nth-child(6) { width: 136px; min-width: 0; }
+  .rr-reports-page .table .flag-dot { margin-left: 0; }
+  .rr-reports-page .table .code-cell a { overflow-wrap: anywhere; }
+  .rr-reports-page .table .status-badge { max-width: 100%; white-space: normal; }
+
+  .rr-dashboard-recent .table :is(th, td):nth-child(1) { width: 180px; }
+  .rr-dashboard-recent .table :is(th, td):nth-child(2) { width: 124px; }
+  .rr-dashboard-recent .table :is(th, td):nth-child(4) { width: 164px; }
+  .rr-dashboard-recent .table :is(th, td) { overflow-wrap: anywhere; }
+  .rr-dashboard-recent .table .status-badge { max-width: 100%; white-space: normal; }
+
+  .rr-reports-page .table .rr-reports-action-cell,
+  .rr-dashboard-recent .table .rr-dashboard-action-cell {
+    width: 84px;
+    padding-left: 8px;
+    padding-right: 12px;
+    text-align: right;
+  }
+
+}
+
+@media screen {
+  .rr-dashboard-recent tr.clickable { cursor: pointer; }
+  .rr-reports-page .table tr.clickable:focus-within > *,
+  .rr-dashboard-recent .table tr.clickable:focus-within > * { background-color: rgba(228, 87, 46, 0.07); }
+
+  .rr-reports-page .table .rr-reports-view,
+  .rr-dashboard-recent .table .rr-dashboard-view {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border: 1px solid #e4572e;
+    border-radius: 10px;
+    background: transparent;
+    color: #ff9b7a;
+    font-size: .82rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color .18s ease, color .18s ease;
+  }
+  .rr-reports-page .table .rr-reports-view:is(:hover, :focus),
+  .rr-dashboard-recent .table .rr-dashboard-view:is(:hover, :focus) { background: #e4572e; color: #fff; }
+  .rr-reports-page .table .rr-reports-view:focus-visible,
+  .rr-dashboard-recent .table .rr-dashboard-view:focus-visible { outline: 2px solid #f5c518; outline-offset: 2px; }
+  .rr-reports-view-extra, .rr-dashboard-view-extra { display: none; }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1199.98px) {
+  .rr-reports-page .rr-reports-table .table :is(th, td) { padding-left: 8px; padding-right: 8px; }
+  .rr-reports-page .rr-reports-table .table :is(th, td):nth-child(1) { width: 154px; }
+  .rr-reports-page .rr-reports-table .table :is(th, td):nth-child(2) { width: 90px; }
+  .rr-reports-page .rr-reports-table .table :is(th, td):nth-child(4) { width: 86px; }
+  .rr-reports-page .rr-reports-table .table :is(th, td):nth-child(5) { width: 80px; }
+  .rr-reports-page .rr-reports-table .table :is(th, td):nth-child(6) { width: 116px; }
+  .rr-reports-page .table .rr-reports-action-cell { width: 76px; }
+  .rr-dashboard-recent .table :is(th, td) { padding-left: 12px; padding-right: 12px; }
+  .rr-dashboard-recent .table :is(th, td):nth-child(1) { width: 154px; }
+  .rr-dashboard-recent .table :is(th, td):nth-child(2) { width: 104px; }
+  .rr-dashboard-recent .table :is(th, td):nth-child(4) { width: 140px; }
+}
+
+@media screen and (any-pointer: coarse) {
+  .rr-reports-page .table .rr-reports-view,
+  .rr-dashboard-recent .table .rr-dashboard-view { min-height: 44px; }
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+  .rr-reports-page .table .rr-reports-view,
+  .rr-dashboard-recent .table .rr-dashboard-view { transition: none; }
+}
+
 /* ==========================================================================
    5. Pager
    ========================================================================== */
@@ -2246,6 +2332,25 @@ hr { border-color: var(--line); opacity: 1; }
     font-size: 0.7rem;
     padding: 0.24rem 0.6rem;
   }
+
+  .rr-reports-page .table :is(th, td):nth-child(-n+6) { width: auto; }
+  .rr-reports-page .table .rr-reports-action-cell {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    width: 100%;
+    padding: 8px 0 0;
+  }
+  .rr-dashboard-recent .table tbody tr {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-areas: "id status" "date date" "place place" "action action";
+  }
+  .rr-dashboard-recent .table .status-badge { max-width: 100%; white-space: normal; }
+  .rr-dashboard-recent .table tbody td:nth-child(4) { justify-self: end; }
+  .rr-dashboard-recent .table :is(th, td):nth-child(-n+4) { width: auto; }
+  .rr-dashboard-recent .table .rr-dashboard-action-cell { grid-area: action; width: 100%; padding: 8px 0 0; }
+  .rr-reports-page .table .rr-reports-view,
+  .rr-dashboard-recent .table .rr-dashboard-view { display: flex; width: 100%; min-height: 44px; gap: .25em; }
+  .rr-reports-view-extra, .rr-dashboard-view-extra { display: inline; }
 }
 
 @media (max-width: 575.98px) {

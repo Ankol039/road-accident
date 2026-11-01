@@ -17,7 +17,7 @@ import States from '../components/States.jsx'
 import { todayISO, daysAgoISO } from '../utils/date.js'
 import { encodeCsv, toCsv } from '../utils/csv.js'
 import { download } from '../utils/download.js'
-import { CHART_COLORS } from '../lib/constants.js'
+import { CHART_COLORS, STATUS_LABELS, OFFICIAL_RECORDS_LABEL, OFFICIAL_RECORDS_HELP } from '../lib/constants.js'
 
 const PERIODS = [
   { value: 'day', label: 'Day' },
@@ -43,7 +43,7 @@ function summaryCsv(rows, totals) {
     'No injuries',
     'Unknown',
     'Vehicles',
-    'Resolved',
+    STATUS_LABELS.resolved,
     'Most common type',
     'Top municipality',
   ]
@@ -178,7 +178,7 @@ export default function Summaries() {
   }
 
   const rangeLabel = useMemo(() => {
-    const scopeLabel = applied.scope === 'official' ? 'Verified accident records' : 'All public reports'
+    const scopeLabel = applied.scope === 'official' ? OFFICIAL_RECORDS_LABEL : 'All public reports'
     const fromLabel = applied.from || 'all years'
     return `${scopeLabel}, ${fromLabel} to ${applied.to}`
   }, [applied])
@@ -217,7 +217,7 @@ export default function Summaries() {
         <div className="rr-head-text">
           <span className="rr-eyebrow no-print">Bulacan admin portal</span>
           <h1 className="h3">Summaries and export</h1>
-          <p className="rr-sub no-print">Totals by period for verified accident records, ready to print or download.</p>
+          <p className="rr-sub no-print">Totals by period for official records, ready to print or download.</p>
         </div>
         <div className="d-flex gap-2 flex-wrap rr-summaries-actions no-print">
           <button type="button" className="btn btn-outline-guide" onClick={() => onDownload('summary')} disabled={exportDisabled}>
@@ -233,7 +233,7 @@ export default function Summaries() {
         <h1>Summaries and export</h1>
         <p>
           Grouped by {PERIODS.find((p) => p.value === applied.period)?.label} · Counting:{' '}
-          {applied.scope === 'official' ? 'Verified accident records' : 'All public reports'} ·{' '}
+          {applied.scope === 'official' ? OFFICIAL_RECORDS_LABEL : 'All public reports'} ·{' '}
           {applied.from || 'All years'} to {applied.to || 'present'}
         </p>
         <p>Generated {printGeneratedAt.toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' })}</p>
@@ -299,7 +299,7 @@ export default function Summaries() {
       {mayBeTruncated && (
         <div className="alert alert-warning no-print" role="status">
           The 2,000-report loading limit was reached. Summaries and downloads may be incomplete,
-          even when verified-only filtering leaves fewer rows. Narrow the date range to include all matching reports.
+          even when official-record filtering leaves fewer rows. Narrow the date range to include all matching reports.
         </div>
       )}
 
@@ -326,7 +326,7 @@ export default function Summaries() {
               <th className="text-end">No injuries</th>
               <th className="text-end">Unknown</th>
               <th className="text-end">Vehicles</th>
-              <th className="text-end">Resolved</th>
+              <th className="text-end">{STATUS_LABELS.resolved}</th>
               <th>Most common type</th>
               <th>Top municipality</th>
             </tr>
@@ -362,10 +362,11 @@ export default function Summaries() {
         </table>
       </div>
 
+      <p className="small text-secondary">{OFFICIAL_RECORDS_HELP}</p>
       <section className="panel no-print rr-summaries-export">
         <h2 className="h5">Export the report list (FR-15)</h2>
         <p className="text-secondary mb-2">
-          The loaded reports matching the applied dates and verified-only filter, with location, type,
+          The loaded reports matching the applied dates and official-record filter, with location, type,
           injuries, status, officer and reporter. For other filters (status, type, place), use the buttons on the <Link to="/admin/reports">Accident reports</Link>{' '}
           screen.
         </p>
@@ -381,7 +382,7 @@ export default function Summaries() {
             }}
           />
           <label className="form-check-label" htmlFor="export-official">
-            Verified accident records only
+            {OFFICIAL_RECORDS_LABEL}
           </label>
         </div>
         <button type="button" className="btn btn-outline-guide me-2" onClick={() => onDownload('csv')} disabled={exportDisabled}>

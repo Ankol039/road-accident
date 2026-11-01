@@ -41,78 +41,8 @@ export const ADMIN_CREATABLE_ROLES = ['admin', 'officer']
 /** Roles that may use this web app. Officers and reporters use the mobile app. */
 export const STAFF_ROLES = ['admin']
 
-/** Report workflow statuses (codes) - matches api/core/status.php. */
-export const REPORT_STATUSES = [
-  'submitted', 'under_review', 'info_required', 'assigned', 'on_scene',
-  'verified', 'in_progress', 'resolved', 'rejected', 'duplicate',
-]
-
-/** Human labels for each status. */
-export const STATUS_LABELS = {
-  submitted: 'Submitted',
-  under_review: 'Under Review',
-  info_required: 'Additional Information Required',
-  assigned: 'Assigned',
-  on_scene: 'Officer On Scene',
-  verified: 'Verified',
-  in_progress: 'In Progress',
-  resolved: 'Resolved / Closed',
-  rejected: 'Rejected',
-  duplicate: 'Duplicate',
-}
-
-/** What each status means in this workflow. */
-export const STATUS_HELP = {
-  submitted: 'New report from a public reporter.',
-  under_review: 'The administrator is checking the report.',
-  info_required: 'Waiting for the reporter to send missing information.',
-  assigned: 'Officer dispatched: on the way to the pin.',
-  on_scene: "The officer says he has arrived. Check that his location matches the reporter's pin.",
-  verified: 'Locations matched and approved. The officer may clear the site.',
-  in_progress: 'The officer is clearing the site and removing the vehicles.',
-  resolved: 'Site cleared. The report is closed.',
-  rejected: 'Closed without action (reason recorded).',
-  duplicate: 'Disregarded automatically: an earlier open report exists at the same spot.',
-}
-
-/**
- * The workflow: which status an administrator may move a report to.
- * Ported from api/core/status.php STATUS_TRANSITIONS.
- *
- *   submitted     -> under_review | assigned | rejected | duplicate
- *   under_review  -> info_required | assigned | rejected | duplicate
- *   info_required -> under_review | rejected
- *   assigned      -> on_scene | rejected          (on_scene is the officer's own step)
- *   on_scene      -> verified | assigned | rejected
- *   verified      -> in_progress | resolved
- *   in_progress   -> resolved
- *   duplicate     -> submitted                      (admin: "not a duplicate")
- *   resolved, rejected are terminal
- */
-export const STATUS_TRANSITIONS = {
-  submitted: ['under_review', 'assigned', 'rejected', 'duplicate'],
-  under_review: ['info_required', 'assigned', 'rejected', 'duplicate'],
-  info_required: ['under_review', 'rejected'],
-  assigned: ['on_scene', 'rejected'],
-  on_scene: ['verified', 'assigned', 'rejected'],
-  verified: ['in_progress', 'resolved'],
-  in_progress: ['resolved'],
-  resolved: [],
-  rejected: [],
-  duplicate: ['submitted'],
-}
-
-/**
- * Statuses that have their own step instead of the plain status form.
- * Ported from api/core/status.php SPECIAL_ENDPOINT_STATUSES.
- */
-export const SPECIAL_ENDPOINT_STATUSES = {
-  assigned: 'Dispatch an officer',
-  on_scene: 'The officer reported arrival',
-}
-
-/** Statuses where an officer is still working on the report. */
-export const OFFICER_ACTIVE_STATUSES = ['assigned', 'on_scene', 'verified', 'in_progress']
+/** Report definitions live in one pure module shared by the website and offline tools. */
+export * from './reportStatuses.js'
 
 /** Labels for the remark kinds the admin can add. */
 export const REMARK_LABELS = {
@@ -120,14 +50,6 @@ export const REMARK_LABELS = {
   finding: 'Finding',
   action: 'Action taken',
 }
-
-/** Statuses counted as verified accident records. */
-export const OFFICIAL_STATUSES = ['verified', 'in_progress', 'resolved']
-
-/** Statuses that mean the report is still open. */
-export const OPEN_STATUSES = [
-  'submitted', 'under_review', 'info_required', 'assigned', 'on_scene', 'verified', 'in_progress',
-]
 
 /** Injury outcomes (api/core/status.php INJURY_OPTIONS). */
 export const INJURY_OPTIONS = [
@@ -177,20 +99,6 @@ export const PHOTO_CATEGORIES = [
   { key: 'other', label: 'Other', required: false, hint: 'Anything else that helps: road signs, skid marks, traffic lights.' },
 ]
 
-/** Color for each status (Leaflet markers + badges), ported from js/map.js. */
-export const STATUS_COLORS = {
-  submitted: '#6c757d',
-  under_review: '#1f4f8a',
-  info_required: '#b38600',
-  verified: '#0b5039',
-  assigned: '#43378c',
-  on_scene: '#0b6e8a',
-  in_progress: '#c4610f',
-  resolved: '#0f6b4c',
-  rejected: '#c8322b',
-  duplicate: '#a0a5aa',
-}
-
 /**
  * The audit trail vocabulary.
  * Ported from api/core/audit.php AUDIT_ACTIONS, with the actions this app
@@ -200,7 +108,7 @@ export const AUDIT_ACTIONS = {
   'report.create': 'Submitted a report',
   'report.status': 'Changed report status',
   'report.assign': 'Dispatched an officer',
-  'report.arrive': 'Officer confirmed arrival',
+  'report.arrive': 'Recorded officer arrival',
   'report.remark': 'Added a remark',
   'report.update': 'Edited report details',
   'report.delete': 'Deleted a report',

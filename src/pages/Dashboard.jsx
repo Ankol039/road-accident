@@ -4,13 +4,16 @@
  * Same panels as the PHP screen: date range filter, stat cards, five charts,
  * the points map, top accident spots and the recent-reports table.
  */
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useAsync } from '../hooks/useAsync.js'
+import { useReportRowNavigation, useReportTableState } from '../hooks/useReportTable.js'
 import { loadRange, summarise, hotspots } from '../services/stats.service.js'
 import { Bars, Split, Trend } from '../components/Charts.jsx'
 import { PointsMap, MapLegend } from '../components/MapView.jsx'
 import StatusBadge from '../components/StatusBadge.jsx'
+import StatusHelp from '../components/StatusHelp.jsx'
+import { STATUS_LABELS, STATUS_COLORS, REPORT_STATUSES, OFFICIAL_RECORDS_HELP } from '../lib/constants.js'
 import States from '../components/States.jsx'
 import { formatDate } from '../utils/date.js'
 import { place } from '../utils/format.js'
@@ -18,13 +21,13 @@ import { todayISO, daysAgoISO } from '../utils/date.js'
 
 /** The clickable stat cards, same keys/classes as the PHP dashboard. */
 const CARDS = [
-  { key: 'on_scene', cls: 'stat-on_scene', label: 'Officer on scene', to: '/admin/reports?status=on_scene' },
-  { key: 'pending', cls: 'stat-pending', label: 'Needs review', to: '/admin/reports?status=submitted' },
-  { key: 'dispatched', cls: 'stat-dispatched', label: 'Dispatched', to: '/admin/reports?status=assigned' },
+  { key: 'on_scene', cls: 'stat-on_scene', label: STATUS_LABELS.on_scene, to: '/admin/reports?status=on_scene' },
+  { key: 'pending', cls: 'stat-pending', label: STATUS_LABELS.submitted, to: '/admin/reports?status=submitted' },
+  { key: 'dispatched', cls: 'stat-dispatched', label: STATUS_LABELS.assigned, to: '/admin/reports?status=assigned' },
   { key: 'total', label: 'All reports', to: '/admin/reports' },
-  { key: 'verified', cls: 'stat-verified', label: 'Verified Reports', to: '/admin/reports?official=1' },
-  { key: 'closed', cls: 'stat-closed', label: 'Closed Reports', to: '/admin/reports?status=resolved' },
-  { key: 'duplicates', cls: 'stat-duplicates', label: 'Duplicated Reports', to: '/admin/reports?status=duplicate' },
+  { key: 'verified', cls: 'stat-verified', label: STATUS_LABELS.verified, to: '/admin/reports?status=verified' },
+  { key: 'closed', cls: 'stat-closed', label: STATUS_LABELS.resolved, to: '/admin/reports?status=resolved' },
+  { key: 'reviewing', cls: 'stat-duplicates', label: STATUS_LABELS.under_review, to: '/admin/reports?status=under_review' },
   { key: 'today', label: 'Reported today', to: '/admin/reports' },
   { key: 'flagged', cls: 'stat-flagged', label: 'Flagged Reports', to: '/admin/reports?flagged=1' },
 ]
@@ -32,9 +35,10 @@ const CARDS = [
 const level = (n) => (n > 0 ? (n <= 5 ? 'low' : n <= 10 ? 'moderate' : 'high') : 'none')
 
 export default function Dashboard() {
-  const [from, setFrom] = useState(daysAgoISO(30))
-  const [to, setTo] = useState(todayISO())
-  const [applied, setApplied] = useState({ from: daysAgoISO(30), to: todayISO() })
+  const openRow = useReportRowNavigation()
+  const [from, setFrom] = useReportTableState('from', daysAgoISO(30))
+  const [to, setTo] = useReportTableState('to', todayISO())
+  const [applied, setApplied] = useReportTableState('applied', { from: daysAgoISO(30), to: todayISO() })
 
   const { data: rows, loading, error } = useAsync(
     () => loadRange(applied),
@@ -57,7 +61,7 @@ export default function Dashboard() {
         <div className="rr-head-text">
           <span className="rr-eyebrow">Bulacan admin portal</span>
           <h1 className="h3">Dashboard</h1>
-          <p className="rr-sub">Verified reports, officer activity and accident-prone areas across the province.</p>
+          <p className="rr-sub">Report review, officer activity and accident-prone areas across the province.</p>
         </div>
 
         <form className="filter-bar" id="range-form" onSubmit={onSubmit} role="search">
@@ -103,7 +107,13 @@ export default function Dashboard() {
               return (
                 <Link
                   key={c.key}
-                  to={c.to}
+                  to={(() => {
+                    const [pathname, search] = c.to.split('?')
+                    const params = new URLSearchParams(search)
+                    if (applied.from) params.set('date_from', applied.from)
+                    if (applied.to) params.set('date_to', applied.to)
+                    return `${pathname}?${params}`
+                  })()}
                   className={`stat-card ${c.cls || ''}${stats[c.key] > 0 && c.cls === 'stat-on_scene' ? ' has-items' : ''}`}
                   data-level={countLevel}
                 >
@@ -116,9 +126,10 @@ export default function Dashboard() {
           </div>
 
           <p className="small text-secondary rr-dashboard-note" id="official-note">
-            {stats.official} of {stats.total} reports in this range are verified accident records.
+            {stats.official} of {stats.total} reports in this range are official records. {OFFICIAL_RECORDS_HELP}
           </p>
 
+          <StatusHelp />
           <div className="rr-dashboard-charts">
             <div className="col-lg-6">
               <section className="panel">
@@ -148,7 +159,7 @@ export default function Dashboard() {
               <section className="panel">
                 <h2 className="h6">By status</h2>
                 <Split
-                  data={Object.entries(stats.byStatus).map(([label, value]) => ({ label, value }))}
+                  data={REPORT_STATUSES.map((code) => ({ label: STATUS_LABELS[code], value: stats.byStatus[code] || 0, color: STATUS_COLORS[code] }))}
                 />
               </section>
             </div>
@@ -205,18 +216,19 @@ export default function Dashboard() {
                     <th scope="col" role="columnheader">Date</th>
                     <th scope="col" role="columnheader">Location</th>
                     <th scope="col" role="columnheader">Status</th>
+                    <th scope="col" role="columnheader" className="rr-dashboard-action-cell no-print">Action</th>
                   </tr>
                 </thead>
                 <tbody id="recent" role="rowgroup">
                   {recent.length === 0 && (
                     <tr role="row" className="rr-dashboard-empty-row">
-                      <td colSpan={4} role="cell">
+                      <td colSpan={5} role="cell">
                         <States empty emptyText="No reports in this range." />
                       </td>
                     </tr>
                   )}
                   {recent.map((r) => (
-                    <tr key={r.id} className="clickable" role="row">
+                    <tr key={r.id} className="clickable" role="row" onClick={(e) => openRow(e, r.id)} onAuxClick={(e) => openRow(e, r.id)}>
                       <td className="code-cell" role="cell">
                         <Link to={`/admin/reports/${r.id}`}>{r.report_code || '—'}</Link>
                       </td>
@@ -224,6 +236,11 @@ export default function Dashboard() {
                       <td role="cell">{place(r)}</td>
                       <td role="cell">
                         <StatusBadge status={r.status} />
+                      </td>
+                      <td role="cell" className="rr-dashboard-action-cell no-print">
+                        <Link to={`/admin/reports/${r.id}`} className="rr-dashboard-view" aria-label={`View report ${r.report_code || r.id}`}>
+                          View<span className="rr-dashboard-view-extra"> report</span>
+                        </Link>
                       </td>
                     </tr>
                   ))}

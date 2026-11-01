@@ -5,15 +5,17 @@
  * The PHP version exported CSV client-side and printed to PDF for PDF; those
  * buttons are kept, with CSV built in the browser.
  */
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useAsync, useDebounced } from '../hooks/useAsync.js'
+import { useReportRowNavigation, useReportTableState } from '../hooks/useReportTable.js'
 import { listReports } from '../services/reports.service.js'
 import { listAccidentTypes } from '../services/settings.service.js'
 import StatusBadge from '../components/StatusBadge.jsx'
+import StatusHelp from '../components/StatusHelp.jsx'
 import Pager from '../components/Pager.jsx'
 import States from '../components/States.jsx'
-import { REPORT_STATUSES, STATUS_LABELS, BULACAN_TOWNS } from '../lib/constants.js'
+import { REPORT_STATUSES, STATUS_LABELS, BULACAN_TOWNS, OFFICIAL_RECORDS_LABEL, OFFICIAL_RECORDS_HELP, FLAGGED_HELP } from '../lib/constants.js'
 import { formatDate } from '../utils/date.js'
 import { place } from '../utils/format.js'
 import { toCsv } from '../utils/csv.js'
@@ -23,18 +25,19 @@ const PAGE_SIZE = 25
 
 export default function Reports() {
   const [params] = useSearchParams()
+  const openRow = useReportRowNavigation()
 
-  const [q, setQ] = useState(params.get('q') || '')
-  const [status, setStatus] = useState(params.get('status') || '')
-  const [typeId, setTypeId] = useState(params.get('accident_type_id') || '')
-  const [municipality, setMunicipality] = useState(params.get('municipality') || '')
-  const [dateFrom, setDateFrom] = useState(params.get('date_from') || '')
-  const [dateTo, setDateTo] = useState(params.get('date_to') || '')
-  const [flagged, setFlagged] = useState(params.get('flagged') === '1')
-  const [official, setOfficial] = useState(params.get('official') === '1')
+  const [q, setQ] = useReportTableState('q', params.get('q') || '')
+  const [status, setStatus] = useReportTableState('status', params.get('status') || '')
+  const [typeId, setTypeId] = useReportTableState('typeId', params.get('accident_type_id') || '')
+  const [municipality, setMunicipality] = useReportTableState('municipality', params.get('municipality') || '')
+  const [dateFrom, setDateFrom] = useReportTableState('dateFrom', params.get('date_from') || '')
+  const [dateTo, setDateTo] = useReportTableState('dateTo', params.get('date_to') || '')
+  const [flagged, setFlagged] = useReportTableState('flagged', params.get('flagged') === '1')
+  const [official, setOfficial] = useReportTableState('official', params.get('official') === '1')
 
-  const [page, setPage] = useState(1)
-  const [cursors, setCursors] = useState([null])
+  const [page, setPage] = useReportTableState('page', 1)
+  const [cursors, setCursors] = useReportTableState('cursors', [null])
   const [exportError, setExportError] = useState('')
 
   const debouncedQ = useDebounced(q, 350)
@@ -189,7 +192,7 @@ export default function Reports() {
             checked={flagged}
             onChange={(e) => setFlagged(e.target.checked)}
           />
-          Flagged
+          <span title={FLAGGED_HELP}>Flagged</span>
         </label>
         <label className="form-check">
           <input
@@ -198,7 +201,7 @@ export default function Reports() {
             checked={official}
             onChange={(e) => setOfficial(e.target.checked)}
           />
-          Verified only
+          {OFFICIAL_RECORDS_LABEL}
         </label>
         <button type="submit" className="btn btn-guide btn-sm">
           Filter
@@ -211,6 +214,7 @@ export default function Reports() {
       <div className="no-print"><States error={error} /></div>
       <div className="no-print"><States error={exportError} /></div>
 
+      <StatusHelp />
       <div className="table-responsive panel p-0 print-area rr-reports-table" tabIndex={0} role="region" aria-label="Accident reports table; scroll sideways on desktop for all columns">
         <table className="table table-hover align-middle mb-0" role="table" aria-label="Accident reports">
           <thead role="rowgroup">
@@ -221,21 +225,22 @@ export default function Reports() {
               <th role="columnheader" scope="col">Type</th>
               <th role="columnheader" scope="col">Officer</th>
               <th role="columnheader" scope="col">Status</th>
+              <th role="columnheader" scope="col" className="rr-reports-action-cell no-print">Action</th>
             </tr>
           </thead>
           <tbody role="rowgroup">
             {(loading || rows.length === 0) && (
               <tr className="rr-reports-state-row" role="row">
-                <td colSpan={6} role="cell">
+                <td colSpan={7} role="cell">
                   <States loading={loading} empty emptyText="No reports match those filters." />
                 </td>
               </tr>
             )}
-            {rows.map((r) => (
-              <tr key={r.id} className="clickable" role="row">
+            {!loading && rows.map((r) => (
+              <tr key={r.id} className="clickable" role="row" onClick={(e) => openRow(e, r.id)} onAuxClick={(e) => openRow(e, r.id)}>
                 <td role="cell" className="code-cell">
                   <Link to={`/admin/reports/${r.id}`}>{r.report_code || '—'}</Link>
-                  {r.flagged && <span className="flag-dot">flagged</span>}
+                  {r.flagged && <span className="flag-dot" title={FLAGGED_HELP}>Flagged</span>}
                 </td>
                 <td role="cell">{formatDate(r.accident_date)}</td>
                 <td role="cell">{place(r)}</td>
@@ -243,6 +248,11 @@ export default function Reports() {
                 <td role="cell">{r.officer_name || '—'}</td>
                 <td role="cell">
                   <StatusBadge status={r.status} />
+                </td>
+                <td role="cell" className="rr-reports-action-cell no-print">
+                  <Link to={`/admin/reports/${r.id}`} className="rr-reports-view" aria-label={`View report ${r.report_code || r.id}`}>
+                    View<span className="rr-reports-view-extra"> report</span>
+                  </Link>
                 </td>
               </tr>
             ))}

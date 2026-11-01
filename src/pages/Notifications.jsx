@@ -14,6 +14,7 @@ import { useToast } from '../hooks/useToast.jsx'
 import { listNotifications, markRead, markAllRead } from '../services/notifications.service.js'
 import { formatDateTime } from '../utils/date.js'
 import States from '../components/States.jsx'
+import { structuredStatusText } from '../lib/constants.js'
 
 export default function Notifications() {
   const { user } = useAuth()
@@ -139,6 +140,7 @@ export default function Notifications() {
               >
                 <strong className="d-block">{n.title || 'Notification'}</strong>
                 <span className="d-block">{n.message}</span>
+                {n.kind === 'status' && structuredStatusText(n.details) && <span className="d-block">{structuredStatusText(n.details)}</span>}
                 <span className="small text-secondary">{formatDateTime(n.created_at)}</span>
               </button>
             </li>

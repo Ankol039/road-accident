@@ -145,7 +145,7 @@ export function Split({ data, doughnut = true, height = 260 }) {
     datasets: [
       {
         data: data.map((d) => d.value),
-        backgroundColor: data.map((_, i) => PIE_PALETTE[i % PIE_PALETTE.length]),
+        backgroundColor: data.map((d, i) => d.color || PIE_PALETTE[i % PIE_PALETTE.length]),
         borderColor: '#171c1f',
         borderWidth: 2,
       },

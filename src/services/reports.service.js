@@ -37,6 +37,10 @@ import {
   STATUS_LABELS,
   STATUS_TRANSITIONS,
   SPECIAL_ENDPOINT_STATUSES,
+  statusDefinition,
+  statusLabel,
+  statusAction,
+  REASSIGNMENT_HELP,
 } from '../lib/constants.js'
 import { distanceMeters } from '../utils/validation.js'
 import { ValidationError } from '../lib/errors.js'
@@ -259,121 +263,72 @@ export async function createReport(fields, actor) {
  *   - approving an arrival the GPS does not back up needs a note
  *   - confirming a duplicate needs a linked original report and a note
  */
-export async function updateStatus(id, status, { note, reason, actor } = {}) {
-  const current = await getReport(id)
-  if (!current) throw new Error('Report not found')
+export async function updateStatus(id, status, { note, reason, actor, siteCleared = false } = {}) {
+  if (!REPORT_STATUSES.includes(status)) throw new ValidationError({ status: 'Unknown status' })
+  note = String(note || '').trim()
+  reason = String(reason || '').trim()
+  const radius = status === 'verified' ? Number(await readSetting('arrival_match_radius_m', 120)) : 120
 
-  const from = current.status
-  const errors = {}
-
-  if (!REPORT_STATUSES.includes(status)) {
-    throw new ValidationError({ status: 'Unknown status' })
-  }
-
-  const resend = from === 'on_scene' && status === 'assigned'
-  if (SPECIAL_ENDPOINT_STATUSES[status] && !resend) {
-    throw new ValidationError({ status: `Use ${SPECIAL_ENDPOINT_STATUSES[status]} for this step` })
-  }
-  if (!allowedNextStatuses(current).includes(status)) {
-    throw new ValidationError({
-      status: `Cannot change status from "${STATUS_LABELS[from]}" to "${STATUS_LABELS[status]}"`,
-    })
-  }
-
-  if (status === 'rejected' && !reason) errors.reason = 'Enter the reason'
-  if (status === 'info_required' && !note) errors.note = 'Tell the reporter what information is missing'
-  if (resend && !note) errors.note = 'Tell the officer what to fix'
-  if (from === 'duplicate' && !note) errors.note = 'Say why this is not a duplicate'
-
-  // Approving an arrival the GPS does not back up has to be documented.
-  if (from === 'on_scene' && status === 'verified') {
-    const radius = Number(await readSetting('arrival_match_radius_m', 120))
-    if (assessArrival(current, radius).review_required && !note) {
+  // Validate the snapshot read by this transaction on every retry, before writing.
+  const result = await runTransaction(db, async (tx) => {
+    const reportRef = docRef(COLLECTIONS.reports, id)
+    const snap = await tx.get(reportRef)
+    if (!snap.exists()) throw new Error('Report not found')
+    const current = { id, ...snap.data() }
+    const from = current.status
+    const resend = from === 'on_scene' && status === 'assigned'
+    const errors = {}
+    if (SPECIAL_ENDPOINT_STATUSES[status] && !resend) errors.status = `Use ${SPECIAL_ENDPOINT_STATUSES[status]} for this step`
+    if (!allowedNextStatuses(current).includes(status)) {
+      errors.status = `Cannot change status from "${statusLabel(from)}" to "${statusLabel(status)}"`
+    }
+    if (status === 'rejected' && !reason) errors.reason = 'Enter the reason'
+    if (status === 'info_required' && !note) errors.note = 'Tell the reporter what information is missing'
+    if (resend && !note) errors.note = 'Tell the officer what to fix'
+    if (from === 'duplicate' && !note) errors.note = 'Say why this is not a duplicate'
+    if (status === 'resolved' && siteCleared !== true) errors.siteCleared = 'Confirm that the site has been cleared'
+    if (from === 'on_scene' && status === 'verified' && assessArrival(current, radius).review_required && !note) {
       errors.note = 'Describe the evidence checked'
     }
-  }
-
-  if (status === 'duplicate') {
-    const original = current.duplicate_of ? await getReport(current.duplicate_of) : null
-    if (!original || original.id === id || ['duplicate', 'rejected'].includes(original.status)) {
-      errors.duplicate_of = 'Link a valid original report using Flag first'
+    if (status === 'duplicate') {
+      const originalSnap = current.duplicate_of && current.duplicate_of !== id
+        ? await tx.get(docRef(COLLECTIONS.reports, current.duplicate_of)) : null
+      const original = originalSnap?.exists() ? originalSnap.data() : null
+      if (!original || ['duplicate', 'rejected'].includes(original.status)) errors.duplicate_of = 'Link a valid original report using Flag first'
+      if (!note) errors.note = 'Explain why both reports describe the same incident'
     }
-    if (!note) errors.note = 'Explain why both reports describe the same incident'
-  }
+    if (Object.keys(errors).length) throw new ValidationError(errors)
 
-  if (Object.keys(errors).length) throw new ValidationError(errors)
-
-  const changes = { status, updated_at: serverTimestamp() }
-  if (status === 'verified') {
-    changes.verified_by = actor?.uid || actor?.id || null
-    changes.verified_by_name = actor?.full_name || null
-    changes.verified_at = new Date().toISOString()
-  }
-  if (status === 'rejected') {
-    changes.rejection_reason = String(reason).slice(0, 255)
-  }
-  if (from === 'duplicate') {
-    // The report leaves the duplicate queue, so the flag goes with it.
-    Object.assign(changes, {
-      flagged: false,
-      flag_reason: null,
-      duplicate_of: null,
-      duplicate_of_code: null,
-      duplicate_distance_m: null,
+    const changes = { status, updated_at: serverTimestamp() }
+    if (status === 'verified') Object.assign(changes, {
+      verified_by: actor?.uid || actor?.id || null,
+      verified_by_name: actor?.full_name || null,
+      verified_at: new Date().toISOString(),
     })
-  }
-
-  const historyNote =
-    status === 'rejected'
-      ? `Rejected: ${reason}`
-      : resend
-        ? `Location does not match. Officer asked to resend arrival: ${note}`
-        : from === 'duplicate'
-          ? `Not a duplicate: ${note}`
-          : status === 'verified' && from === 'on_scene'
-            ? `Admin reviewed arrival and evidence. Approved to clear the site${note ? `. ${note}` : ''}`
-            : note || null
-
-  // A transaction keeps the timeline append safe: two staff members cannot
-  // overwrite each other's entry.
-  await runTransaction(db, async (tx) => {
-    const snap = await tx.get(docRef(COLLECTIONS.reports, id))
-    if (!snap.exists()) throw new Error('Report not found')
-    const history = Array.isArray(snap.data().status_history) ? [...snap.data().status_history] : []
-    history.push({
-      status,
-      at: new Date().toISOString(),
-      by: actor?.full_name || 'System',
-      note: historyNote,
+    if (status === 'rejected') changes.rejection_reason = reason.slice(0, 255)
+    if (from === 'duplicate') Object.assign(changes, {
+      flagged: false, flag_reason: null, duplicate_of: null, duplicate_of_code: null, duplicate_distance_m: null,
     })
-    tx.update(docRef(COLLECTIONS.reports, id), { ...changes, status_history: history })
+    const historyNote = status === 'rejected' ? `${statusLabel(status)}: ${reason}`
+      : resend ? `${statusAction(status, from)}: ${note}`
+      : from === 'duplicate' ? `Restored to ${statusLabel(status)}: ${note}`
+      : status === 'verified' ? `${statusLabel(status)}. ${statusDefinition(status).definition}${note ? ` ${note}` : ''}`
+      : status === 'resolved' ? `${statusLabel(status)} confirmed.${from === 'verified' ? ` ${statusLabel('in_progress')} was skipped; clearing was confirmed complete without recording the intermediate step.` : ''}${note ? ` ${note}` : ''}`
+      : note || null
+    const history = Array.isArray(current.status_history) ? [...current.status_history] : []
+    history.push({ status, at: new Date().toISOString(), by: actor?.full_name || 'System', note: historyNote })
+    tx.update(reportRef, { ...changes, status_history: history })
+    return { current, from, historyNote, report: { ...current, ...changes, status_history: history } }
   })
-
-  await logAudit({
-    actor,
-    action: 'report.status',
-    entity: 'report',
-    entityId: id,
-    details: {
-      changed: { status: { from, to: status } },
-      ...(historyNote ? { note: historyNote } : {}),
-    },
+  const { current, from, historyNote, report } = result
+  await logAudit({ actor, action: 'report.status', entity: 'report', entityId: id,
+    details: { changed: { status: { from, to: status } }, ...(historyNote ? { note: historyNote } : {}) },
   })
-
-  // The officer hears about the administrator's decision.
   if (current.officer_id && current.officer_id !== actor?.uid) {
-    const message =
-      status === 'verified'
-        ? 'Approved: the location matches. You may now clear the site and remove the vehicles.'
-        : resend
-          ? `Your location does not match the reported pin. ${note} Then tap "I've arrived" again.`
-          : status === 'rejected'
-            ? `Report closed as rejected: ${reason}. No further action needed.`
-            : `Status is now: ${STATUS_LABELS[status]}`
+    const message = `${statusLabel(status)}: ${statusDefinition(status).definition}${reason || note ? ` ${reason || note}` : ''}`
     await notifyOfficer(current.officer_id, `Report ${current.report_code}`, message, current)
   }
-
-  return { ...current, ...changes, status_history: [...(current.status_history || []), { status, at: changes.verified_at || new Date().toISOString(), by: actor?.full_name || 'System', note: historyNote }] }
+  return report
 }
 
 /**
@@ -381,90 +336,45 @@ export async function updateStatus(id, status, { note, reason, actor } = {}) {
  * Mirrors api/reports/assign.php.
  *
  * A submitted or under-review report moves to "assigned"; a report that is
- * already assigned (or being cleared) can be handed to another officer, and
+ * already dispatched can be handed to another officer before arrival, and
  * the hand-over is kept as a remark.
  */
 export async function assignOfficer(id, officer, { note, actor } = {}) {
-  const current = await getReport(id)
-  if (!current) throw new Error('Report not found')
-
-  const errors = {}
-  const dispatch = ['submitted', 'under_review'].includes(current.status)
-  const reassign = ['assigned', 'verified', 'in_progress'].includes(current.status)
-  if (!dispatch && !reassign) {
-    throw new ValidationError({
-      officer_id: `An officer cannot be sent while the report is "${STATUS_LABELS[current.status]}".`,
-    })
-  }
   if (!officer || officer.role !== 'officer' || officer.status !== 'active') {
-    errors.officer_id = 'Choose an active traffic officer'
+    throw new ValidationError({ officer_id: 'Choose an active traffic officer' })
   }
-  if (reassign && officer && current.officer_id === officer.id) {
-    errors.officer_id = 'This officer is already assigned'
-  }
-  if (Object.keys(errors).length) throw new ValidationError(errors)
-
-  const changes = {
-    officer_id: officer.id,
-    officer_name: officer.full_name,
-    officer_badge_no: officer.badge_no || null,
-    updated_at: serverTimestamp(),
-  }
-
-  const historyEntry = {
-    status: 'assigned',
-    at: new Date().toISOString(),
-    by: actor?.full_name || 'System',
-    note: `Officer dispatched: ${officer.full_name}${note ? `. ${note}` : ''}`,
-  }
-
-  const remark = {
-    type: 'action',
-    content: `Reassigned from ${current.officer_name || 'nobody'} to ${officer.full_name}${note ? `: ${note}` : ''}`,
-    is_internal: true,
-    by: actor?.full_name || 'System',
-    at: new Date().toISOString(),
-  }
-
-  await runTransaction(db, async (tx) => {
-    const snap = await tx.get(docRef(COLLECTIONS.reports, id))
+  const result = await runTransaction(db, async (tx) => {
+    const reportRef = docRef(COLLECTIONS.reports, id)
+    const snap = await tx.get(reportRef)
     if (!snap.exists()) throw new Error('Report not found')
-    const data = snap.data()
-    const update = { ...changes }
+    const current = { id, ...snap.data() }
+    const definition = statusDefinition(current.status)
+    const dispatch = Boolean(definition?.dispatchable)
+    const reassign = Boolean(definition?.reassignable)
+    if (!dispatch && !reassign) throw new ValidationError({ officer_id: definition?.reassignmentLocked ? REASSIGNMENT_HELP : `An officer cannot be sent while the report is "${statusLabel(current.status)}".` })
+    if (reassign && current.officer_id === officer.id) throw new ValidationError({ officer_id: 'This officer is already assigned' })
+    const changes = { officer_id: officer.id, officer_name: officer.full_name, officer_badge_no: officer.badge_no || null, updated_at: serverTimestamp() }
     if (dispatch) {
-      update.status = 'assigned'
-      const history = Array.isArray(data.status_history) ? [...data.status_history] : []
-      history.push(historyEntry)
-      update.status_history = history
+      changes.status = 'assigned'
+      changes.status_history = [...(Array.isArray(current.status_history) ? current.status_history : []), {
+        status: 'assigned', at: new Date().toISOString(), by: actor?.full_name || 'System',
+        note: `${statusLabel('assigned')}: ${officer.full_name}${note ? `. ${note}` : ''}`,
+      }]
     } else {
-      const remarks = Array.isArray(data.remarks) ? [...data.remarks] : []
-      remarks.push(remark)
-      update.remarks = remarks
+      changes.remarks = [...(Array.isArray(current.remarks) ? current.remarks : []), {
+        type: 'action', content: `Reassigned from ${current.officer_name || 'nobody'} to ${officer.full_name}${note ? `: ${note}` : ''}`,
+        is_internal: true, by: actor?.full_name || 'System', at: new Date().toISOString(),
+      }]
     }
-    tx.update(docRef(COLLECTIONS.reports, id), update)
+    tx.update(reportRef, changes)
+    return { current, reassign, report: { ...current, ...changes } }
   })
-
-  await logAudit({
-    actor,
-    action: 'report.assign',
-    entity: 'report',
-    entityId: id,
-    details: {
-      officer: officer.full_name,
-      ...(reassign ? { reassigned: true } : {}),
-    },
+  await logAudit({ actor, action: 'report.assign', entity: 'report', entityId: id,
+    details: { officer: officer.full_name, ...(result.reassign ? { reassigned: true } : {}) },
   })
-
-  await notifyOfficer(
-    officer.id,
-    `Go to this accident: ${current.report_code}`,
-    `${current.location_text || ''}${
-      current.latitude != null ? ` (pin ${current.latitude.toFixed(5)}, ${current.longitude.toFixed(5)})` : ''
-    }. Open the report for the map, and tap "I've arrived" at the scene.${note ? ` ${note}` : ''}`,
-    current,
-  )
-
-  return { ...current, ...changes, status: dispatch ? 'assigned' : current.status }
+  await notifyOfficer(officer.id, `${statusLabel('assigned')}: ${result.current.report_code}`,
+    `${statusDefinition('assigned').definition} Location: ${result.current.location_text || 'See report pin'}.${note ? ` ${note}` : ''}`, result.current)
+  return result.report
 }
 
 /**
@@ -540,12 +450,21 @@ export async function setFlag(id, flagged, { reason, duplicate_of, actor } = {})
   }
   if (Object.keys(errors).length) throw new ValidationError(errors)
 
-  await patchDoc(COLLECTIONS.reports, id, {
-    flagged,
-    flag_reason: flagged ? flagReason.slice(0, 255) : null,
-    duplicate_of: flagged && original ? original.id : null,
-    duplicate_of_code: flagged && original ? original.report_code || null : null,
-    updated_at: serverTimestamp(),
+  await runTransaction(db, async (tx) => {
+    const reportRef = docRef(COLLECTIONS.reports, id)
+    const snap = await tx.get(reportRef)
+    if (!snap.exists()) throw new Error('Report not found')
+    const confirmedDuplicate = snap.data().status === 'duplicate'
+    tx.update(reportRef, {
+      flagged,
+      flag_reason: flagged ? flagReason.slice(0, 255) : null,
+      // Attention flags are independent of the confirmed duplicate relationship.
+      ...(!confirmedDuplicate ? {
+        duplicate_of: flagged && original ? original.id : null,
+        duplicate_of_code: flagged && original ? original.report_code || null : null,
+      } : {}),
+      updated_at: serverTimestamp(),
+    })
   })
 
   await logAudit({

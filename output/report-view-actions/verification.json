@@ -1,0 +1,76 @@
+{
+  "layouts": [
+    {
+      "route": "/admin/reports",
+      "width": 1440,
+      "sizes": {
+        "viewport": 1440,
+        "document": 1440,
+        "table": 1126,
+        "scroll": 1126
+      },
+      "height": 34
+    },
+    {
+      "route": "/admin/reports",
+      "width": 820,
+      "sizes": {
+        "viewport": 820,
+        "document": 820,
+        "table": 786,
+        "scroll": 786
+      },
+      "height": 34
+    },
+    {
+      "route": "/admin/reports",
+      "width": 390,
+      "sizes": {
+        "viewport": 390,
+        "document": 390,
+        "table": 356,
+        "scroll": 356
+      },
+      "height": 44
+    },
+    {
+      "route": "/admin",
+      "width": 1440,
+      "sizes": {
+        "viewport": 1440,
+        "document": 1440,
+        "table": 1126,
+        "scroll": 1126
+      },
+      "height": 34
+    },
+    {
+      "route": "/admin",
+      "width": 820,
+      "sizes": {
+        "viewport": 820,
+        "document": 820,
+        "table": 786,
+        "scroll": 786
+      },
+      "height": 34
+    },
+    {
+      "route": "/admin",
+      "width": 390,
+      "sizes": {
+        "viewport": 390,
+        "document": 390,
+        "table": 356,
+        "scroll": 356
+      },
+      "height": 44
+    }
+  ],
+  "interactions": [
+    "/admin/reports: native links, row/status clicks, selection, modifiers, middle-click, keyboard, print, touch, reduced motion",
+    "/admin: native links, row/status clicks, selection, modifiers, middle-click, keyboard, print, touch, reduced motion",
+    "Reports: page 2 and filters preserved on Back; CSV unchanged; loading/empty rows inert"
+  ],
+  "runtimeErrors": []
+}

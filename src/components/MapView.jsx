@@ -6,7 +6,7 @@
  */
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet'
 import { useEffect } from 'react'
-import { MAP_CENTER, STATUS_COLORS, STATUS_LABELS } from '../lib/constants.js'
+import { MAP_CENTER, STATUS_COLORS, STATUS_LABELS, REPORT_STATUSES, STATUS_HELP } from '../lib/constants.js'
 import { formatDate } from '../utils/date.js'
 import { place } from '../utils/format.js'
 
@@ -126,11 +126,11 @@ export function OnePinMap({ report, height = 300 }) {
 
 /** Colour legend under the dashboard map. */
 export function MapLegend() {
-  const keys = ['submitted', 'on_scene', 'verified', 'in_progress', 'resolved', 'duplicate']
+  const keys = REPORT_STATUSES
   return (
     <p className="small text-secondary mt-2 mb-0">
       {keys.map((k) => (
-        <span key={k} className="me-3">
+        <span key={k} className="me-3" title={STATUS_HELP[k]}>
           <span className="legend-dot" style={{ background: STATUS_COLORS[k] }} />
           {STATUS_LABELS[k]}
         </span>

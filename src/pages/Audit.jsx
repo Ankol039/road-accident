@@ -17,13 +17,13 @@ import { listUsers } from '../services/users.service.js'
 import { listAccidentTypes, listEmergencyContacts } from '../services/settings.service.js'
 import Pager from '../components/Pager.jsx'
 import States from '../components/States.jsx'
-import { AUDIT_ACTIONS } from '../lib/constants.js'
+import { AUDIT_ACTIONS, statusLabel } from '../lib/constants.js'
 import { formatDateTime, todayISO, daysAgoISO } from '../utils/date.js'
 
 const PER_PAGE = 50
 
 /** The details column, the way js-release-20261020b/pages/admin-audit.js drew it. */
-function detailsText(details) {
+function detailsText(details, isReport) {
   const short = (value) => {
     const s =
       value === null || value === undefined
@@ -45,7 +45,7 @@ function detailsText(details) {
     parts.push(
       ...Object.entries(d.changed).map(([k, v]) =>
         v && typeof v === 'object' && 'to' in v
-          ? `${k}: ${short(v.from)} → ${short(v.to)}`
+          ? `${k}: ${isReport && k === 'status' ? statusLabel(v.from) : short(v.from)} → ${isReport && k === 'status' ? statusLabel(v.to) : short(v.to)}`
           : `${k}: ${short(v)}`,
       ),
     )
@@ -53,7 +53,7 @@ function detailsText(details) {
   // Anything else is shown as it is: "note: Called the reporter…".
   for (const [k, v] of Object.entries(d)) {
     if (k === 'changed') continue
-    parts.push(`${k}: ${short(v)}`)
+    parts.push(`${k}: ${isReport && ['from', 'to', 'from_status', 'to_status', 'status'].includes(k) && typeof v === 'string' ? statusLabel(v) : short(v)}`)
   }
   return parts.join('; ')
 }
@@ -225,7 +225,7 @@ export default function Audit() {
                     ''
                   )}
                 </td>
-                <td role="cell" className="small text-secondary">{detailsText(row.details)}</td>
+                <td role="cell" className="small text-secondary">{detailsText(row.details, row.entity === 'report')}</td>
               </tr>
             ))}
           </tbody>
