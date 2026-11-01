@@ -23,14 +23,13 @@ import {
 } from '../services/users.service.js'
 import Modal from '../components/Modal.jsx'
 import Pager from '../components/Pager.jsx'
+import States from '../components/States.jsx'
 import StatusBadge from '../components/StatusBadge.jsx'
 import { formatDate } from '../utils/date.js'
 import { errorMessage, ValidationError } from '../lib/errors.js'
+import { ADMIN_CREATABLE_ROLES } from '../lib/constants.js'
 
 const PAGE_SIZE = 25
-
-/** The role order of the dialog, as in the PHP screen. */
-const ROLE_OPTIONS = ['officer', 'admin', 'reporter']
 
 const EMPTY_FORM = {
   full_name: '',
@@ -166,18 +165,26 @@ export default function Users() {
   }
 
   const self = editing ? isSelf(editing.id) : false
+  const roleOptions = editing?.role === 'reporter'
+    ? [...ADMIN_CREATABLE_ROLES, editing.role]
+    : ADMIN_CREATABLE_ROLES
 
   return (
-    <>
-      <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-        <h1 className="h3 mb-0">Users</h1>
+    <div className="rr-users-page">
+      <header className="rr-head">
+        <div className="rr-head-text">
+          <span className="rr-eyebrow">Bulacan admin portal</span>
+          <h1>Users</h1>
+          <p className="rr-sub">Manage administrators, traffic officers and public users.</p>
+        </div>
         <button type="button" className="btn btn-guide" onClick={openAdd}>
           Add a user
         </button>
-      </div>
+      </header>
+      <div className="rr-tape" aria-hidden="true" />
 
       <form
-        className="filter-bar"
+        className="filter-bar rr-users-filters"
         role="search"
         onSubmit={(e) => {
           e.preventDefault()
@@ -228,56 +235,49 @@ export default function Users() {
       </form>
 
       {error && (
-        <div className="alert alert-danger" role="alert">
-          {errorMessage(error, 'Could not load the users.')}
-        </div>
+        <States error={errorMessage(error, 'Could not load the users.')} />
       )}
 
-      <div className="table-responsive panel p-0">
-        <table className="table align-middle mb-0">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Phone</th>
-              <th>Status</th>
-              <th>Joined</th>
-              <th />
+      <div className="table-responsive panel p-0 rr-users-table">
+        <table role="table" className="table align-middle mb-0">
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col">Name</th>
+              <th role="columnheader" scope="col">Role</th>
+              <th role="columnheader" scope="col">Phone</th>
+              <th role="columnheader" scope="col">Status</th>
+              <th role="columnheader" scope="col">Joined</th>
+              <th role="columnheader" scope="col"><span className="visually-hidden">Actions</span></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody role="rowgroup">
             {loading && (
-              <tr>
-                <td colSpan={6} className="text-secondary">
-                  Loading…
-                </td>
+              <tr role="row" className="rr-users-state-row">
+                <td role="cell" colSpan={6}><States loading /></td>
               </tr>
             )}
             {!loading && visible.length === 0 && (
-              <tr>
-                <td colSpan={6} className="text-secondary">
-                  No users match.
-                </td>
+              <tr role="row" className="rr-users-state-row">
+                <td role="cell" colSpan={6}><States empty emptyText="No users match." /></td>
               </tr>
             )}
             {visible.map((u) => (
-              <tr key={u.id}>
-                <td>
+              <tr role="row" key={u.id}>
+                <td role="cell">
                   <strong>{u.full_name}</strong>
                   {isSelf(u.id) && <span className="small text-secondary"> (you)</span>}
                   <span className="small text-secondary d-block">{u.email}</span>
                 </td>
-                <td>
+                <td role="cell">
                   {ROLE_LABELS[u.role] || u.role}
                   {u.badge_no && (
                     <span className="small text-secondary d-block">Badge {u.badge_no}</span>
                   )}
                 </td>
-                <td>{u.phone || ''}</td>
-                <td>
-                  {/* The green and red pills are the ones the app already has. */}
+                <td role="cell">{u.phone || ''}</td>
+                <td role="cell">
                   <StatusBadge
-                    status={u.status === 'active' ? 'verified' : 'rejected'}
+                    status={u.status === 'active' ? 'verified' : 'submitted'}
                     label={u.status === 'active' ? 'Active' : 'Inactive'}
                   />
                   {u.role === 'officer' && (
@@ -286,8 +286,8 @@ export default function Users() {
                     </span>
                   )}
                 </td>
-                <td className="small">{formatDate(u.created_at)}</td>
-                <td className="text-end">
+                <td role="cell" className="small">{formatDate(u.created_at)}</td>
+                <td role="cell" className="text-end">
                   <button
                     type="button"
                     className="btn btn-sm btn-outline-secondary"
@@ -302,15 +302,17 @@ export default function Users() {
         </table>
       </div>
 
-      <Pager
-        page={currentPage}
-        totalPages={totalPages}
-        total={rows.length}
-        onPrev={() => setPage((p) => Math.max(1, p - 1))}
-        onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
-        hasPrev={currentPage > 1}
-        hasNext={currentPage < totalPages}
-      />
+      <div className="rr-users-pager">
+        <Pager
+          page={currentPage}
+          totalPages={totalPages}
+          total={rows.length}
+          onPrev={() => setPage((p) => Math.max(1, p - 1))}
+          onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
+          hasPrev={currentPage > 1}
+          hasNext={currentPage < totalPages}
+        />
+      </div>
 
       <Modal
         open={dialogOpen}
@@ -408,7 +410,7 @@ export default function Users() {
                 disabled={self}
                 onChange={(e) => setField('role', e.target.value)}
               >
-                {ROLE_OPTIONS.map((r) => (
+                {roleOptions.map((r) => (
                   <option key={r} value={r}>
                     {ROLE_LABELS[r]}
                   </option>
@@ -438,8 +440,8 @@ export default function Users() {
           </div>
 
           <p className="small text-secondary">
-            Traffic officers and public users log in with the mobile app. Administrators log in on
-            this website.
+            Public users register themselves in the mobile app. Add administrators and traffic officers here.
+            Administrators log in on this website; traffic officers use the mobile app.
           </p>
           {self ? (
             <p className="small text-secondary">
@@ -504,6 +506,6 @@ export default function Users() {
           )}
         </form>
       </Modal>
-    </>
+    </div>
   )
 }

@@ -10,6 +10,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './hooks/useAuth.jsx'
 import { ToastProvider } from './hooks/useToast.jsx'
+import { UnreadProvider } from './hooks/useUnread.js'
 import RequireAuth, { RedirectIfAuthed } from './components/RequireAuth.jsx'
 import Layout from './components/Layout.jsx'
 import Landing from './pages/Landing.jsx'
@@ -47,7 +48,9 @@ export default function App() {
               path="/admin"
               element={
                 <RequireAuth>
-                  <Layout />
+                  <UnreadProvider>
+                    <Layout />
+                  </UnreadProvider>
                 </RequireAuth>
               }
             >

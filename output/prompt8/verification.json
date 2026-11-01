@@ -1,0 +1,96 @@
+{
+  "failures": [],
+  "notes": [],
+  "runtimeErrors": [],
+  "consoleErrors": [],
+  "chartSettings": [
+    {
+      "animation": false,
+      "ticks": "#ece8df",
+      "colors": [
+        "rgba(228, 87, 46, 0.18)"
+      ]
+    },
+    {
+      "animation": false,
+      "ticks": "#ece8df",
+      "colors": [
+        "#e4572e"
+      ]
+    },
+    {
+      "animation": false,
+      "ticks": "#ece8df",
+      "colors": [
+        "#5fb7a5"
+      ]
+    },
+    {
+      "animation": false,
+      "ticks": "#ece8df",
+      "colors": [
+        "#f5c518"
+      ]
+    },
+    {
+      "animation": false,
+      "colors": [
+        [
+          "#e4572e",
+          "#f5c518",
+          "#5fb7a5",
+          "#f19a7a"
+        ]
+      ]
+    },
+    {
+      "animation": false,
+      "colors": [
+        [
+          "#e4572e",
+          "#f5c518",
+          "#5fb7a5",
+          "#f19a7a",
+          "#86d6ea"
+        ]
+      ]
+    }
+  ],
+  "contrast": [
+    {
+      "label": "cream text",
+      "ratio": 13.17687761930396,
+      "min": 4.5
+    },
+    {
+      "label": "muted text",
+      "ratio": 5.395497441881969,
+      "min": 4.5
+    },
+    {
+      "label": "orange eyebrow",
+      "ratio": 4.863954478306346,
+      "min": 4.5
+    },
+    {
+      "label": "report links incl hover surface",
+      "ratio": 5.2478603223096085,
+      "min": 4.5
+    },
+    {
+      "label": "input boundary",
+      "ratio": 3.2135979661656213,
+      "min": 3
+    },
+    {
+      "label": "focus outline",
+      "ratio": 9.883513775993679,
+      "min": 3
+    },
+    {
+      "label": "Apply",
+      "ratio": 5.112117278971076,
+      "min": 4.5
+    }
+  ]
+}

@@ -1,0 +1,285 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/components/MapView.jsx");import __vite__cjsImport0_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=8895a4cf"; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
+let prevRefreshReg;
+let prevRefreshSig;
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+  prevRefreshReg = window.$RefreshReg$;
+  prevRefreshSig = window.$RefreshSig$;
+  window.$RefreshReg$ = RefreshRuntime.getRefreshReg("/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx");
+  window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
+}
+var _s = $RefreshSig$();
+import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "/node_modules/.vite/deps/react-leaflet.js?v=8895a4cf";
+import __vite__cjsImport4_react from "/node_modules/.vite/deps/react.js?v=8895a4cf"; const useEffect = __vite__cjsImport4_react["useEffect"];
+import { MAP_CENTER, STATUS_COLORS, STATUS_LABELS } from "/src/lib/constants.js";
+import { formatDate } from "/src/utils/date.js";
+import { place } from "/src/utils/format.js";
+function InvalidateOnMount() {
+  _s();
+  const map = useMap();
+  useEffect(() => {
+    const t = setTimeout(() => map.invalidateSize(), 120);
+    return () => clearTimeout(t);
+  }, [map]);
+  return null;
+}
+_s(InvalidateOnMount, "IoceErwr5KVGS9kN4RQ1bOkYMAg=", false, function() {
+  return [useMap];
+});
+_c = InvalidateOnMount;
+function ReportPopup({ report }) {
+  return /* @__PURE__ */ jsxDEV(Popup, { children: [
+    /* @__PURE__ */ jsxDEV("strong", { children: report.report_code || "Report" }, void 0, false, {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+      lineNumber: 45,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV("br", {}, void 0, false, {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+      lineNumber: 46,
+      columnNumber: 7
+    }, this),
+    formatDate(report.accident_date),
+    " ¬∑ ",
+    STATUS_LABELS[report.status] || report.status,
+    /* @__PURE__ */ jsxDEV("br", {}, void 0, false, {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+      lineNumber: 48,
+      columnNumber: 7
+    }, this),
+    place(report)
+  ] }, void 0, true, {
+    fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+    lineNumber: 44,
+    columnNumber: 5
+  }, this);
+}
+_c2 = ReportPopup;
+export function PointsMap({ reports = [], height = 380, center }) {
+  const pts = reports.filter((r) => r.latitude && r.longitude);
+  const middle = center || (pts[0] ? [pts[0].latitude, pts[0].longitude] : MAP_CENTER);
+  return /* @__PURE__ */ jsxDEV("div", { className: "map-box", style: { height }, children: /* @__PURE__ */ jsxDEV(MapContainer, { center: middle, zoom: 11, style: { height: "100%", width: "100%" }, scrollWheelZoom: true, children: [
+    /* @__PURE__ */ jsxDEV(
+      TileLayer,
+      {
+        attribution: '¬© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      },
+      void 0,
+      false,
+      {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+        lineNumber: 65,
+        columnNumber: 9
+      },
+      this
+    ),
+    /* @__PURE__ */ jsxDEV(InvalidateOnMount, {}, void 0, false, {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+      lineNumber: 69,
+      columnNumber: 9
+    }, this),
+    pts.map(
+      (r) => /* @__PURE__ */ jsxDEV(
+        CircleMarker,
+        {
+          center: [r.latitude, r.longitude],
+          radius: 8,
+          pathOptions: {
+            color: STATUS_COLORS[r.status] || "#6c757d",
+            fillColor: STATUS_COLORS[r.status] || "#6c757d",
+            fillOpacity: 0.85,
+            weight: 2
+          },
+          children: /* @__PURE__ */ jsxDEV(ReportPopup, { report: r }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+            lineNumber: 82,
+            columnNumber: 13
+          }, this)
+        },
+        r.id,
+        false,
+        {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+          lineNumber: 71,
+          columnNumber: 9
+        },
+        this
+      )
+    )
+  ] }, void 0, true, {
+    fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+    lineNumber: 64,
+    columnNumber: 7
+  }, this) }, void 0, false, {
+    fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+    lineNumber: 63,
+    columnNumber: 5
+  }, this);
+}
+_c3 = PointsMap;
+export function OnePinMap({ report, height = 300 }) {
+  if (!report?.latitude || !report?.longitude) {
+    return /* @__PURE__ */ jsxDEV("p", { className: "text-secondary", children: "No location was pinned for this report." }, void 0, false, {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+      lineNumber: 93,
+      columnNumber: 12
+    }, this);
+  }
+  return /* @__PURE__ */ jsxDEV("div", { className: "map-box", style: { height }, children: /* @__PURE__ */ jsxDEV(
+    MapContainer,
+    {
+      center: [report.latitude, report.longitude],
+      zoom: 16,
+      style: { height: "100%", width: "100%" },
+      scrollWheelZoom: true,
+      children: [
+        /* @__PURE__ */ jsxDEV(
+          TileLayer,
+          {
+            attribution: '¬© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          },
+          void 0,
+          false,
+          {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+            lineNumber: 103,
+            columnNumber: 9
+          },
+          this
+        ),
+        /* @__PURE__ */ jsxDEV(InvalidateOnMount, {}, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+          lineNumber: 107,
+          columnNumber: 9
+        }, this),
+        /* @__PURE__ */ jsxDEV(
+          CircleMarker,
+          {
+            center: [report.latitude, report.longitude],
+            radius: 10,
+            pathOptions: {
+              color: STATUS_COLORS[report.status] || "#e4572e",
+              fillColor: STATUS_COLORS[report.status] || "#e4572e",
+              fillOpacity: 0.9,
+              weight: 3
+            },
+            children: /* @__PURE__ */ jsxDEV(ReportPopup, { report }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+              lineNumber: 118,
+              columnNumber: 11
+            }, this)
+          },
+          void 0,
+          false,
+          {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+            lineNumber: 108,
+            columnNumber: 9
+          },
+          this
+        ),
+        report.arrival_latitude && /* @__PURE__ */ jsxDEV(
+          CircleMarker,
+          {
+            center: [report.arrival_latitude, report.arrival_longitude],
+            radius: 9,
+            pathOptions: { color: "#f2b705", fillColor: "#f2b705", fillOpacity: 0.85, weight: 2 },
+            children: /* @__PURE__ */ jsxDEV(Popup, { children: "Officer arrival point" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+              lineNumber: 126,
+              columnNumber: 13
+            }, this)
+          },
+          void 0,
+          false,
+          {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+            lineNumber: 121,
+            columnNumber: 9
+          },
+          this
+        )
+      ]
+    },
+    void 0,
+    true,
+    {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+      lineNumber: 97,
+      columnNumber: 7
+    },
+    this
+  ) }, void 0, false, {
+    fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+    lineNumber: 96,
+    columnNumber: 5
+  }, this);
+}
+_c4 = OnePinMap;
+export function MapLegend() {
+  const keys = ["submitted", "on_scene", "verified", "in_progress", "resolved", "duplicate"];
+  return /* @__PURE__ */ jsxDEV("p", { className: "small text-secondary mt-2 mb-0", children: keys.map(
+    (k) => /* @__PURE__ */ jsxDEV("span", { className: "me-3", children: [
+      /* @__PURE__ */ jsxDEV("span", { className: "legend-dot", style: { background: STATUS_COLORS[k] } }, void 0, false, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+        lineNumber: 141,
+        columnNumber: 11
+      }, this),
+      STATUS_LABELS[k]
+    ] }, k, true, {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+      lineNumber: 140,
+      columnNumber: 7
+    }, this)
+  ) }, void 0, false, {
+    fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx",
+    lineNumber: 138,
+    columnNumber: 5
+  }, this);
+}
+_c5 = MapLegend;
+var _c, _c2, _c3, _c4, _c5;
+$RefreshReg$(_c, "InvalidateOnMount");
+$RefreshReg$(_c2, "ReportPopup");
+$RefreshReg$(_c3, "PointsMap");
+$RefreshReg$(_c4, "OnePinMap");
+$RefreshReg$(_c5, "MapLegend");
+if (import.meta.hot && !inWebWorker) {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+if (import.meta.hot && !inWebWorker) {
+  RefreshRuntime.__hmr_import(import.meta.url).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("/Users/polmacbook/roadreport-latest-hostinger/src/components/MapView.jsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+
+//# sourceMappingURL=data:application/json;base64,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b3B1cCIsInVzZU1hcCIsInVzZUVmZmVjdCIsIk1BUF9DRU5URVIiLCJTVEFUVVNfQ09MT1JTIiwiU1RBVFVTX0xBQkVMUyIsImZvcm1hdERhdGUiLCJwbGFjZSIsIkludmFsaWRhdGVPbk1vdW50IiwiX3MiLCJtYXAiLCJ0Iiwic2V0VGltZW91dCIsImludmFsaWRhdGVTaXplIiwiY2xlYXJUaW1lb3V0IiwiUmVwb3J0UG9wdXAiLCJyZXBvcnQiLCJyZXBvcnRfY29kZSIsImFjY2lkZW50X2RhdGUiLCJzdGF0dXMiLCJfYzIiLCJQb2ludHNNYXAiLCJyZXBvcnRzIiwiaGVpZ2h0IiwiY2VudGVyIiwicHRzIiwiZmlsdGVyIiwiciIsImxhdGl0dWRlIiwibG9uZ2l0dWRlIiwibWlkZGxlIiwid2lkdGgiLCJjb2xvciIsImZpbGxDb2xvciIsImZpbGxPcGFjaXR5Iiwid2VpZ2h0IiwiaWQiLCJfYzMiLCJPbmVQaW5NYXAiLCJhcnJpdmFsX2xhdGl0dWRlIiwiYXJyaXZhbF9sb25naXR1ZGUiLCJfYzQiLCJNYXBMZWdlbmQiLCJrZXlzIiwiayIsImJhY2tncm91bmQiLCJfYzUiLCJfYyJdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlcyI6WyJNYXBWaWV3LmpzeCJdLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIExlYWZsZXQgbWFwIHdyYXBwZXJzIChyZWFjdC1sZWFmbGV0KS5cbiAqXG4gKiBSZXBsYWNlcyBqcy9tYXAuanMsIHdoaWNoIGRyZXcgY29sb3VyZWQgY2lyY2xlIG1hcmtlcnMgYW5kIHBvcHVwcy4gUGluXG4gKiBjb2xvdXJzIHN0aWxsIGNvbWUgZnJvbSBTVEFUVVNfQ09MT1JTLlxuICovXG5pbXBvcnQgeyBNYXBDb250YWluZXIsIFRpbGVMYXllciwgQ2lyY2xlTWFya2VyLCBQb3B1cCwgdXNlTWFwIH0gZnJvbSAncmVhY3QtbGVhZmxldCdcbmltcG9ydCB7IHVzZUVmZmVjdCB9IGZyb20gJ3JlYWN0J1xuaW1wb3J0IHsgTUFQX0NFTlRFUiwgU1RBVFVTX0NPTE9SUywgU1RBVFVTX0xBQkVMUyB9IGZyb20gJy4uL2xpYi9jb25zdGFudHMuanMnXG5pbXBvcnQgeyBmb3JtYXREYXRlIH0gZnJvbSAnLi4vdXRpbHMvZGF0ZS5qcydcbmltcG9ydCB7IHBsYWNlIH0gZnJvbSAnLi4vdXRpbHMvZm9ybWF0LmpzJ1xuXG4vKiogS2VlcCB0aGUgbWFwIHNpemVkIGNvcnJlY3RseSB3aGVuIGl0IG1vdW50cyBpbnNpZGUgYSBmbGV4L2dyaWQgcGFuZWwuICovXG5mdW5jdGlvbiBJbnZhbGlkYXRlT25Nb3VudCgpIHtcbiAgY29uc3QgbWFwID0gdXNlTWFwKClcbiAgdXNlRWZmZWN0KCgpID0+IHtcbiAgICBjb25zdCB0ID0gc2V0VGltZW91dCgoKSA9PiBtYXAuaW52YWxpZGF0ZVNpemUoKSwgMTIwKVxuICAgIHJldHVybiAoKSA9PiBjbGVhclRpbWVvdXQodClcbiAgfSwgW21hcF0pXG4gIHJldHVybiBudWxsXG59XG5cbmZ1bmN0aW9uIFJlcG9ydFBvcHVwKHsgcmVwb3J0IH0pIHtcbiAgcmV0dXJuIChcbiAgICA8UG9wdXA+XG4gICAgICA8c3Ryb25nPntyZXBvcnQucmVwb3J0X2NvZGUgfHwgJ1JlcG9ydCd9PC9zdHJvbmc+XG4gICAgICA8YnIgLz5cbiAgICAgIHtmb3JtYXREYXRlKHJlcG9ydC5hY2NpZGVudF9kYXRlKX0gwrcge1NUQVRVU19MQUJFTFNbcmVwb3J0LnN0YXR1c10gfHwgcmVwb3J0LnN0YXR1c31cbiAgICAgIDxiciAvPlxuICAgICAge3BsYWNlKHJlcG9ydCl9XG4gICAgPC9Qb3B1cD5cbiAgKVxufVxuXG4vKipcbiAqIEFsbCByZXBvcnQgcGlucyBmb3IgdGhlIGRhc2hib2FyZCBtYXAuXG4gKiBAcGFyYW0ge3tyZXBvcnRzOkFycmF5LCBoZWlnaHQ/Om51bWJlciwgY2VudGVyPzpbbnVtYmVyLG51bWJlcl19fSBwcm9wc1xuICovXG5leHBvcnQgZnVuY3Rpb24gUG9pbnRzTWFwKHsgcmVwb3J0cyA9IFtdLCBoZWlnaHQgPSAzODAsIGNlbnRlciB9KSB7XG4gIGNvbnN0IHB0cyA9IHJlcG9ydHMuZmlsdGVyKChyKSA9PiByLmxhdGl0dWRlICYmIHIubG9uZ2l0dWRlKVxuICBjb25zdCBtaWRkbGUgPSBjZW50ZXIgfHwgKHB0c1swXSA/IFtwdHNbMF0ubGF0aXR1ZGUsIHB0c1swXS5sb25naXR1ZGVdIDogTUFQX0NFTlRFUilcblxuICByZXR1cm4gKFxuICAgIDxkaXYgY2xhc3NOYW1lPVwibWFwLWJveFwiIHN0eWxlPXt7IGhlaWdodCB9fT5cbiAgICAgIDxNYXBDb250YWluZXIgY2VudGVyPXttaWRkbGV9IHpvb209ezExfSBzdHlsZT17eyBoZWlnaHQ6ICcxMDAlJywgd2lkdGg6ICcxMDAlJyB9fSBzY3JvbGxXaGVlbFpvb20+XG4gICAgICAgIDxUaWxlTGF5ZXJcbiAgICAgICAgICBhdHRyaWJ1dGlvbj0nJmNvcHk7IDxhIGhyZWY9XCJodHRwczovL3d3dy5vcGVuc3RyZWV0bWFwLm9yZy9jb3B5cmlnaHRcIj5PcGVuU3RyZWV0TWFwPC9hPidcbiAgICAgICAgICB1cmw9XCJodHRwczovL3tzfS50aWxlLm9wZW5zdHJlZXRtYXAub3JnL3t6fS97eH0ve3l9LnBuZ1wiXG4gICAgICAgIC8+XG4gICAgICAgIDxJbnZhbGlkYXRlT25Nb3VudCAvPlxuICAgICAgICB7cHRzLm1hcCgocikgPT4gKFxuICAgICAgICAgIDxDaXJjbGVNYXJrZXJcbiAgICAgICAgICAgIGtleT17ci5pZH1cbiAgICAgICAgICAgIGNlbnRlcj17W3IubGF0aXR1ZGUsIHIubG9uZ2l0dWRlXX1cbiAgICAgICAgICAgIHJhZGl1cz17OH1cbiAgICAgICAgICAgIHBhdGhPcHRpb25zPXt7XG4gICAgICAgICAgICAgIGNvbG9yOiBTVEFUVVNfQ09MT1JTW3Iuc3RhdHVzXSB8fCAnIzZjNzU3ZCcsXG4gICAgICAgICAgICAgIGZpbGxDb2xvcjogU1RBVFVTX0NPTE9SU1tyLnN0YXR1c10gfHwgJyM2Yzc1N2QnLFxuICAgICAgICAgICAgICBmaWxsT3BhY2l0eTogMC44NSxcbiAgICAgICAgICAgICAgd2VpZ2h0OiAyLFxuICAgICAgICAgICAgfX1cbiAgICAgICAgICA+XG4gICAgICAgICAgICA8UmVwb3J0UG9wdXAgcmVwb3J0PXtyfSAvPlxuICAgICAgICAgIDwvQ2lyY2xlTWFya2VyPlxuICAgICAgICApKX1cbiAgICAgIDwvTWFwQ29udGFpbmVyPlxuICAgIDwvZGl2PlxuICApXG59XG5cbi8qKiBTaW5nbGUtcGluIG1hcCBmb3IgdGhlIHJlcG9ydCBkZXRhaWwgcGFnZS4gKi9cbmV4cG9ydCBmdW5jdGlvbiBPbmVQaW5NYXAoeyByZXBvcnQsIGhlaWdodCA9IDMwMCB9KSB7XG4gIGlmICghcmVwb3J0Py5sYXRpdHVkZSB8fCAhcmVwb3J0Py5sb25naXR1ZGUpIHtcbiAgICByZXR1cm4gPHAgY2xhc3NOYW1lPVwidGV4dC1zZWNvbmRhcnlcIj5ObyBsb2NhdGlvbiB3YXMgcGlubmVkIGZvciB0aGlzIHJlcG9ydC48L3A+XG4gIH1cbiAgcmV0dXJuIChcbiAgICA8ZGl2IGNsYXNzTmFtZT1cIm1hcC1ib3hcIiBzdHlsZT17eyBoZWlnaHQgfX0+XG4gICAgICA8TWFwQ29udGFpbmVyXG4gICAgICAgIGNlbnRlcj17W3JlcG9ydC5sYXRpdHVkZSwgcmVwb3J0LmxvbmdpdHVkZV19XG4gICAgICAgIHpvb209ezE2fVxuICAgICAgICBzdHlsZT17eyBoZWlnaHQ6ICcxMDAlJywgd2lkdGg6ICcxMDAlJyB9fVxuICAgICAgICBzY3JvbGxXaGVlbFpvb21cbiAgICAgID5cbiAgICAgICAgPFRpbGVMYXllclxuICAgICAgICAgIGF0dHJpYnV0aW9uPScmY29weTsgPGEgaHJlZj1cImh0dHBzOi8vd3d3Lm9wZW5zdHJlZXRtYXAub3JnL2NvcHlyaWdodFwiPk9wZW5TdHJlZXRNYXA8L2E+J1xuICAgICAgICAgIHVybD1cImh0dHBzOi8ve3N9LnRpbGUub3BlbnN0cmVldG1hcC5vcmcve3p9L3t4fS97eX0ucG5nXCJcbiAgICAgICAgLz5cbiAgICAgICAgPEludmFsaWRhdGVPbk1vdW50IC8+XG4gICAgICAgIDxDaXJjbGVNYXJrZXJcbiAgICAgICAgICBjZW50ZXI9e1tyZXBvcnQubGF0aXR1ZGUsIHJlcG9ydC5sb25naXR1ZGVdfVxuICAgICAgICAgIHJhZGl1cz17MTB9XG4gICAgICAgICAgcGF0aE9wdGlvbnM9e3tcbiAgICAgICAgICAgIGNvbG9yOiBTVEFUVVNfQ09MT1JTW3JlcG9ydC5zdGF0dXNdIHx8ICcjZTQ1NzJlJyxcbiAgICAgICAgICAgIGZpbGxDb2xvcjogU1RBVFVTX0NPTE9SU1tyZXBvcnQuc3RhdHVzXSB8fCAnI2U0NTcyZScsXG4gICAgICAgICAgICBmaWxsT3BhY2l0eTogMC45LFxuICAgICAgICAgICAgd2VpZ2h0OiAzLFxuICAgICAgICAgIH19XG4gICAgICAgID5cbiAgICAgICAgICA8UmVwb3J0UG9wdXAgcmVwb3J0PXtyZXBvcnR9IC8+XG4gICAgICAgIDwvQ2lyY2xlTWFya2VyPlxuICAgICAgICB7cmVwb3J0LmFycml2YWxfbGF0aXR1ZGUgJiYgKFxuICAgICAgICAgIDxDaXJjbGVNYXJrZXJcbiAgICAgICAgICAgIGNlbnRlcj17W3JlcG9ydC5hcnJpdmFsX2xhdGl0dWRlLCByZXBvcnQuYXJyaXZhbF9sb25naXR1ZGVdfVxuICAgICAgICAgICAgcmFkaXVzPXs5fVxuICAgICAgICAgICAgcGF0aE9wdGlvbnM9e3sgY29sb3I6ICcjZjJiNzA1JywgZmlsbENvbG9yOiAnI2YyYjcwNScsIGZpbGxPcGFjaXR5OiAwLjg1LCB3ZWlnaHQ6IDIgfX1cbiAgICAgICAgICA+XG4gICAgICAgICAgICA8UG9wdXA+T2ZmaWNlciBhcnJpdmFsIHBvaW50PC9Qb3B1cD5cbiAgICAgICAgICA8L0NpcmNsZU1hcmtlcj5cbiAgICAgICAgKX1cbiAgICAgIDwvTWFwQ29udGFpbmVyPlxuICAgIDwvZGl2PlxuICApXG59XG5cbi8qKiBDb2xvdXIgbGVnZW5kIHVuZGVyIHRoZSBkYXNoYm9hcmQgbWFwLiAqL1xuZXhwb3J0IGZ1bmN0aW9uIE1hcExlZ2VuZCgpIHtcbiAgY29uc3Qga2V5cyA9IFsnc3VibWl0dGVkJywgJ29uX3NjZW5lJywgJ3ZlcmlmaWVkJywgJ2luX3Byb2dyZXNzJywgJ3Jlc29sdmVkJywgJ2R1cGxpY2F0ZSddXG4gIHJldHVybiAoXG4gICAgPHAgY2xhc3NOYW1lPVwic21hbGwgdGV4dC1zZWNvbmRhcnkgbXQtMiBtYi0wXCI+XG4gICAgICB7a2V5cy5tYXAoKGspID0+IChcbiAgICAgICAgPHNwYW4ga2V5PXtrfSBjbGFzc05hbWU9XCJtZS0zXCI+XG4gICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPVwibGVnZW5kLWRvdFwiIHN0eWxlPXt7IGJhY2tncm91bmQ6IFNUQVRVU19DT0xPUlNba10gfX0gLz5cbiAgICAgICAgICB7U1RBVFVTX0xBQkVMU1trXX1cbiAgICAgICAgPC9zcGFuPlxuICAgICAgKSl9XG4gICAgPC9wPlxuICApXG59XG4iXSwiZmlsZSI6Ii9Vc2Vycy9wb2xtYWNib29rL3JvYWRyZXBvcnQtbGF0ZXN0LWhvc3Rpbmdlci9zcmMvY29tcG9uZW50cy9NYXBWaWV3LmpzeCJ9cä!õf|      jÁ,ÒjÁ,ÒJÅ       W    O^partitionKey=%28http%2C127.0.0.1%29,:http://127.0.0.1:5183/src/components/MapView.jsx strongly-framed 1 request-method GET response-head HTTP/1.1 200 OK
+Content-Type: text/javascript
+Cache-Control: no-cache
+Etag: W/"294f-ykcobz1vZxL3ImaF3+bsGLRqiDs"
+Content-Length: 22042
+Date: Sun, 01 Nov 2026 12:13:37 GMT
+Vary: Origin
+ original-response-headers Vary: Origin
+Content-Type: text/javascript
+Cache-Control: no-cache
+Etag: W/"294f-ykcobz1vZxL3ImaF3+bsGLRqiDs"
+Date: Sun, 01 Nov 2026 12:08:18 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Content-Length: 22042
+ ctid 2 net-response-time-onstart 245 net-response-time-onstop 245      V

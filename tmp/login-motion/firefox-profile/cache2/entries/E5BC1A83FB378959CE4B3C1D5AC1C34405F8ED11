@@ -1,0 +1,603 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/pages/Dashboard.jsx");import __vite__cjsImport0_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=8895a4cf"; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
+let prevRefreshReg;
+let prevRefreshSig;
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+  prevRefreshReg = window.$RefreshReg$;
+  prevRefreshSig = window.$RefreshSig$;
+  window.$RefreshReg$ = RefreshRuntime.getRefreshReg("/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx");
+  window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
+}
+var _s = $RefreshSig$();
+import __vite__cjsImport3_react from "/node_modules/.vite/deps/react.js?v=8895a4cf"; const useMemo = __vite__cjsImport3_react["useMemo"]; const useState = __vite__cjsImport3_react["useState"];
+import { Link } from "/node_modules/.vite/deps/react-router-dom.js?v=8895a4cf";
+import { useAsync } from "/src/hooks/useAsync.js";
+import { loadRange, summarise, hotspots } from "/src/services/stats.service.js";
+import { Bars, Split, Trend } from "/src/components/Charts.jsx";
+import { PointsMap, MapLegend } from "/src/components/MapView.jsx";
+import StatusBadge from "/src/components/StatusBadge.jsx";
+import States from "/src/components/States.jsx";
+import { formatDate } from "/src/utils/date.js";
+import { place } from "/src/utils/format.js";
+import { todayISO, daysAgoISO } from "/src/utils/date.js";
+const CARDS = [
+  { key: "on_scene", cls: "stat-on_scene", label: "Officer on scene", to: "/admin/reports?status=on_scene" },
+  { key: "pending", cls: "stat-pending", label: "Needs review", to: "/admin/reports?status=submitted" },
+  { key: "dispatched", cls: "stat-dispatched", label: "Dispatched", to: "/admin/reports?status=assigned" },
+  { key: "total", label: "All reports", to: "/admin/reports" },
+  { key: "verified", cls: "stat-verified", label: "Verified Reports", to: "/admin/reports?official=1" },
+  { key: "closed", cls: "stat-closed", label: "Closed Reports", to: "/admin/reports?status=resolved" },
+  { key: "duplicates", cls: "stat-duplicates", label: "Duplicated Reports", to: "/admin/reports?status=duplicate" },
+  { key: "today", label: "Reported today", to: "/admin/reports" },
+  { key: "flagged", cls: "stat-flagged", label: "Flagged Reports", to: "/admin/reports?flagged=1" }
+];
+const level = (n) => n > 0 ? n <= 5 ? "low" : n <= 10 ? "moderate" : "high" : "none";
+export default function Dashboard() {
+  _s();
+  const [from, setFrom] = useState(daysAgoISO(30));
+  const [to, setTo] = useState(todayISO());
+  const [applied, setApplied] = useState({ from: daysAgoISO(30), to: todayISO() });
+  const { data: rows, loading, error } = useAsync(
+    () => loadRange(applied),
+    [applied.from, applied.to],
+    []
+  );
+  const stats = useMemo(() => summarise(rows || []), [rows]);
+  const spots = useMemo(() => hotspots(rows || []), [rows]);
+  const recent = useMemo(() => (rows || []).slice(0, 10), [rows]);
+  const onSubmit = (e) => {
+    e.preventDefault();
+    setApplied({ from, to });
+  };
+  return /* @__PURE__ */ jsxDEV("div", { className: "rr-dashboard-page", children: [
+    /* @__PURE__ */ jsxDEV("header", { className: "rr-head rr-dashboard-head", children: [
+      /* @__PURE__ */ jsxDEV("div", { className: "rr-head-text", children: [
+        /* @__PURE__ */ jsxDEV("span", { className: "rr-eyebrow", children: "Bulacan admin portal" }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 77,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV("h1", { className: "h3", children: "Dashboard" }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 78,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV("p", { className: "rr-sub", children: "Verified reports, officer activity and accident-prone areas across the province." }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 79,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, true, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+        lineNumber: 76,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV("form", { className: "filter-bar", id: "range-form", onSubmit, role: "search", children: [
+        /* @__PURE__ */ jsxDEV(
+          "input",
+          {
+            type: "date",
+            className: "form-control",
+            value: from,
+            onChange: (e) => setFrom(e.target.value),
+            "aria-label": "From date"
+          },
+          void 0,
+          false,
+          {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 83,
+            columnNumber: 11
+          },
+          this
+        ),
+        /* @__PURE__ */ jsxDEV(
+          "input",
+          {
+            type: "date",
+            className: "form-control",
+            value: to,
+            onChange: (e) => setTo(e.target.value),
+            "aria-label": "To date"
+          },
+          void 0,
+          false,
+          {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 90,
+            columnNumber: 11
+          },
+          this
+        ),
+        /* @__PURE__ */ jsxDEV("button", { type: "submit", className: "btn btn-sm btn-guide", children: "Apply" }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 97,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV(
+          "button",
+          {
+            type: "button",
+            className: "btn btn-sm btn-link",
+            onClick: () => {
+              const all = { from: "", to: "" };
+              setFrom("");
+              setTo("");
+              setApplied(all);
+            },
+            children: "All dates"
+          },
+          void 0,
+          false,
+          {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 100,
+            columnNumber: 11
+          },
+          this
+        )
+      ] }, void 0, true, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+        lineNumber: 82,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, true, {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+      lineNumber: 75,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV("div", { className: "rr-tape", "aria-hidden": "true" }, void 0, false, {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+      lineNumber: 114,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV(States, { loading, error, children: /* @__PURE__ */ jsxDEV("div", { className: "stack", children: [
+      /* @__PURE__ */ jsxDEV("div", { className: "stat-grid rr-dashboard-stats", id: "cards", children: CARDS.map((c) => {
+        const count = stats[c.key] ?? 0;
+        const countLevel = level(count);
+        return /* @__PURE__ */ jsxDEV(
+          Link,
+          {
+            to: c.to,
+            className: `stat-card ${c.cls || ""}${stats[c.key] > 0 && c.cls === "stat-on_scene" ? " has-items" : ""}`,
+            "data-level": countLevel,
+            children: [
+              /* @__PURE__ */ jsxDEV("span", { className: "stat-value", children: count }, void 0, false, {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+                lineNumber: 129,
+                columnNumber: 19
+              }, this),
+              /* @__PURE__ */ jsxDEV("span", { className: "stat-label", children: c.label }, void 0, false, {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+                lineNumber: 130,
+                columnNumber: 19
+              }, this),
+              /* @__PURE__ */ jsxDEV("span", { className: "rr-dashboard-level-text", children: countLevel[0].toUpperCase() + countLevel.slice(1) }, void 0, false, {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+                lineNumber: 131,
+                columnNumber: 19
+              }, this)
+            ]
+          },
+          c.key,
+          true,
+          {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 123,
+            columnNumber: 17
+          },
+          this
+        );
+      }) }, void 0, false, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+        lineNumber: 118,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV("p", { className: "small text-secondary rr-dashboard-note", id: "official-note", children: [
+        stats.official,
+        " of ",
+        stats.total,
+        " reports in this range are verified accident records."
+      ] }, void 0, true, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+        lineNumber: 137,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: "rr-dashboard-charts", children: [
+        /* @__PURE__ */ jsxDEV("div", { className: "col-lg-6", children: /* @__PURE__ */ jsxDEV("section", { className: "panel", children: [
+          /* @__PURE__ */ jsxDEV("h2", { className: "h6", children: "Reports per month" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 144,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV(Trend, { data: stats.byMonth }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 145,
+            columnNumber: 17
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 143,
+          columnNumber: 15
+        }, this) }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 142,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "col-lg-6", children: /* @__PURE__ */ jsxDEV("section", { className: "panel", children: [
+          /* @__PURE__ */ jsxDEV("h2", { className: "h6", children: "Accident type" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 150,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV(Bars, { data: stats.byType.slice(0, 8), horizontal: true }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 151,
+            columnNumber: 17
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 149,
+          columnNumber: 15
+        }, this) }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 148,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "col-lg-6", children: /* @__PURE__ */ jsxDEV("section", { className: "panel", children: [
+          /* @__PURE__ */ jsxDEV("h2", { className: "h6", children: "By municipality" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 156,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV(Bars, { data: stats.byTown.slice(0, 8), horizontal: true, color: "#5fb7a5" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 157,
+            columnNumber: 17
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 155,
+          columnNumber: 15
+        }, this) }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 154,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "col-lg-6", children: /* @__PURE__ */ jsxDEV("section", { className: "panel", children: [
+          /* @__PURE__ */ jsxDEV("h2", { className: "h6", children: "Time of day" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 162,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV(Bars, { data: stats.byHour, color: "#f5c518" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 163,
+            columnNumber: 17
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 161,
+          columnNumber: 15
+        }, this) }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 160,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "col-lg-6", children: /* @__PURE__ */ jsxDEV("section", { className: "panel", children: [
+          /* @__PURE__ */ jsxDEV("h2", { className: "h6", children: "By status" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 168,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV(
+            Split,
+            {
+              data: Object.entries(stats.byStatus).map(([label, value]) => ({ label, value }))
+            },
+            void 0,
+            false,
+            {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+              lineNumber: 169,
+              columnNumber: 17
+            },
+            this
+          )
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 167,
+          columnNumber: 15
+        }, this) }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 166,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "col-lg-6", children: /* @__PURE__ */ jsxDEV("section", { className: "panel", children: [
+          /* @__PURE__ */ jsxDEV("h2", { className: "h6", children: "Injury outcome" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 176,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV(
+            Split,
+            {
+              data: Object.entries(stats.injuries).map(([label, value]) => ({ label, value })),
+              doughnut: false
+            },
+            void 0,
+            false,
+            {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+              lineNumber: 177,
+              columnNumber: 17
+            },
+            this
+          )
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 175,
+          columnNumber: 15
+        }, this) }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 174,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, true, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+        lineNumber: 141,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: "rr-dashboard-split", children: [
+        /* @__PURE__ */ jsxDEV("section", { className: "panel", children: [
+          /* @__PURE__ */ jsxDEV("div", { className: "d-flex justify-content-between align-items-center mb-2", children: [
+            /* @__PURE__ */ jsxDEV("h2", { className: "h6 mb-0", children: "Report locations" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+              lineNumber: 188,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV("span", { className: "small text-secondary", id: "map-count", children: [
+              recent.length,
+              " shown"
+            ] }, void 0, true, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+              lineNumber: 189,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 187,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV(PointsMap, { reports: rows || [] }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 193,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV(MapLegend, {}, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 194,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 186,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("section", { className: "panel", children: [
+          /* @__PURE__ */ jsxDEV("h2", { className: "h6", children: "Accident-prone spots" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 198,
+            columnNumber: 15
+          }, this),
+          spots.length === 0 ? /* @__PURE__ */ jsxDEV(States, { empty: true, emptyText: "No pinned locations in this range." }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 200,
+            columnNumber: 15
+          }, this) : /* @__PURE__ */ jsxDEV("ol", { className: "list-plain", id: "hotspots", children: spots.map(
+            (s) => /* @__PURE__ */ jsxDEV("li", { children: [
+              /* @__PURE__ */ jsxDEV("span", { children: s.label }, void 0, false, {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+                lineNumber: 205,
+                columnNumber: 23
+              }, this),
+              /* @__PURE__ */ jsxDEV("span", { children: s.count }, void 0, false, {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+                lineNumber: 206,
+                columnNumber: 23
+              }, this)
+            ] }, `${s.latitude},${s.longitude}`, true, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+              lineNumber: 204,
+              columnNumber: 17
+            }, this)
+          ) }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 202,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 197,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, true, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+        lineNumber: 185,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV("section", { className: "panel p-0 rr-dashboard-recent", children: [
+        /* @__PURE__ */ jsxDEV("div", { className: "rr-dashboard-panel-head", children: [
+          /* @__PURE__ */ jsxDEV("h2", { className: "h6", children: "Recent reports" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 216,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV(Link, { className: "rr-dashboard-link", to: "/admin/reports", children: "View all reports" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 217,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 215,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "table-responsive", children: /* @__PURE__ */ jsxDEV("table", { className: "table table-hover align-middle mb-0", role: "table", "aria-label": "Recent reports", children: [
+          /* @__PURE__ */ jsxDEV("thead", { role: "rowgroup", children: /* @__PURE__ */ jsxDEV("tr", { role: "row", children: [
+            /* @__PURE__ */ jsxDEV("th", { scope: "col", role: "columnheader", children: "Report ID" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+              lineNumber: 223,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ jsxDEV("th", { scope: "col", role: "columnheader", children: "Date" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+              lineNumber: 224,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ jsxDEV("th", { scope: "col", role: "columnheader", children: "Location" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+              lineNumber: 225,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ jsxDEV("th", { scope: "col", role: "columnheader", children: "Status" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+              lineNumber: 226,
+              columnNumber: 21
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 222,
+            columnNumber: 19
+          }, this) }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 221,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV("tbody", { id: "recent", role: "rowgroup", children: [
+            recent.length === 0 && /* @__PURE__ */ jsxDEV("tr", { role: "row", className: "rr-dashboard-empty-row", children: /* @__PURE__ */ jsxDEV("td", { colSpan: 4, role: "cell", children: /* @__PURE__ */ jsxDEV(States, { empty: true, emptyText: "No reports in this range." }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+              lineNumber: 233,
+              columnNumber: 25
+            }, this) }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+              lineNumber: 232,
+              columnNumber: 23
+            }, this) }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+              lineNumber: 231,
+              columnNumber: 19
+            }, this),
+            recent.map(
+              (r) => /* @__PURE__ */ jsxDEV("tr", { className: "clickable", role: "row", children: [
+                /* @__PURE__ */ jsxDEV("td", { className: "code-cell", role: "cell", children: /* @__PURE__ */ jsxDEV(Link, { to: `/admin/reports/${r.id}`, children: r.report_code || "â€”" }, void 0, false, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+                  lineNumber: 240,
+                  columnNumber: 25
+                }, this) }, void 0, false, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+                  lineNumber: 239,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("td", { role: "cell", children: formatDate(r.accident_date) }, void 0, false, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+                  lineNumber: 242,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("td", { role: "cell", children: place(r) }, void 0, false, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+                  lineNumber: 243,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("td", { role: "cell", children: /* @__PURE__ */ jsxDEV(StatusBadge, { status: r.status }, void 0, false, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+                  lineNumber: 245,
+                  columnNumber: 25
+                }, this) }, void 0, false, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+                  lineNumber: 244,
+                  columnNumber: 23
+                }, this)
+              ] }, r.id, true, {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+                lineNumber: 238,
+                columnNumber: 19
+              }, this)
+            )
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+            lineNumber: 229,
+            columnNumber: 17
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 220,
+          columnNumber: 15
+        }, this) }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+          lineNumber: 219,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, true, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+        lineNumber: 214,
+        columnNumber: 11
+      }, this)
+    ] }, void 0, true, {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+      lineNumber: 117,
+      columnNumber: 9
+    }, this) }, void 0, false, {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+      lineNumber: 116,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, true, {
+    fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx",
+    lineNumber: 74,
+    columnNumber: 5
+  }, this);
+}
+_s(Dashboard, "WOqWK0b1h37nDSWobSEcrFY7oEg=", false, function() {
+  return [useAsync];
+});
+_c = Dashboard;
+var _c;
+$RefreshReg$(_c, "Dashboard");
+if (import.meta.hot && !inWebWorker) {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+if (import.meta.hot && !inWebWorker) {
+  RefreshRuntime.__hmr_import(import.meta.url).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("/Users/polmacbook/roadreport-latest-hostinger/src/pages/Dashboard.jsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+
+//# sourceMappingURL=data:application/json;base64,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QUE7QUFBQTtBQUFBLHVCQUE4QixLQURoQztBQUFBO0FBQUE7QUFBQTtBQUFBLHVCQUVBO0FBQUEsbUJBUk9KLEVBQUVDLElBQVg7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFTQTtBQUFBLFlBQ0Q7QUFBQSxlQW5CSDtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQW9CQTtBQUFBLGFBN0JGO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUE4QkEsS0EvQkY7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQWdDQTtBQUFBLFdBckNGO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFzQ0E7QUFBQSxTQXZJRjtBQUFBO0FBQUE7QUFBQTtBQUFBLFdBd0lBLEtBeklGO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0EwSUE7QUFBQSxPQXBMRjtBQUFBO0FBQUE7QUFBQTtBQUFBLFNBcUxBO0FBRUo7QUFBQ3hDLEdBNU11QkQsV0FBUztBQUFBLFVBS1F0QixRQUFRO0FBQUE7QUFBQSxLQUx6QnNCO0FBQVMsSUFBQTZDO0FBQUEsYUFBQUEsSUFBQSIsIm5hbWVzIjpbInVzZU1lbW8iLCJ1c2VTdGF0ZSIsIkxpbmsiLCJ1c2VBc3luYyIsImxvYWRSYW5nZSIsInN1bW1hcmlzZSIsImhvdHNwb3RzIiwiQmFycyIsIlNwbGl0IiwiVHJlbmQiLCJQb2ludHNNYXAiLCJNYXBMZWdlbmQiLCJTdGF0dXNCYWRnZSIsIlN0YXRlcyIsImZvcm1hdERhdGUiLCJwbGFjZSIsInRvZGF5SVNPIiwiZGF5c0Fnb0lTTyIsIkNBUkRTIiwia2V5IiwiY2xzIiwibGFiZWwiLCJ0byIsImxldmVsIiwibiIsIkRhc2hib2FyZCIsIl9zIiwiZnJvbSIsInNldEZyb20iLCJzZXRUbyIsImFwcGxpZWQiLCJzZXRBcHBsaWVkIiwiZGF0YSIsInJvd3MiLCJsb2FkaW5nIiwiZXJyb3IiLCJzdGF0cyIsInNwb3RzIiwicmVjZW50Iiwic2xpY2UiLCJvblN1Ym1pdCIsImUiLCJwcmV2ZW50RGVmYXVsdCIsInRhcmdldCIsInZhbHVlIiwiYWxsIiwibWFwIiwiYyIsImNvdW50IiwiY291bnRMZXZlbCIsInRvVXBwZXJDYXNlIiwib2ZmaWNpYWwiLCJ0b3RhbCIsImJ5TW9udGgiLCJieVR5cGUiLCJieVRvd24iLCJieUhvdXIiLCJPYmplY3QiLCJlbnRyaWVzIiwiYnlTdGF0dXMiLCJpbmp1cmllcyIsImxlbmd0aCIsInMiLCJsYXRpdHVkZSIsImxvbmdpdHVkZSIsInIiLCJpZCIsInJlcG9ydF9jb2RlIiwiYWNjaWRlbnRfZGF0ZSIsInN0YXR1cyIsIl9jIl0sImlnbm9yZUxpc3QiOltdLCJzb3VyY2VzIjpbIkRhc2hib2FyZC5qc3giXSwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBEYXNoYm9hcmQuIFJlcGxhY2VzIGFkbWluLnBocCArIHBhZ2VzL2FkbWluLmpzLlxuICpcbiAqIFNhbWUgcGFuZWxzIGFzIHRoZSBQSFAgc2NyZWVuOiBkYXRlIHJhbmdlIGZpbHRlciwgc3RhdCBjYXJkcywgZml2ZSBjaGFydHMsXG4gKiB0aGUgcG9pbnRzIG1hcCwgdG9wIGFjY2lkZW50IHNwb3RzIGFuZCB0aGUgcmVjZW50LXJlcG9ydHMgdGFibGUuXG4gKi9cbmltcG9ydCB7IHVzZU1lbW8sIHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnXG5pbXBvcnQgeyBMaW5rIH0gZnJvbSAncmVhY3Qtcm91dGVyLWRvbSdcbmltcG9ydCB7IHVzZUFzeW5jIH0gZnJvbSAnLi4vaG9va3MvdXNlQXN5bmMuanMnXG5pbXBvcnQgeyBsb2FkUmFuZ2UsIHN1bW1hcmlzZSwgaG90c3BvdHMgfSBmcm9tICcuLi9zZXJ2aWNlcy9zdGF0cy5zZXJ2aWNlLmpzJ1xuaW1wb3J0IHsgQmFycywgU3BsaXQsIFRyZW5kIH0gZnJvbSAnLi4vY29tcG9uZW50cy9DaGFydHMuanN4J1xuaW1wb3J0IHsgUG9pbnRzTWFwLCBNYXBMZWdlbmQgfSBmcm9tICcuLi9jb21wb25lbnRzL01hcFZpZXcuanN4J1xuaW1wb3J0IFN0YXR1c0JhZGdlIGZyb20gJy4uL2NvbXBvbmVudHMvU3RhdHVzQmFkZ2UuanN4J1xuaW1wb3J0IFN0YXRlcyBmcm9tICcuLi9jb21wb25lbnRzL1N0YXRlcy5qc3gnXG5pbXBvcnQgeyBmb3JtYXREYXRlIH0gZnJvbSAnLi4vdXRpbHMvZGF0ZS5qcydcbmltcG9ydCB7IHBsYWNlIH0gZnJvbSAnLi4vdXRpbHMvZm9ybWF0LmpzJ1xuaW1wb3J0IHsgdG9kYXlJU08sIGRheXNBZ29JU08gfSBmcm9tICcuLi91dGlscy9kYXRlLmpzJ1xuXG4vKiogVGhlIGNsaWNrYWJsZSBzdGF0IGNhcmRzLCBzYW1lIGtleXMvY2xhc3NlcyBhcyB0aGUgUEhQIGRhc2hib2FyZC4gKi9cbmNvbnN0IENBUkRTID0gW1xuICB7IGtleTogJ29uX3NjZW5lJywgY2xzOiAnc3RhdC1vbl9zY2VuZScsIGxhYmVsOiAnT2ZmaWNlciBvbiBzY2VuZScsIHRvOiAnL2FkbWluL3JlcG9ydHM/c3RhdHVzPW9uX3NjZW5lJyB9LFxuICB7IGtleTogJ3BlbmRpbmcnLCBjbHM6ICdzdGF0LXBlbmRpbmcnLCBsYWJlbDogJ05lZWRzIHJldmlldycsIHRvOiAnL2FkbWluL3JlcG9ydHM/c3RhdHVzPXN1Ym1pdHRlZCcgfSxcbiAgeyBrZXk6ICdkaXNwYXRjaGVkJywgY2xzOiAnc3RhdC1kaXNwYXRjaGVkJywgbGFiZWw6ICdEaXNwYXRjaGVkJywgdG86ICcvYWRtaW4vcmVwb3J0cz9zdGF0dXM9YXNzaWduZWQnIH0sXG4gIHsga2V5OiAndG90YWwnLCBsYWJlbDogJ0FsbCByZXBvcnRzJywgdG86ICcvYWRtaW4vcmVwb3J0cycgfSxcbiAgeyBrZXk6ICd2ZXJpZmllZCcsIGNsczogJ3N0YXQtdmVyaWZpZWQnLCBsYWJlbDogJ1ZlcmlmaWVkIFJlcG9ydHMnLCB0bzogJy9hZG1pbi9yZXBvcnRzP29mZmljaWFsPTEnIH0sXG4gIHsga2V5OiAnY2xvc2VkJywgY2xzOiAnc3RhdC1jbG9zZWQnLCBsYWJlbDogJ0Nsb3NlZCBSZXBvcnRzJywgdG86ICcvYWRtaW4vcmVwb3J0cz9zdGF0dXM9cmVzb2x2ZWQnIH0sXG4gIHsga2V5OiAnZHVwbGljYXRlcycsIGNsczogJ3N0YXQtZHVwbGljYXRlcycsIGxhYmVsOiAnRHVwbGljYXRlZCBSZXBvcnRzJywgdG86ICcvYWRtaW4vcmVwb3J0cz9zdGF0dXM9ZHVwbGljYXRlJyB9LFxuICB7IGtleTogJ3RvZGF5JywgbGFiZWw6ICdSZXBvcnRlZCB0b2RheScsIHRvOiAnL2FkbWluL3JlcG9ydHMnIH0sXG4gIHsga2V5OiAnZmxhZ2dlZCcsIGNsczogJ3N0YXQtZmxhZ2dlZCcsIGxhYmVsOiAnRmxhZ2dlZCBSZXBvcnRzJywgdG86ICcvYWRtaW4vcmVwb3J0cz9mbGFnZ2VkPTEnIH0sXG5dXG5cbmNvbnN0IGxldmVsID0gKG4pID0+IChuID4gMCA/IChuIDw9IDUgPyAnbG93JyA6IG4gPD0gMTAgPyAnbW9kZXJhdGUnIDogJ2hpZ2gnKSA6ICdub25lJylcblxuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gRGFzaGJvYXJkKCkge1xuICBjb25zdCBbZnJvbSwgc2V0RnJvbV0gPSB1c2VTdGF0ZShkYXlzQWdvSVNPKDMwKSlcbiAgY29uc3QgW3RvLCBzZXRUb10gPSB1c2VTdGF0ZSh0b2RheUlTTygpKVxuICBjb25zdCBbYXBwbGllZCwgc2V0QXBwbGllZF0gPSB1c2VTdGF0ZSh7IGZyb206IGRheXNBZ29JU08oMzApLCB0bzogdG9kYXlJU08oKSB9KVxuXG4gIGNvbnN0IHsgZGF0YTogcm93cywgbG9hZGluZywgZXJyb3IgfSA9IHVzZUFzeW5jKFxuICAgICgpID0+IGxvYWRSYW5nZShhcHBsaWVkKSxcbiAgICBbYXBwbGllZC5mcm9tLCBhcHBsaWVkLnRvXSxcbiAgICBbXSxcbiAgKVxuXG4gIGNvbnN0IHN0YXRzID0gdXNlTWVtbygoKSA9PiBzdW1tYXJpc2Uocm93cyB8fCBbXSksIFtyb3dzXSlcbiAgY29uc3Qgc3BvdHMgPSB1c2VNZW1vKCgpID0+IGhvdHNwb3RzKHJvd3MgfHwgW10pLCBbcm93c10pXG4gIGNvbnN0IHJlY2VudCA9IHVzZU1lbW8oKCkgPT4gKHJvd3MgfHwgW10pLnNsaWNlKDAsIDEwKSwgW3Jvd3NdKVxuXG4gIGNvbnN0IG9uU3VibWl0ID0gKGUpID0+IHtcbiAgICBlLnByZXZlbnREZWZhdWx0KClcbiAgICBzZXRBcHBsaWVkKHsgZnJvbSwgdG8gfSlcbiAgfVxuXG4gIHJldHVybiAoXG4gICAgPGRpdiBjbGFzc05hbWU9XCJyci1kYXNoYm9hcmQtcGFnZVwiPlxuICAgICAgPGhlYWRlciBjbGFzc05hbWU9XCJyci1oZWFkIHJyLWRhc2hib2FyZC1oZWFkXCI+XG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwicnItaGVhZC10ZXh0XCI+XG4gICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPVwicnItZXllYnJvd1wiPkJ1bGFjYW4gYWRtaW4gcG9ydGFsPC9zcGFuPlxuICAgICAgICAgIDxoMSBjbGFzc05hbWU9XCJoM1wiPkRhc2hib2FyZDwvaDE+XG4gICAgICAgICAgPHAgY2xhc3NOYW1lPVwicnItc3ViXCI+VmVyaWZpZWQgcmVwb3J0cywgb2ZmaWNlciBhY3Rpdml0eSBhbmQgYWNjaWRlbnQtcHJvbmUgYXJlYXMgYWNyb3NzIHRoZSBwcm92aW5jZS48L3A+XG4gICAgICAgIDwvZGl2PlxuXG4gICAgICAgIDxmb3JtIGNsYXNzTmFtZT1cImZpbHRlci1iYXJcIiBpZD1cInJhbmdlLWZvcm1cIiBvblN1Ym1pdD17b25TdWJtaXR9IHJvbGU9XCJzZWFyY2hcIj5cbiAgICAgICAgICA8aW5wdXRcbiAgICAgICAgICAgIHR5cGU9XCJkYXRlXCJcbiAgICAgICAgICAgIGNsYXNzTmFtZT1cImZvcm0tY29udHJvbFwiXG4gICAgICAgICAgICB2YWx1ZT17ZnJvbX1cbiAgICAgICAgICAgIG9uQ2hhbmdlPXsoZSkgPT4gc2V0RnJvbShlLnRhcmdldC52YWx1ZSl9XG4gICAgICAgICAgICBhcmlhLWxhYmVsPVwiRnJvbSBkYXRlXCJcbiAgICAgICAgICAvPlxuICAgICAgICAgIDxpbnB1dFxuICAgICAgICAgICAgdHlwZT1cImRhdGVcIlxuICAgICAgICAgICAgY2xhc3NOYW1lPVwiZm9ybS1jb250cm9sXCJcbiAgICAgICAgICAgIHZhbHVlPXt0b31cbiAgICAgICAgICAgIG9uQ2hhbmdlPXsoZSkgPT4gc2V0VG8oZS50YXJnZXQudmFsdWUpfVxuICAgICAgICAgICAgYXJpYS1sYWJlbD1cIlRvIGRhdGVcIlxuICAgICAgICAgIC8+XG4gICAgICAgICAgPGJ1dHRvbiB0eXBlPVwic3VibWl0XCIgY2xhc3NOYW1lPVwiYnRuIGJ0bi1zbSBidG4tZ3VpZGVcIj5cbiAgICAgICAgICAgIEFwcGx5XG4gICAgICAgICAgPC9idXR0b24+XG4gICAgICAgICAgPGJ1dHRvblxuICAgICAgICAgICAgdHlwZT1cImJ1dHRvblwiXG4gICAgICAgICAgICBjbGFzc05hbWU9XCJidG4gYnRuLXNtIGJ0bi1saW5rXCJcbiAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IHtcbiAgICAgICAgICAgICAgY29uc3QgYWxsID0geyBmcm9tOiAnJywgdG86ICcnIH1cbiAgICAgICAgICAgICAgc2V0RnJvbSgnJylcbiAgICAgICAgICAgICAgc2V0VG8oJycpXG4gICAgICAgICAgICAgIHNldEFwcGxpZWQoYWxsKVxuICAgICAgICAgICAgfX1cbiAgICAgICAgICA+XG4gICAgICAgICAgICBBbGwgZGF0ZXNcbiAgICAgICAgICA8L2J1dHRvbj5cbiAgICAgICAgPC9mb3JtPlxuICAgICAgPC9oZWFkZXI+XG4gICAgICA8ZGl2IGNsYXNzTmFtZT1cInJyLXRhcGVcIiBhcmlhLWhpZGRlbj1cInRydWVcIiAvPlxuXG4gICAgICA8U3RhdGVzIGxvYWRpbmc9e2xvYWRpbmd9IGVycm9yPXtlcnJvcn0+XG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwic3RhY2tcIj5cbiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInN0YXQtZ3JpZCByci1kYXNoYm9hcmQtc3RhdHNcIiBpZD1cImNhcmRzXCI+XG4gICAgICAgICAgICB7Q0FSRFMubWFwKChjKSA9PiB7XG4gICAgICAgICAgICAgIGNvbnN0IGNvdW50ID0gc3RhdHNbYy5rZXldID8/IDBcbiAgICAgICAgICAgICAgY29uc3QgY291bnRMZXZlbCA9IGxldmVsKGNvdW50KVxuICAgICAgICAgICAgICByZXR1cm4gKFxuICAgICAgICAgICAgICAgIDxMaW5rXG4gICAgICAgICAgICAgICAgICBrZXk9e2Mua2V5fVxuICAgICAgICAgICAgICAgICAgdG89e2MudG99XG4gICAgICAgICAgICAgICAgICBjbGFzc05hbWU9e2BzdGF0LWNhcmQgJHtjLmNscyB8fCAnJ30ke3N0YXRzW2Mua2V5XSA+IDAgJiYgYy5jbHMgPT09ICdzdGF0LW9uX3NjZW5lJyA/ICcgaGFzLWl0ZW1zJyA6ICcnfWB9XG4gICAgICAgICAgICAgICAgICBkYXRhLWxldmVsPXtjb3VudExldmVsfVxuICAgICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT1cInN0YXQtdmFsdWVcIj57Y291bnR9PC9zcGFuPlxuICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPVwic3RhdC1sYWJlbFwiPntjLmxhYmVsfTwvc3Bhbj5cbiAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT1cInJyLWRhc2hib2FyZC1sZXZlbC10ZXh0XCI+e2NvdW50TGV2ZWxbMF0udG9VcHBlckNhc2UoKSArIGNvdW50TGV2ZWwuc2xpY2UoMSl9PC9zcGFuPlxuICAgICAgICAgICAgICAgIDwvTGluaz5cbiAgICAgICAgICAgICAgKVxuICAgICAgICAgICAgfSl9XG4gICAgICAgICAgPC9kaXY+XG5cbiAgICAgICAgICA8cCBjbGFzc05hbWU9XCJzbWFsbCB0ZXh0LXNlY29uZGFyeSByci1kYXNoYm9hcmQtbm90ZVwiIGlkPVwib2ZmaWNpYWwtbm90ZVwiPlxuICAgICAgICAgICAge3N0YXRzLm9mZmljaWFsfSBvZiB7c3RhdHMudG90YWx9IHJlcG9ydHMgaW4gdGhpcyByYW5nZSBhcmUgdmVyaWZpZWQgYWNjaWRlbnQgcmVjb3Jkcy5cbiAgICAgICAgICA8L3A+XG5cbiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInJyLWRhc2hib2FyZC1jaGFydHNcIj5cbiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiY29sLWxnLTZcIj5cbiAgICAgICAgICAgICAgPHNlY3Rpb24gY2xhc3NOYW1lPVwicGFuZWxcIj5cbiAgICAgICAgICAgICAgICA8aDIgY2xhc3NOYW1lPVwiaDZcIj5SZXBvcnRzIHBlciBtb250aDwvaDI+XG4gICAgICAgICAgICAgICAgPFRyZW5kIGRhdGE9e3N0YXRzLmJ5TW9udGh9IC8+XG4gICAgICAgICAgICAgIDwvc2VjdGlvbj5cbiAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJjb2wtbGctNlwiPlxuICAgICAgICAgICAgICA8c2VjdGlvbiBjbGFzc05hbWU9XCJwYW5lbFwiPlxuICAgICAgICAgICAgICAgIDxoMiBjbGFzc05hbWU9XCJoNlwiPkFjY2lkZW50IHR5cGU8L2gyPlxuICAgICAgICAgICAgICAgIDxCYXJzIGRhdGE9e3N0YXRzLmJ5VHlwZS5zbGljZSgwLCA4KX0gaG9yaXpvbnRhbCAvPlxuICAgICAgICAgICAgICA8L3NlY3Rpb24+XG4gICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiY29sLWxnLTZcIj5cbiAgICAgICAgICAgICAgPHNlY3Rpb24gY2xhc3NOYW1lPVwicGFuZWxcIj5cbiAgICAgICAgICAgICAgICA8aDIgY2xhc3NOYW1lPVwiaDZcIj5CeSBtdW5pY2lwYWxpdHk8L2gyPlxuICAgICAgICAgICAgICAgIDxCYXJzIGRhdGE9e3N0YXRzLmJ5VG93bi5zbGljZSgwLCA4KX0gaG9yaXpvbnRhbCBjb2xvcj1cIiM1ZmI3YTVcIiAvPlxuICAgICAgICAgICAgICA8L3NlY3Rpb24+XG4gICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiY29sLWxnLTZcIj5cbiAgICAgICAgICAgICAgPHNlY3Rpb24gY2xhc3NOYW1lPVwicGFuZWxcIj5cbiAgICAgICAgICAgICAgICA8aDIgY2xhc3NOYW1lPVwiaDZcIj5UaW1lIG9mIGRheTwvaDI+XG4gICAgICAgICAgICAgICAgPEJhcnMgZGF0YT17c3RhdHMuYnlIb3VyfSBjb2xvcj1cIiNmNWM1MThcIiAvPlxuICAgICAgICAgICAgICA8L3NlY3Rpb24+XG4gICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiY29sLWxnLTZcIj5cbiAgICAgICAgICAgICAgPHNlY3Rpb24gY2xhc3NOYW1lPVwicGFuZWxcIj5cbiAgICAgICAgICAgICAgICA8aDIgY2xhc3NOYW1lPVwiaDZcIj5CeSBzdGF0dXM8L2gyPlxuICAgICAgICAgICAgICAgIDxTcGxpdFxuICAgICAgICAgICAgICAgICAgZGF0YT17T2JqZWN0LmVudHJpZXMoc3RhdHMuYnlTdGF0dXMpLm1hcCgoW2xhYmVsLCB2YWx1ZV0pID0+ICh7IGxhYmVsLCB2YWx1ZSB9KSl9XG4gICAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgICAgPC9zZWN0aW9uPlxuICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImNvbC1sZy02XCI+XG4gICAgICAgICAgICAgIDxzZWN0aW9uIGNsYXNzTmFtZT1cInBhbmVsXCI+XG4gICAgICAgICAgICAgICAgPGgyIGNsYXNzTmFtZT1cImg2XCI+SW5qdXJ5IG91dGNvbWU8L2gyPlxuICAgICAgICAgICAgICAgIDxTcGxpdFxuICAgICAgICAgICAgICAgICAgZGF0YT17T2JqZWN0LmVudHJpZXMoc3RhdHMuaW5qdXJpZXMpLm1hcCgoW2xhYmVsLCB2YWx1ZV0pID0+ICh7IGxhYmVsLCB2YWx1ZSB9KSl9XG4gICAgICAgICAgICAgICAgICBkb3VnaG51dD17ZmFsc2V9XG4gICAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgICAgPC9zZWN0aW9uPlxuICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgPC9kaXY+XG5cbiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInJyLWRhc2hib2FyZC1zcGxpdFwiPlxuICAgICAgICAgICAgPHNlY3Rpb24gY2xhc3NOYW1lPVwicGFuZWxcIj5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJkLWZsZXgganVzdGlmeS1jb250ZW50LWJldHdlZW4gYWxpZ24taXRlbXMtY2VudGVyIG1iLTJcIj5cbiAgICAgICAgICAgICAgICA8aDIgY2xhc3NOYW1lPVwiaDYgbWItMFwiPlJlcG9ydCBsb2NhdGlvbnM8L2gyPlxuICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT1cInNtYWxsIHRleHQtc2Vjb25kYXJ5XCIgaWQ9XCJtYXAtY291bnRcIj5cbiAgICAgICAgICAgICAgICAgIHtyZWNlbnQubGVuZ3RofSBzaG93blxuICAgICAgICAgICAgICAgIDwvc3Bhbj5cbiAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIDxQb2ludHNNYXAgcmVwb3J0cz17cm93cyB8fCBbXX0gLz5cbiAgICAgICAgICAgICAgPE1hcExlZ2VuZCAvPlxuICAgICAgICAgICAgPC9zZWN0aW9uPlxuXG4gICAgICAgICAgICA8c2VjdGlvbiBjbGFzc05hbWU9XCJwYW5lbFwiPlxuICAgICAgICAgICAgICA8aDIgY2xhc3NOYW1lPVwiaDZcIj5BY2NpZGVudC1wcm9uZSBzcG90czwvaDI+XG4gICAgICAgICAgICAgIHtzcG90cy5sZW5ndGggPT09IDAgPyAoXG4gICAgICAgICAgICAgICAgPFN0YXRlcyBlbXB0eSBlbXB0eVRleHQ9XCJObyBwaW5uZWQgbG9jYXRpb25zIGluIHRoaXMgcmFuZ2UuXCIgLz5cbiAgICAgICAgICAgICAgKSA6IChcbiAgICAgICAgICAgICAgICA8b2wgY2xhc3NOYW1lPVwibGlzdC1wbGFpblwiIGlkPVwiaG90c3BvdHNcIj5cbiAgICAgICAgICAgICAgICAgIHtzcG90cy5tYXAoKHMpID0+IChcbiAgICAgICAgICAgICAgICAgICAgPGxpIGtleT17YCR7cy5sYXRpdHVkZX0sJHtzLmxvbmdpdHVkZX1gfT5cbiAgICAgICAgICAgICAgICAgICAgICA8c3Bhbj57cy5sYWJlbH08L3NwYW4+XG4gICAgICAgICAgICAgICAgICAgICAgPHNwYW4+e3MuY291bnR9PC9zcGFuPlxuICAgICAgICAgICAgICAgICAgICA8L2xpPlxuICAgICAgICAgICAgICAgICAgKSl9XG4gICAgICAgICAgICAgICAgPC9vbD5cbiAgICAgICAgICAgICAgKX1cbiAgICAgICAgICAgIDwvc2VjdGlvbj5cbiAgICAgICAgICA8L2Rpdj5cblxuICAgICAgICAgIDxzZWN0aW9uIGNsYXNzTmFtZT1cInBhbmVsIHAtMCByci1kYXNoYm9hcmQtcmVjZW50XCI+XG4gICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInJyLWRhc2hib2FyZC1wYW5lbC1oZWFkXCI+XG4gICAgICAgICAgICAgIDxoMiBjbGFzc05hbWU9XCJoNlwiPlJlY2VudCByZXBvcnRzPC9oMj5cbiAgICAgICAgICAgICAgPExpbmsgY2xhc3NOYW1lPVwicnItZGFzaGJvYXJkLWxpbmtcIiB0bz1cIi9hZG1pbi9yZXBvcnRzXCI+VmlldyBhbGwgcmVwb3J0czwvTGluaz5cbiAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ0YWJsZS1yZXNwb25zaXZlXCI+XG4gICAgICAgICAgICAgIDx0YWJsZSBjbGFzc05hbWU9XCJ0YWJsZSB0YWJsZS1ob3ZlciBhbGlnbi1taWRkbGUgbWItMFwiIHJvbGU9XCJ0YWJsZVwiIGFyaWEtbGFiZWw9XCJSZWNlbnQgcmVwb3J0c1wiPlxuICAgICAgICAgICAgICAgIDx0aGVhZCByb2xlPVwicm93Z3JvdXBcIj5cbiAgICAgICAgICAgICAgICAgIDx0ciByb2xlPVwicm93XCI+XG4gICAgICAgICAgICAgICAgICAgIDx0aCBzY29wZT1cImNvbFwiIHJvbGU9XCJjb2x1bW5oZWFkZXJcIj5SZXBvcnQgSUQ8L3RoPlxuICAgICAgICAgICAgICAgICAgICA8dGggc2NvcGU9XCJjb2xcIiByb2xlPVwiY29sdW1uaGVhZGVyXCI+RGF0ZTwvdGg+XG4gICAgICAgICAgICAgICAgICAgIDx0aCBzY29wZT1cImNvbFwiIHJvbGU9XCJjb2x1bW5oZWFkZXJcIj5Mb2NhdGlvbjwvdGg+XG4gICAgICAgICAgICAgICAgICAgIDx0aCBzY29wZT1cImNvbFwiIHJvbGU9XCJjb2x1bW5oZWFkZXJcIj5TdGF0dXM8L3RoPlxuICAgICAgICAgICAgICAgICAgPC90cj5cbiAgICAgICAgICAgICAgICA8L3RoZWFkPlxuICAgICAgICAgICAgICAgIDx0Ym9keSBpZD1cInJlY2VudFwiIHJvbGU9XCJyb3dncm91cFwiPlxuICAgICAgICAgICAgICAgICAge3JlY2VudC5sZW5ndGggPT09IDAgJiYgKFxuICAgICAgICAgICAgICAgICAgICA8dHIgcm9sZT1cInJvd1wiIGNsYXNzTmFtZT1cInJyLWRhc2hib2FyZC1lbXB0eS1yb3dcIj5cbiAgICAgICAgICAgICAgICAgICAgICA8dGQgY29sU3Bhbj17NH0gcm9sZT1cImNlbGxcIj5cbiAgICAgICAgICAgICAgICAgICAgICAgIDxTdGF0ZXMgZW1wdHkgZW1wdHlUZXh0PVwiTm8gcmVwb3J0cyBpbiB0aGlzIHJhbmdlLlwiIC8+XG4gICAgICAgICAgICAgICAgICAgICAgPC90ZD5cbiAgICAgICAgICAgICAgICAgICAgPC90cj5cbiAgICAgICAgICAgICAgICAgICl9XG4gICAgICAgICAgICAgICAgICB7cmVjZW50Lm1hcCgocikgPT4gKFxuICAgICAgICAgICAgICAgICAgICA8dHIga2V5PXtyLmlkfSBjbGFzc05hbWU9XCJjbGlja2FibGVcIiByb2xlPVwicm93XCI+XG4gICAgICAgICAgICAgICAgICAgICAgPHRkIGNsYXNzTmFtZT1cImNvZGUtY2VsbFwiIHJvbGU9XCJjZWxsXCI+XG4gICAgICAgICAgICAgICAgICAgICAgICA8TGluayB0bz17YC9hZG1pbi9yZXBvcnRzLyR7ci5pZH1gfT57ci5yZXBvcnRfY29kZSB8fCAn4oCUJ308L0xpbms+XG4gICAgICAgICAgICAgICAgICAgICAgPC90ZD5cbiAgICAgICAgICAgICAgICAgICAgICA8dGQgcm9sZT1cImNlbGxcIj57Zm9ybWF0RGF0ZShyLmFjY2lkZW50X2RhdGUpfTwvdGQ+XG4gICAgICAgICAgICAgICAgICAgICAgPHRkIHJvbGU9XCJjZWxsXCI+e3BsYWNlKHIpfTwvdGQ+XG4gICAgICAgICAgICAgICAgICAgICAgPHRkIHJvbGU9XCJjZWxsXCI+XG4gICAgICAgICAgICAgICAgICAgICAgICA8U3RhdHVzQmFkZ2Ugc3RhdHVzPXtyLnN0YXR1c30gLz5cbiAgICAgICAgICAgICAgICAgICAgICA8L3RkPlxuICAgICAgICAgICAgICAgICAgICA8L3RyPlxuICAgICAgICAgICAgICAgICAgKSl9XG4gICAgICAgICAgICAgICAgPC90Ym9keT5cbiAgICAgICAgICAgICAgPC90YWJsZT5cbiAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgIDwvc2VjdGlvbj5cbiAgICAgICAgPC9kaXY+XG4gICAgICA8L1N0YXRlcz5cbiAgICA8L2Rpdj5cbiAgKVxufVxuIl0sImZpbGUiOiIvVXNlcnMvcG9sbWFjYm9vay9yb2FkcmVwb3J0LWxhdGVzdC1ob3N0aW5nZXIvc3JjL3BhZ2VzL0Rhc2hib2FyZC5qc3gifQ==,«LÐz¤      jç(?jç(?J5p       T    O^partitionKey=%28http%2C127.0.0.1%29,:http://127.0.0.1:5181/src/pages/Dashboard.jsx strongly-framed 1 request-method GET response-head HTTP/1.1 200 OK
+Content-Type: text/javascript
+Cache-Control: no-cache
+Etag: W/"7171-WHMfadVnpmUpFrbPN1CpzV/ezgk"
+Content-Length: 55052
+Date: Sun, 01 Nov 2026 11:53:35 GMT
+Vary: Origin
+ original-response-headers Vary: Origin
+Content-Type: text/javascript
+Cache-Control: no-cache
+Etag: W/"7171-WHMfadVnpmUpFrbPN1CpzV/ezgk"
+Date: Sun, 01 Nov 2026 11:50:02 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Content-Length: 55052
+ ctid 2 net-response-time-onstart 35 net-response-time-onstop 36      ×

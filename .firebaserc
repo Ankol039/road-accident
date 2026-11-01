@@ -1,12 +1,11 @@
 {
   "projects": {
-    "default": "group3finalproj-9761b"
+    "default": "roadreport-402a6"
   },
   "targets": {
-    "group3finalproj-9761b": {
+    "roadreport-402a6": {
       "hosting": {
-        "primary": ["group3finalproj-9761b"],
-        "roadreport": ["roadreport"]
+        "primary": ["roadreport-402a6"]
       }
     }
   }

@@ -82,13 +82,17 @@ export default function Account() {
     profile?.role === 'admin' ? 'Administrator' : profile?.role === 'officer' ? 'Traffic officer' : profile?.role || ''
 
   return (
-    <div className="form-page">
-      <h1 className="h3 mb-1">My account</h1>
-      <p className="text-secondary">
+    <div className="form-page rr-account-page">
+      <header className="rr-head rr-account-head"><div>
+      <span className="rr-eyebrow">Bulacan admin portal</span>
+      <h1>My account</h1>
+      <p className="rr-account-role">
         {roleLabel}
         {profile?.badge_no ? `, badge ${profile.badge_no}` : ''}
       </p>
-      <div className="row g-4">
+      </div></header>
+      <div className="rr-tape" aria-hidden="true" />
+      <div className="row g-4 rr-account-grid">
         <div className="col-md-7">
           <form className="panel" id="profile-form" noValidate onSubmit={onSaveProfile}>
             <h2 className="h5">Profile</h2>

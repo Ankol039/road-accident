@@ -18,14 +18,18 @@ const MAX_REPORTS = 2000
  * filter together with a date range needs a composite index, and the single
  * field index on accident_date is enough to read the range.
  */
-export async function loadRange({ from, to, officialOnly = false } = {}) {
+export async function loadRange({ from, to, officialOnly = false, includeMetadata = false } = {}) {
   const parts = []
   if (from) parts.push(where('accident_date', '>=', from))
   if (to) parts.push(where('accident_date', '<=', to))
   parts.push(orderBy('accident_date', 'desc'), limit(MAX_REPORTS))
   const snap = await getDocs(query(ref(COLLECTIONS.reports), ...parts))
   const rows = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
-  return officialOnly ? rows.filter((r) => OFFICIAL_STATUSES.includes(r.status)) : rows
+  const filtered = officialOnly ? rows.filter((r) => OFFICIAL_STATUSES.includes(r.status)) : rows
+  // Check the unfiltered snapshot: verified-only results can hide that the cap was reached.
+  return includeMetadata
+    ? { rows: filtered, mayBeTruncated: snap.size >= MAX_REPORTS }
+    : filtered
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']

@@ -13,32 +13,21 @@
       "headers": [
         {
           "source": "**/*.@(js|css|svg|woff2)",
-          "headers": [{ "key": "Cache-Control", "value": "max-age=31536000,immutable" }]
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "max-age=31536000,immutable"
+            }
+          ]
         },
         {
           "source": "/index.html",
-          "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
-        }
-      ]
-    },
-    {
-      "target": "roadreport",
-      "public": "dist",
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ],
-      "headers": [
-        {
-          "source": "**/*.@(js|css|svg|woff2)",
-          "headers": [{ "key": "Cache-Control", "value": "max-age=31536000,immutable" }]
-        },
-        {
-          "source": "/index.html",
-          "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
+            }
+          ]
         }
       ]
     }

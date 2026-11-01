@@ -17,7 +17,8 @@
  *   ../private/firebase-service-account.json   (repo parent, the usual spot)
  *   ./firebase-service-account.json
  */
-import { readFileSync, existsSync } from 'node:fs'
+import { readServiceAccount } from './service-account.mjs'
+import { existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { initializeApp, cert } from 'firebase-admin/app'
@@ -43,7 +44,7 @@ if (!email || !password) {
   process.exit(1)
 }
 
-const serviceAccount = JSON.parse(readFileSync(keyPath, 'utf8'))
+const serviceAccount = readServiceAccount(keyPath)
 initializeApp({ credential: cert(serviceAccount) })
 
 const auth = getAuth()

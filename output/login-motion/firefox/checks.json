@@ -1,0 +1,1154 @@
+{
+  "checks": [
+    {
+      "width": 1440,
+      "animationInfo": [
+        {
+          "name": "rr-login-stripe",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "backgroundPositionX",
+            "backgroundPositionY"
+          ]
+        },
+        {
+          "name": "rr-login-breathe",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-signal",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity"
+          ]
+        },
+        {
+          "name": "rr-login-signal",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity"
+          ]
+        },
+        {
+          "name": "rr-login-signal",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity"
+          ]
+        }
+      ],
+      "loops": {
+        "rr-login-stripe": {
+          "start": "0px 0px",
+          "end": "40px 0px"
+        }
+      },
+      "crossfade": [
+        0.521168,
+        0.478832
+      ],
+      "reducedMotion": "zero animations; identical pixels after 1.1s",
+      "interactions": "focus, pointer/keyboard toggle, submitting, error, reset, success redirect"
+    },
+    {
+      "width": 390,
+      "animationInfo": [
+        {
+          "name": "rr-login-stripe",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "backgroundPositionX",
+            "backgroundPositionY"
+          ]
+        },
+        {
+          "name": "rr-login-breathe",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-streak",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity",
+            "transform"
+          ]
+        },
+        {
+          "name": "rr-login-signal",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity"
+          ]
+        },
+        {
+          "name": "rr-login-signal",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity"
+          ]
+        },
+        {
+          "name": "rr-login-signal",
+          "properties": [
+            "composite",
+            "easing",
+            "offset",
+            "computedOffset",
+            "opacity"
+          ]
+        }
+      ],
+      "loops": {
+        "rr-login-stripe": {
+          "start": "0px 0px",
+          "end": "40px 0px"
+        }
+      },
+      "crossfade": [
+        0.361914,
+        0.638086
+      ],
+      "reducedMotion": "zero animations; identical pixels after 1.1s",
+      "interactions": "focus, pointer/keyboard toggle, submitting, error, reset, success redirect"
+    }
+  ],
+  "metrics": [],
+  "errors": []
+}

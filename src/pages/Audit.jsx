@@ -16,6 +16,7 @@ import { listAudit } from '../services/audit.service.js'
 import { listUsers } from '../services/users.service.js'
 import { listAccidentTypes, listEmergencyContacts } from '../services/settings.service.js'
 import Pager from '../components/Pager.jsx'
+import States from '../components/States.jsx'
 import { AUDIT_ACTIONS } from '../lib/constants.js'
 import { formatDateTime, todayISO, daysAgoISO } from '../utils/date.js'
 
@@ -101,11 +102,18 @@ export default function Audit() {
   }, [users, types, contacts])
 
   return (
-    <>
-      <h1 className="h3 mb-3">Audit trail</h1>
+    <div className="rr-audit-page">
+      <header className="rr-head">
+        <div className="rr-head-text">
+          <span className="rr-eyebrow">Bulacan admin portal</span>
+          <h1>Audit trail</h1>
+          <p className="rr-sub">Every change made in the portal: who did it, what changed and when.</p>
+        </div>
+      </header>
+      <div className="rr-tape" aria-hidden="true" />
 
       <form
-        className="filter-bar"
+        className="filter-bar rr-audit-filters"
         role="search"
         onSubmit={(e) => {
           e.preventDefault()
@@ -169,48 +177,42 @@ export default function Audit() {
       </form>
 
       {error && (
-        <div className="alert alert-danger" role="alert">
-          {error.message || 'Could not load the audit trail.'}
-        </div>
+        <States error={error.message || 'Could not load the audit trail.'} />
       )}
 
-      <div className="table-responsive panel p-0">
-        <table className="table align-middle mb-0">
-          <thead>
-            <tr>
-              <th>When</th>
-              <th>Who</th>
-              <th>Action</th>
-              <th>Item</th>
-              <th>Details</th>
+      <div className="table-responsive panel p-0 rr-audit-table">
+        <table role="table" className="table align-middle mb-0">
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col">When</th>
+              <th role="columnheader" scope="col">Who</th>
+              <th role="columnheader" scope="col">Action</th>
+              <th role="columnheader" scope="col">Item</th>
+              <th role="columnheader" scope="col">Details</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody role="rowgroup">
             {loading && rows.length === 0 && (
-              <tr>
-                <td colSpan={5} className="text-secondary">
-                  Loading…
-                </td>
+              <tr role="row" className="rr-audit-state-row">
+                <td role="cell" colSpan={5}><States loading /></td>
               </tr>
             )}
             {!loading && rows.length === 0 && (
-              <tr>
-                <td colSpan={5} className="text-secondary">
-                  Nothing was recorded for these filters.
-                </td>
+              <tr role="row" className="rr-audit-state-row">
+                <td role="cell" colSpan={5}><States empty emptyText="Nothing was recorded for these filters." /></td>
               </tr>
             )}
             {rows.map((row) => (
-              <tr key={row.id}>
-                <td className="text-nowrap small">{formatDateTime(row.created_at)}</td>
-                <td>
+              <tr role="row" key={row.id}>
+                <td role="cell" className="small">{formatDateTime(row.created_at)}</td>
+                <td role="cell">
                   {row.actor_name || 'System'}
                   {row.actor_role ? (
-                    <span className="small text-secondary d-block">{row.actor_role}</span>
+                    <span className="small text-secondary rr-audit-role">{row.actor_role}</span>
                   ) : null}
                 </td>
-                <td>{AUDIT_ACTIONS[row.action] || row.action}</td>
-                <td>
+                <td role="cell">{AUDIT_ACTIONS[row.action] || row.action}</td>
+                <td role="cell">
                   {row.entity === 'report' && row.entity_id ? (
                     <Link to={`/admin/reports/${row.entity_id}`}>Report {row.entity_id}</Link>
                   ) : row.entity === 'settings' ? (
@@ -223,22 +225,24 @@ export default function Audit() {
                     ''
                   )}
                 </td>
-                <td className="small text-secondary">{detailsText(row.details)}</td>
+                <td role="cell" className="small text-secondary">{detailsText(row.details)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <Pager
-        page={currentPage}
-        totalPages={totalPages}
-        total={total}
-        onPrev={() => setPage((p) => Math.max(1, p - 1))}
-        onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
-        hasPrev={currentPage > 1}
-        hasNext={currentPage < totalPages}
-      />
-    </>
+      <div className="rr-audit-pager">
+        <Pager
+          page={currentPage}
+          totalPages={totalPages}
+          total={total}
+          onPrev={() => setPage((p) => Math.max(1, p - 1))}
+          onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
+          hasPrev={currentPage > 1}
+          hasNext={currentPage < totalPages}
+        />
+      </div>
+    </div>
   )
 }

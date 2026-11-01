@@ -1,0 +1,31 @@
+{
+  "checks": [
+    "users/320",
+    "users/360",
+    "users/390",
+    "users/414",
+    "users/768",
+    "users/1024",
+    "users/1440",
+    "notifications/320",
+    "notifications/360",
+    "notifications/390",
+    "notifications/414",
+    "notifications/768",
+    "notifications/1024",
+    "notifications/1440",
+    "audit/320",
+    "audit/360",
+    "audit/390",
+    "audit/414",
+    "audit/768",
+    "audit/1024",
+    "audit/1440"
+  ],
+  "errors": [],
+  "dialog": "open/close passed",
+  "notification": "read + counter 3 → 2 → hidden passed",
+  "states": "loading/empty/error at 390 passed",
+  "contrast": "AA text contrast passed",
+  "reducedMotion": "passed"
+}

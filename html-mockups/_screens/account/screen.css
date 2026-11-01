@@ -7,3 +7,564 @@
  */
 
 /* Add screen overrides below this line. */
+
+/* ==========================================================================
+   0. Tokens — lifted from the public landing page so both screens read as
+      one product: ink-black ground, cream text, signal orange, hazard amber.
+   ========================================================================== */
+.staff-shell {
+  --rr-account-bg: #0e1214;
+  --rr-account-surface: #151a1d;
+  --rr-account-raised: #1b2226;
+  --rr-account-line: rgba(236, 232, 223, 0.09);
+  --rr-account-line-strong: rgba(236, 232, 223, 0.18);
+  --rr-account-text: #ece8df;
+  --rr-account-muted: #8d979b;
+  --rr-account-orange: #e4572e;
+  --rr-account-amber: #f5c518;
+  --rr-account-teal: #5fb7a5;
+  --rr-account-display: "Jost", "Inter", system-ui, sans-serif;
+  background:
+    radial-gradient(56rem 26rem at 78% -8%, rgba(228, 87, 46, 0.13), transparent 62%),
+    var(--rr-account-bg);
+  color: var(--rr-account-text);
+}
+
+.staff-main {
+  /* Lets the table scroll inside its panel instead of widening the page. */
+  min-width: 0;
+  color: var(--rr-account-text);
+}
+
+.staff-main .text-secondary {
+  color: var(--rr-account-muted) !important;
+}
+
+/* ==========================================================================
+   1. Sidebar — keeps the shared layout and divider, restyles the contents.
+   ========================================================================== */
+.staff-shell .sidebar {
+  background: linear-gradient(180deg, #12181b 0%, #0e1214 100%);
+}
+
+.staff-shell .sidebar .brand {
+  font-family: var(--rr-account-display);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.rr-account-nav-label {
+  margin: 0 1.25rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rr-account-orange);
+}
+
+.staff-shell .side-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  color: #aab3b7;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.staff-shell .side-nav a:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.staff-shell .side-nav a.active,
+.staff-shell .side-nav a[aria-current="page"] {
+  background: linear-gradient(90deg, rgba(228, 87, 46, 0.28), rgba(228, 87, 46, 0.06));
+  box-shadow: inset 3px 0 0 var(--rr-account-orange);
+  color: #fff;
+}
+
+.staff-shell .side-nav a:focus-visible,
+.staff-shell .sidebar-foot .btn:focus-visible,
+.staff-main a:focus-visible,
+.staff-main .btn:focus-visible,
+.staff-main .form-control:focus-visible {
+  outline: 2px solid var(--rr-account-amber);
+  outline-offset: 2px;
+}
+
+.rr-account-ico {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--rr-account-orange);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.staff-shell .side-nav .count-pill {
+  margin-left: auto;
+  background: var(--rr-account-amber);
+  color: #15191b;
+  font-weight: 700;
+}
+
+.staff-shell .sidebar-foot .btn {
+  border-radius: 999px;
+  border-color: var(--rr-account-line-strong);
+  color: var(--rr-account-text);
+  font-weight: 500;
+}
+
+.staff-shell .sidebar-foot .btn:hover {
+  background: var(--rr-account-orange);
+  border-color: var(--rr-account-orange);
+  color: #fff;
+}
+
+/* ==========================================================================
+   2. Page header + hazard tape
+   ========================================================================== */
+.rr-account-head {
+  margin-bottom: 1.25rem;
+}
+
+.rr-account-eyebrow {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rr-account-orange);
+}
+
+.rr-account-head h1 {
+  margin: 0.45rem 0 0.35rem !important;
+  font-family: var(--rr-account-display);
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--rr-account-text);
+}
+
+.rr-account-sub {
+  margin: 0;
+  max-width: 40rem;
+  font-size: 0.95rem;
+  color: var(--rr-account-muted);
+}
+
+.rr-account-tape {
+  height: 8px;
+  margin-bottom: 1.5rem;
+  border-radius: 3px;
+  background: repeating-linear-gradient(-45deg, var(--rr-account-amber) 0 12px, #14191b 12px 24px);
+  opacity: 0.85;
+}
+
+/* Role line under the title becomes a small pill with an amber lamp. */
+.staff-main .rr-account-role {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0.5rem 0 0;
+  padding: 0.3rem 0.9rem 0.3rem 0.75rem;
+  border: 1px solid var(--rr-account-line-strong);
+  border-radius: 999px;
+  background: var(--rr-account-surface);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--rr-account-text) !important;
+}
+
+.staff-main .rr-account-role::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--rr-account-amber);
+  box-shadow: 0 0 8px var(--rr-account-amber);
+}
+
+/* ==========================================================================
+   3. Layout — two equal-height cards
+   ========================================================================== */
+.staff-main .form-page {
+  max-width: 64rem;
+}
+
+.staff-main .rr-account-grid > [class*="col-"] {
+  display: flex;
+}
+
+.staff-main .rr-account-grid > [class*="col-"] > .panel {
+  width: 100%;
+}
+
+/* ==========================================================================
+   4. Cards + form controls
+   ========================================================================== */
+.staff-main .panel {
+  position: relative;
+  padding: 24px 26px 26px;
+  border: 1px solid var(--rr-account-line);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #171d20 0%, #12171a 100%);
+  box-shadow: 0 22px 44px -28px rgba(0, 0, 0, 0.8);
+  color: var(--rr-account-text);
+}
+
+.staff-main .panel > h2.h5 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.1rem;
+  font-family: var(--rr-account-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--rr-account-text);
+}
+
+.staff-main .panel > h2.h5::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--rr-account-orange);
+  box-shadow: 0 0 10px var(--rr-account-orange);
+}
+
+/* The password card is the sensitive one: its lamp is amber. */
+.staff-main #password-form > h2.h5::before {
+  background: var(--rr-account-amber);
+  box-shadow: 0 0 10px var(--rr-account-amber);
+}
+
+.staff-main .text-secondary {
+  color: var(--rr-account-muted) !important;
+}
+
+.staff-main .form-label {
+  margin-bottom: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rr-account-muted);
+}
+
+.staff-main .form-control {
+  min-height: 44px;
+  border: 1px solid var(--rr-account-line);
+  border-radius: 12px;
+  background-color: var(--rr-account-raised);
+  color: var(--rr-account-text);
+  color-scheme: dark;
+  font-size: 0.92rem;
+}
+
+.staff-main .form-control::placeholder {
+  color: #66717a;
+}
+
+.staff-main .form-control:focus {
+  border-color: var(--rr-account-orange);
+  box-shadow: 0 0 0 3px rgba(228, 87, 46, 0.25);
+  outline: 0;
+}
+
+/* Read-only fields look settled, not editable. */
+.staff-main .form-control[readonly] {
+  border-style: dashed;
+  background-color: transparent;
+  color: #c4c9c6;
+  cursor: default;
+}
+
+.staff-main .form-control[readonly]:focus {
+  border-color: var(--rr-account-line-strong);
+  box-shadow: none;
+}
+
+.staff-main .form-text {
+  margin-top: 0.45rem;
+  font-size: 0.78rem;
+  color: var(--rr-account-muted);
+}
+
+.staff-main .btn-guide {
+  min-height: 44px;
+  padding: 0 1.5rem;
+  border: 0;
+  border-radius: 12px;
+  background: var(--rr-account-orange);
+  color: #fff;
+  font-weight: 600;
+  transition: background-color 0.18s ease;
+}
+
+.staff-main .btn-guide:hover {
+  background: #f06a41;
+}
+
+/* ==========================================================================
+   5. Responsive
+   ========================================================================== */
+@media (max-width: 575.98px) {
+  .staff-main .panel {
+    padding: 20px 16px 22px;
+    border-radius: 18px;
+  }
+
+  .staff-main .btn-guide {
+    width: 100%;
+  }
+}
+
+/* ==========================================================================
+   6. Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .staff-shell *,
+  .staff-shell *::before,
+  .staff-shell *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   Burger menu — under 992px the sidebar becomes a sticky top bar with a menu
+   button; the navigation and the user / log out block open from it.
+   ========================================================================== */
+.rr-account-burger {
+  display: none;
+}
+
+@media (max-width: 991.98px) {
+  .staff-shell {
+    display: block;
+  }
+
+  .staff-shell .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: block;
+    width: auto;
+    max-width: none;
+    height: auto;
+    min-height: 0;
+    max-height: 100vh;
+    max-height: 100dvh;
+    padding: env(safe-area-inset-top, 0px) 0 0;
+    overflow-y: auto;
+    box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.9);
+  }
+
+  .staff-shell .sidebar > div:first-of-type {
+    padding: 0.75rem 4.6rem 0.75rem 1rem !important;
+  }
+
+  .staff-shell .sidebar > div:first-of-type .small {
+    display: none;
+  }
+
+  .staff-shell .sidebar.rr-account-menu-open > div:first-of-type .small {
+    display: block;
+  }
+
+  .rr-account-burger {
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 1px solid var(--rr-account-line-strong);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--rr-account-text);
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+  }
+
+  .rr-account-burger:hover {
+    background: rgba(255, 255, 255, 0.09);
+  }
+
+  .rr-account-burger:focus-visible {
+    outline: 2px solid var(--rr-account-amber);
+    outline-offset: 2px;
+  }
+
+  .rr-account-burger[aria-expanded="true"] {
+    border-color: var(--rr-account-orange);
+    background: rgba(228, 87, 46, 0.16);
+  }
+
+  .rr-account-burger-bars,
+  .rr-account-burger-bars::before,
+  .rr-account-burger-bars::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .rr-account-burger-bars {
+    position: relative;
+  }
+
+  .rr-account-burger-bars::before,
+  .rr-account-burger-bars::after {
+    content: "";
+    position: absolute;
+    left: 0;
+  }
+
+  .rr-account-burger-bars::before {
+    top: -6px;
+  }
+
+  .rr-account-burger-bars::after {
+    top: 6px;
+  }
+
+  .rr-account-burger[aria-expanded="true"] .rr-account-burger-bars {
+    background: transparent;
+  }
+
+  .rr-account-burger[aria-expanded="true"] .rr-account-burger-bars::before {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .rr-account-burger[aria-expanded="true"] .rr-account-burger-bars::after {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* Closed: only the top bar shows. */
+  .staff-shell .sidebar:not(.rr-account-menu-open) .rr-account-nav-label,
+  .staff-shell .sidebar:not(.rr-account-menu-open) .side-nav,
+  .staff-shell .sidebar:not(.rr-account-menu-open) .sidebar-foot {
+    display: none;
+  }
+
+  /* Open: a vertical list, then the user block. */
+  .staff-shell .sidebar.rr-account-menu-open .side-nav {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 2px;
+    padding: 0.25rem 0.75rem 0.5rem;
+  }
+
+  .staff-shell .sidebar.rr-account-menu-open .side-nav a {
+    min-height: 46px;
+  }
+
+  .staff-shell .sidebar.rr-account-menu-open .sidebar-foot {
+    display: block;
+    margin: 0;
+    padding: 0.85rem 1rem 1.1rem;
+    border-top: 1px solid var(--rr-account-line);
+  }
+}
+
+/* ==========================================================================
+   Small-screen safety — nothing may push the page wider than the screen.
+   ========================================================================== */
+.staff-main img,
+.staff-main svg,
+.staff-main canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 991.98px) {
+  /* Safety net: clip anything that still spills sideways (inner scrollers such as tables keep scrolling). */
+  .staff-main {
+    min-width: 0;
+    overflow-x: clip;
+  }
+
+  .staff-main td,
+  .staff-main .panel p,
+  .staff-main .form-text {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 575.98px) {
+  /* Filter bars: every control may shrink, whatever min-width the shared styles give it. */
+  .staff-main .filter-bar,
+  .staff-main .filter-bar > * {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .staff-main .filter-bar .form-control,
+  .staff-main .filter-bar .form-select,
+  .staff-main .filter-bar .btn {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .staff-main .filter-bar input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+/* Two cards as a real grid (no negative Bootstrap row margins), stacked under 768px. */
+.staff-main .rr-account-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 1.5rem;
+  margin: 0;
+}
+
+.staff-main .rr-account-grid > * {
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 767.98px) {
+  .staff-main .rr-account-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 419.98px) {
+  /* Narrow phones: one control per row, so dates and dropdown labels are never cut off. */
+  .staff-main .filter-bar > *,
+  .staff-main .filter-bar .form-control,
+  .staff-main .filter-bar .form-select,
+  .staff-main .filter-bar .form-check,
+  .staff-main .filter-bar .btn,
+  .staff-main .filter-bar input[type="date"] {
+    flex: 1 1 100% !important;
+    width: 100%;
+  }
+
+  .staff-main .filter-bar .form-check {
+    justify-content: flex-start;
+  }
+}

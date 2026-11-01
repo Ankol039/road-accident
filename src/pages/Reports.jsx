@@ -12,30 +12,14 @@ import { listReports } from '../services/reports.service.js'
 import { listAccidentTypes } from '../services/settings.service.js'
 import StatusBadge from '../components/StatusBadge.jsx'
 import Pager from '../components/Pager.jsx'
+import States from '../components/States.jsx'
 import { REPORT_STATUSES, STATUS_LABELS, BULACAN_TOWNS } from '../lib/constants.js'
 import { formatDate } from '../utils/date.js'
 import { place } from '../utils/format.js'
+import { toCsv } from '../utils/csv.js'
+import { download } from '../utils/download.js'
 
 const PAGE_SIZE = 25
-
-const toCsv = (rows) => {
-  const headers = ['Report ID', 'Date', 'Time', 'Location', 'Type', 'Injury', 'Officer', 'Status']
-  const lines = rows.map((r) =>
-    [
-      r.report_code,
-      r.accident_date,
-      r.accident_time,
-      place(r),
-      r.accident_type_name || r.accident_type_id,
-      r.injury_status,
-      r.officer_name,
-      STATUS_LABELS[r.status] || r.status,
-    ]
-      .map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`)
-      .join(','),
-  )
-  return [headers.join(','), ...lines].join('\n')
-}
 
 export default function Reports() {
   const [params] = useSearchParams()
@@ -51,6 +35,7 @@ export default function Reports() {
 
   const [page, setPage] = useState(1)
   const [cursors, setCursors] = useState([null])
+  const [exportError, setExportError] = useState('')
 
   const debouncedQ = useDebounced(q, 350)
 
@@ -102,18 +87,37 @@ export default function Reports() {
   const goPrev = () => setPage((p) => Math.max(1, p - 1))
 
   const onExport = () => {
-    const blob = new Blob([toCsv(rows)], { type: 'text/csv;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `roadreport-page-${page}.csv`
-    a.click()
-    URL.revokeObjectURL(url)
+    setExportError('')
+    try {
+      download(`roadreport-page-${page}.csv`, toCsv(rows), 'text/csv;charset=utf-8')
+    } catch (err) {
+      setExportError(err.message || 'Could not generate the CSV. Please try again.')
+    }
   }
 
   return (
-    <>
-      <h1 className="h3 no-print">Accident reports</h1>
+    <div className="rr-reports-page">
+      <header className="rr-head no-print">
+        <div className="rr-head-text">
+          <span className="rr-eyebrow">Bulacan admin portal</span>
+          <h1 className="h3">Accident reports</h1>
+          <p className="rr-sub">Search, filter and review every accident report sent in from the RoadReport app.</p>
+        </div>
+        <div className="d-flex gap-2 no-print rr-reports-actions">
+          <button type="button" className="btn btn-sm btn-outline-guide" onClick={onExport} disabled={loading || Boolean(error) || !rows.length}>
+            Export this page (CSV)
+          </button>
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-guide"
+            onClick={() => window.print()}
+            disabled={loading}
+          >
+            Print / PDF
+          </button>
+        </div>
+      </header>
+      <div className="rr-tape no-print" aria-hidden="true" />
 
       <form
         className="filter-bar no-print"
@@ -126,13 +130,14 @@ export default function Reports() {
       >
         <input
           type="search"
+          aria-label="Search reports"
           className="form-control"
           name="q"
           placeholder="Search report ID, place or description"
           value={q}
           onChange={(e) => setQ(e.target.value)}
         />
-        <select className="form-select" value={status} onChange={(e) => setStatus(e.target.value)}>
+        <select className="form-select" aria-label="Status" value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value="">Any status</option>
           {REPORT_STATUSES.map((s) => (
             <option key={s} value={s}>
@@ -140,7 +145,7 @@ export default function Reports() {
             </option>
           ))}
         </select>
-        <select className="form-select" value={typeId} onChange={(e) => setTypeId(e.target.value)}>
+        <select className="form-select" aria-label="Accident type" value={typeId} onChange={(e) => setTypeId(e.target.value)}>
           <option value="">Any type</option>
           {types.map((t) => (
             <option key={t.id} value={t.id}>
@@ -148,9 +153,11 @@ export default function Reports() {
             </option>
           ))}
         </select>
+        <span className="rr-reports-break" aria-hidden="true" />
         <input
           className="form-control"
           name="municipality"
+          aria-label="Municipality"
           list="rt-towns"
           placeholder="Municipality"
           value={municipality}
@@ -175,7 +182,7 @@ export default function Reports() {
           onChange={(e) => setDateTo(e.target.value)}
           aria-label="To date"
         />
-        <label className="form-check d-inline-flex align-items-center gap-1">
+        <label className="form-check">
           <input
             type="checkbox"
             className="form-check-input"
@@ -184,7 +191,7 @@ export default function Reports() {
           />
           Flagged
         </label>
-        <label className="form-check d-inline-flex align-items-center gap-1">
+        <label className="form-check">
           <input
             type="checkbox"
             className="form-check-input"
@@ -201,64 +208,40 @@ export default function Reports() {
         </button>
       </form>
 
-      {error && (
-        <div className="alert alert-danger no-print" role="alert">
-          {error.message || 'Could not load reports.'}
-        </div>
-      )}
+      <div className="no-print"><States error={error} /></div>
+      <div className="no-print"><States error={exportError} /></div>
 
-      <div className="d-flex justify-content-end gap-2 mb-2 no-print">
-        <button type="button" className="btn btn-sm btn-outline-guide" onClick={onExport} disabled={!rows.length}>
-          Export this page (CSV)
-        </button>
-        <button
-          type="button"
-          className="btn btn-sm btn-outline-guide"
-          onClick={() => window.print()}
-          disabled={loading}
-        >
-          Print / PDF
-        </button>
-      </div>
-
-      <div className="table-responsive panel p-0 print-area">
-        <table className="table table-hover align-middle mb-0">
-          <thead>
-            <tr>
-              <th>Report ID</th>
-              <th>Accident date</th>
-              <th>Location</th>
-              <th>Type</th>
-              <th>Officer</th>
-              <th>Status</th>
+      <div className="table-responsive panel p-0 print-area rr-reports-table" tabIndex={0} role="region" aria-label="Accident reports table; scroll sideways on desktop for all columns">
+        <table className="table table-hover align-middle mb-0" role="table" aria-label="Accident reports">
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col">Report ID</th>
+              <th role="columnheader" scope="col">Accident date</th>
+              <th role="columnheader" scope="col">Location</th>
+              <th role="columnheader" scope="col">Type</th>
+              <th role="columnheader" scope="col">Officer</th>
+              <th role="columnheader" scope="col">Status</th>
             </tr>
           </thead>
-          <tbody>
-            {loading && (
-              <tr>
-                <td colSpan={6} className="text-secondary">
-                  Loading…
-                </td>
-              </tr>
-            )}
-            {!loading && rows.length === 0 && (
-              <tr>
-                <td colSpan={6} className="text-secondary">
-                  No reports match those filters.
+          <tbody role="rowgroup">
+            {(loading || rows.length === 0) && (
+              <tr className="rr-reports-state-row" role="row">
+                <td colSpan={6} role="cell">
+                  <States loading={loading} empty emptyText="No reports match those filters." />
                 </td>
               </tr>
             )}
             {rows.map((r) => (
-              <tr key={r.id} className="clickable">
-                <td className="code-cell">
+              <tr key={r.id} className="clickable" role="row">
+                <td role="cell" className="code-cell">
                   <Link to={`/admin/reports/${r.id}`}>{r.report_code || '—'}</Link>
                   {r.flagged && <span className="flag-dot">flagged</span>}
                 </td>
-                <td>{formatDate(r.accident_date)}</td>
-                <td>{place(r)}</td>
-                <td>{r.accident_type_name || '—'}</td>
-                <td>{r.officer_name || '—'}</td>
-                <td>
+                <td role="cell">{formatDate(r.accident_date)}</td>
+                <td role="cell">{place(r)}</td>
+                <td role="cell">{r.accident_type_name || '—'}</td>
+                <td role="cell">{r.officer_name || '—'}</td>
+                <td role="cell">
                   <StatusBadge status={r.status} />
                 </td>
               </tr>
@@ -267,7 +250,7 @@ export default function Reports() {
         </table>
       </div>
 
-      <div className="no-print">
+      <div className="no-print rr-reports-pager">
         <Pager
           page={page}
           totalPages={page + (data?.hasMore ? 1 : 0)}
@@ -278,6 +261,6 @@ export default function Reports() {
           hasNext={Boolean(data?.hasMore)}
         />
       </div>
-    </>
+    </div>
   )
 }

@@ -15,7 +15,19 @@ import {
   Legend,
 } from 'chart.js'
 import { Bar, Doughnut, Pie, Line } from 'react-chartjs-2'
-import { CHART_COLORS } from '../lib/constants.js'
+import { useSyncExternalStore } from 'react'
+
+const CHART_COLORS = {
+  ink: '#ece8df', muted: '#ece8df', grid: 'rgba(236,232,223,.09)',
+  bar: '#e4572e', barHover: '#f06a41', tooltipBg: '#151a1d',
+}
+const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+const subscribeMotion = (notify) => {
+  motionQuery.addEventListener('change', notify)
+  return () => motionQuery.removeEventListener('change', notify)
+}
+const readMotion = () => motionQuery.matches
+const useReducedMotion = () => useSyncExternalStore(subscribeMotion, readMotion)
 
 ChartJS.register(
   CategoryScale,
@@ -33,9 +45,10 @@ ChartJS.defaults.font.family = "'Inter', system-ui, sans-serif"
 ChartJS.defaults.borderColor = CHART_COLORS.grid
 
 /** Shared options so every chart has the same grid, legend and tooltip look. */
-export const baseOptions = ({ legend = false, horizontal = false } = {}) => ({
+export const baseOptions = ({ legend = false, horizontal = false, reducedMotion = false } = {}) => ({
   responsive: true,
   maintainAspectRatio: false,
+  ...(reducedMotion ? { animation: false } : {}),
   plugins: {
     legend: {
       display: legend,
@@ -70,7 +83,8 @@ export const baseOptions = ({ legend = false, horizontal = false } = {}) => ({
 })
 
 /** Bar chart from [{label, value}] data. */
-export function Bars({ data, horizontal = false, height = 260, color = CHART_COLORS.bar }) {
+export function Bars({ data, horizontal = false, height = 260, color = CHART_COLORS.bar, tickColor }) {
+  const reducedMotion = useReducedMotion()
   const chart = {
     labels: data.map((d) => d.label),
     datasets: [
@@ -83,15 +97,20 @@ export function Bars({ data, horizontal = false, height = 260, color = CHART_COL
       },
     ],
   }
+  const options = baseOptions({ horizontal, reducedMotion })
+  if (tickColor) {
+    for (const scale of Object.values(options.scales)) scale.ticks.color = tickColor
+  }
   return (
     <div className="chart-box" style={{ height }}>
-      <Bar data={chart} options={baseOptions({ horizontal })} />
+      <Bar data={chart} options={options} />
     </div>
   )
 }
 
 /** Line chart, used by the summaries trend. */
 export function Trend({ data, height = 260, color = CHART_COLORS.bar }) {
+  const reducedMotion = useReducedMotion()
   const chart = {
     labels: data.map((d) => d.label),
     datasets: [
@@ -108,18 +127,19 @@ export function Trend({ data, height = 260, color = CHART_COLORS.bar }) {
   }
   return (
     <div className="chart-box" style={{ height }}>
-      <Line data={chart} options={baseOptions()} />
+      <Line data={chart} options={baseOptions({ reducedMotion })} />
     </div>
   )
 }
 
 const PIE_PALETTE = [
-  '#e4572e', '#f2b705', '#0f6b4c', '#c8322b', '#0b6e8a',
-  '#43378c', '#6fe0a1', '#f19a7a', '#b3a6f0', '#86d6ea',
+  '#e4572e', '#f5c518', '#5fb7a5', '#f19a7a', '#86d6ea',
+  '#b3a6f0', '#e5483a', '#c8cdc9', '#d99d52', '#8a9fc5',
 ]
 
 /** Pie / doughnut for status and type splits. */
 export function Split({ data, doughnut = true, height = 260 }) {
+  const reducedMotion = useReducedMotion()
   const chart = {
     labels: data.map((d) => d.label),
     datasets: [
@@ -131,7 +151,7 @@ export function Split({ data, doughnut = true, height = 260 }) {
       },
     ],
   }
-  const options = baseOptions({ legend: true })
+  const options = baseOptions({ legend: true, reducedMotion })
   delete options.scales
   return (
     <div className="chart-box" style={{ height }}>

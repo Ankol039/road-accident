@@ -35,6 +35,9 @@ export const BULACAN_TOWNS = [
 /** User roles. report/admin/officer are the roles from api/core/auth.php. */
 export const USER_ROLES = ['reporter', 'admin', 'officer']
 
+/** Roles an administrator may create in the portal. Public users register in the mobile app. */
+export const ADMIN_CREATABLE_ROLES = ['admin', 'officer']
+
 /** Roles that may use this web app. Officers and reporters use the mobile app. */
 export const STAFF_ROLES = ['admin']
 

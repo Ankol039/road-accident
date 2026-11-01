@@ -7,3 +7,822 @@
  */
 
 /* Add screen overrides below this line. */
+
+/* ==========================================================================
+   0. Tokens — lifted from the public landing page so both screens read as
+      one product: ink-black ground, cream text, signal orange, hazard amber.
+   ========================================================================== */
+.staff-shell {
+  --rr-summaries-bg: #0e1214;
+  --rr-summaries-surface: #151a1d;
+  --rr-summaries-raised: #1b2226;
+  --rr-summaries-line: rgba(236, 232, 223, 0.09);
+  --rr-summaries-line-strong: rgba(236, 232, 223, 0.18);
+  --rr-summaries-text: #ece8df;
+  --rr-summaries-muted: #8d979b;
+  --rr-summaries-orange: #e4572e;
+  --rr-summaries-amber: #f5c518;
+  --rr-summaries-teal: #5fb7a5;
+  --rr-summaries-display: "Jost", "Inter", system-ui, sans-serif;
+  background:
+    radial-gradient(56rem 26rem at 78% -8%, rgba(228, 87, 46, 0.13), transparent 62%),
+    var(--rr-summaries-bg);
+  color: var(--rr-summaries-text);
+}
+
+.staff-main {
+  /* Lets the table scroll inside its panel instead of widening the page. */
+  min-width: 0;
+  color: var(--rr-summaries-text);
+}
+
+.staff-main .text-secondary {
+  color: var(--rr-summaries-muted) !important;
+}
+
+/* ==========================================================================
+   1. Sidebar — keeps the shared layout and divider, restyles the contents.
+   ========================================================================== */
+.staff-shell .sidebar {
+  background: linear-gradient(180deg, #12181b 0%, #0e1214 100%);
+}
+
+.staff-shell .sidebar .brand {
+  font-family: var(--rr-summaries-display);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.rr-summaries-nav-label {
+  margin: 0 1.25rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rr-summaries-orange);
+}
+
+.staff-shell .side-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  color: #aab3b7;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.staff-shell .side-nav a:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.staff-shell .side-nav a.active,
+.staff-shell .side-nav a[aria-current="page"] {
+  background: linear-gradient(90deg, rgba(228, 87, 46, 0.28), rgba(228, 87, 46, 0.06));
+  box-shadow: inset 3px 0 0 var(--rr-summaries-orange);
+  color: #fff;
+}
+
+.staff-shell .side-nav a:focus-visible,
+.staff-shell .sidebar-foot .btn:focus-visible,
+.staff-main a:focus-visible,
+.staff-main .btn:focus-visible,
+.staff-main .form-control:focus-visible {
+  outline: 2px solid var(--rr-summaries-amber);
+  outline-offset: 2px;
+}
+
+.rr-summaries-ico {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--rr-summaries-orange);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.staff-shell .side-nav .count-pill {
+  margin-left: auto;
+  background: var(--rr-summaries-amber);
+  color: #15191b;
+  font-weight: 700;
+}
+
+.staff-shell .sidebar-foot .btn {
+  border-radius: 999px;
+  border-color: var(--rr-summaries-line-strong);
+  color: var(--rr-summaries-text);
+  font-weight: 500;
+}
+
+.staff-shell .sidebar-foot .btn:hover {
+  background: var(--rr-summaries-orange);
+  border-color: var(--rr-summaries-orange);
+  color: #fff;
+}
+
+/* ==========================================================================
+   2. Page header, actions + hazard tape
+   ========================================================================== */
+.rr-summaries-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-bottom: 1.25rem;
+}
+
+.rr-summaries-eyebrow {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rr-summaries-orange);
+}
+
+.rr-summaries-head h1 {
+  margin: 0.45rem 0 0.35rem;
+  font-family: var(--rr-summaries-display);
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--rr-summaries-text);
+}
+
+.rr-summaries-sub {
+  margin: 0;
+  max-width: 34rem;
+  font-size: 0.95rem;
+  color: var(--rr-summaries-muted);
+}
+
+.rr-summaries-tape {
+  height: 8px;
+  margin-bottom: 1.5rem;
+  border-radius: 3px;
+  background: repeating-linear-gradient(-45deg, var(--rr-summaries-amber) 0 12px, #14191b 12px 24px);
+  opacity: 0.85;
+}
+
+.staff-main .btn-outline-guide {
+  min-height: 40px;
+  padding: 0 1rem;
+  border: 1px solid rgba(228, 87, 46, 0.55);
+  border-radius: 10px;
+  background: transparent;
+  color: #ff9b7a;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.staff-main .btn-outline-guide:hover {
+  border-color: var(--rr-summaries-orange);
+  background: var(--rr-summaries-orange);
+  color: #fff;
+}
+
+/* ==========================================================================
+   3. Filter bar — labelled fields in one raised panel
+   ========================================================================== */
+.staff-main .filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 14px;
+  margin: 0 0 1.25rem;
+  padding: 16px;
+  border: 1px solid var(--rr-summaries-line);
+  border-radius: 20px;
+  background: linear-gradient(180deg, #171d20 0%, #12171a 100%);
+  box-shadow: 0 22px 44px -28px rgba(0, 0, 0, 0.8);
+}
+
+.staff-main .filter-bar > div {
+  min-width: 0;
+}
+
+.staff-main .filter-bar .form-label {
+  display: block;
+  margin: 0 0 0.4rem !important;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rr-summaries-muted);
+}
+
+.staff-main .filter-bar .form-control,
+.staff-main .filter-bar .form-select {
+  width: auto;
+  min-width: 0;
+  min-height: 42px;
+  border: 1px solid var(--rr-summaries-line);
+  border-radius: 12px;
+  background-color: var(--rr-summaries-raised);
+  color: var(--rr-summaries-text);
+  color-scheme: dark;
+  font-size: 0.9rem;
+}
+
+.staff-main .filter-bar .form-control:focus,
+.staff-main .filter-bar .form-select:focus {
+  border-color: var(--rr-summaries-orange);
+  box-shadow: 0 0 0 3px rgba(228, 87, 46, 0.25);
+  outline: 0;
+}
+
+.staff-main .filter-bar .btn-guide {
+  min-height: 42px;
+  padding: 0 1.5rem;
+  border: 0;
+  border-radius: 12px;
+  background: var(--rr-summaries-orange);
+  color: #fff;
+  font-weight: 600;
+}
+
+.staff-main .filter-bar .btn-guide:hover {
+  background: #f06a41;
+}
+
+/* ==========================================================================
+   4. Panels + chart
+   ========================================================================== */
+.staff-main .panel {
+  position: relative;
+  overflow: hidden;
+  padding: 20px 22px 22px;
+  border: 1px solid var(--rr-summaries-line);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #171d20 0%, #12171a 100%);
+  box-shadow: 0 22px 44px -28px rgba(0, 0, 0, 0.8);
+  color: var(--rr-summaries-text);
+}
+
+.staff-main .panel.p-0 {
+  padding: 0;
+}
+
+.staff-main .panel h2.h6,
+.staff-main .panel h2.h5 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--rr-summaries-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  color: var(--rr-summaries-text);
+}
+
+.staff-main .panel h2.h6::before,
+.staff-main .panel h2.h5::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--rr-summaries-orange);
+  box-shadow: 0 0 10px var(--rr-summaries-orange);
+}
+
+.staff-main .text-secondary {
+  color: var(--rr-summaries-muted) !important;
+}
+
+.staff-main .chart-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+}
+
+.staff-main .chart-box .rr-static-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ==========================================================================
+   5. Summary table — sticky first column so the period stays visible
+   ========================================================================== */
+.staff-main .rr-summaries-table::before {
+  content: "";
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, var(--rr-summaries-orange), transparent 60%);
+}
+
+.staff-main .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--rr-summaries-text);
+  --bs-table-border-color: var(--rr-summaries-line);
+  --bs-table-hover-bg: rgba(228, 87, 46, 0.07);
+  --bs-table-hover-color: var(--rr-summaries-text);
+  color: var(--rr-summaries-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.staff-main .table > :not(caption) > * > * {
+  background-color: transparent;
+  border-color: var(--rr-summaries-line);
+  box-shadow: none;
+}
+
+.staff-main .table thead th {
+  padding: 0.95rem 0.7rem;
+  border-bottom: 1px solid var(--rr-summaries-line-strong);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--rr-summaries-muted);
+}
+
+.staff-main .table tbody td {
+  padding: 0.7rem 0.7rem;
+  font-size: 0.88rem;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.staff-main .table tbody td.text-end {
+  color: #c4c9c6;
+}
+
+.staff-main .table tbody td:nth-child(2) {
+  font-weight: 600;
+  color: var(--rr-summaries-text);
+}
+
+.staff-main .table thead th:first-child,
+.staff-main .table tbody td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: #161c1f;
+  box-shadow: 1px 0 0 var(--rr-summaries-line);
+}
+
+.staff-main .table tbody tr:hover > * {
+  background-color: rgba(228, 87, 46, 0.07);
+}
+
+.staff-main .table tbody tr:hover > td:first-child {
+  background-color: #1f2427;
+}
+
+/* The two text columns may wrap, so the table fits without side-scrolling. */
+.staff-main .table tbody td:nth-child(9),
+.staff-main .table tbody td:nth-child(10) {
+  min-width: 7rem;
+  white-space: normal;
+}
+
+/* Total row: a warm band, like the landing page's accent lines. */
+.staff-main .table tbody tr.table-dark > * {
+  border-top: 1px solid rgba(228, 87, 46, 0.5);
+  background-color: rgba(228, 87, 46, 0.12);
+  color: var(--rr-summaries-text);
+  font-weight: 700;
+}
+
+.staff-main .table tbody tr.table-dark > td:first-child {
+  background-color: #241d1b;
+  color: var(--rr-summaries-orange);
+  font-family: var(--rr-summaries-display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.staff-main .table tbody tr.table-dark:hover > * {
+  background-color: rgba(228, 87, 46, 0.16);
+}
+
+/* ==========================================================================
+   6. Export panel
+   ========================================================================== */
+.staff-main .rr-summaries-export h2 {
+  margin-bottom: 0.5rem;
+}
+
+.staff-main .rr-summaries-export p {
+  max-width: 46rem;
+  font-size: 0.92rem;
+}
+
+.staff-main .rr-summaries-export p a {
+  color: var(--rr-summaries-amber);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.staff-main .rr-summaries-export p a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.staff-main .rr-summaries-export .form-check {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 42px;
+  padding: 0 1rem;
+  border: 1px solid var(--rr-summaries-line);
+  border-radius: 999px;
+  background: var(--rr-summaries-raised);
+  font-size: 0.9rem;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.staff-main .rr-summaries-export .form-check .form-check-input {
+  float: none;
+  margin: 0;
+  accent-color: var(--rr-summaries-orange);
+}
+
+.staff-main .rr-summaries-export .form-check:has(input:checked) {
+  border-color: var(--rr-summaries-orange);
+  background: rgba(228, 87, 46, 0.14);
+}
+
+.staff-main .rr-summaries-export .form-check:has(input:focus-visible) {
+  outline: 2px solid var(--rr-summaries-amber);
+  outline-offset: 2px;
+}
+
+.staff-main .rr-summaries-export a.btn-outline-guide {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;  margin-bottom: 0.5rem;
+}
+
+/* ==========================================================================
+   7. Responsive
+   ========================================================================== */
+@media (max-width: 767.98px) {
+  .rr-summaries-head {
+    align-items: stretch;
+  }
+
+  .rr-summaries-actions {
+    justify-content: flex-start !important;
+  }
+
+  /* The static chart image stays readable by scrolling sideways. */
+  .staff-main .chart-box {
+    display: block;
+    height: auto !important;
+    overflow-x: auto;
+  }
+
+  .staff-main .chart-box .rr-static-canvas {
+    width: 800px;
+    max-width: none;
+    height: auto;
+  }
+
+  .staff-main .chart-box::after {
+    content: "Scroll sideways to see every period";
+    display: block;
+    position: sticky;
+    left: 0;
+    padding: 0.5rem 0 0;
+    font-size: 0.72rem;
+    color: var(--rr-summaries-muted);
+  }
+
+  .staff-main .table thead th,
+  .staff-main .table tbody td {
+    padding-right: 0.8rem;
+    padding-left: 0.8rem;
+  }
+
+  .staff-main .table thead th:first-child,
+  .staff-main .table tbody td:first-child {
+    min-width: 8.5rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .staff-main .filter-bar {
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .staff-main .filter-bar > div {
+    flex: 1 1 calc(50% - 7px);
+  }
+
+  /* The Count select has a long label, so it gets its own row. */
+  .staff-main .filter-bar > div:nth-child(2) {
+    flex-basis: 100%;
+  }
+
+  .staff-main .filter-bar .form-control,
+  .staff-main .filter-bar .form-select {
+    width: 100%;
+  }
+
+  .staff-main .filter-bar .btn-guide {
+    flex: 1 1 100%;
+  }
+
+  .staff-main .panel {
+    padding: 16px 16px 18px;
+    border-radius: 18px;
+  }
+
+  .staff-main .panel.p-0 {
+    padding: 0;
+  }
+
+  .staff-main .rr-summaries-export h2 {
+    font-size: 1.05rem;
+  }
+
+  .staff-main .rr-summaries-export a.btn-outline-guide {
+    display: flex;
+    justify-content: center;
+    margin: 0 0 0.6rem !important;
+  }
+}
+
+/* ==========================================================================
+   8. Print — chart and table print as a plain light document.
+   ========================================================================== */
+@media print {
+  .staff-shell,
+  .staff-main,
+  .staff-main .panel,
+  .staff-main .table,
+  .staff-main .table > :not(caption) > * > *,
+  .staff-main .table tbody tr.table-dark > * {
+    background: #fff !important;
+    color: #000 !important;
+    box-shadow: none !important;
+  }
+
+  .staff-main .rr-summaries-head h1,
+  .staff-main .panel h2 {
+    color: #000 !important;
+  }
+
+  .staff-main .table thead th {
+    color: #333 !important;
+  }
+
+  .staff-main .table thead th:first-child,
+  .staff-main .table tbody td:first-child {
+    position: static;
+  }
+
+  .staff-main .rr-summaries-table {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .staff-main .rr-summaries-table::before {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   9. Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .staff-shell *,
+  .staff-shell *::before,
+  .staff-shell *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   Burger menu — under 992px the sidebar becomes a sticky top bar with a menu
+   button; the navigation and the user / log out block open from it.
+   ========================================================================== */
+.rr-summaries-burger {
+  display: none;
+}
+
+@media (max-width: 991.98px) {
+  .staff-shell {
+    display: block;
+  }
+
+  .staff-shell .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: block;
+    width: auto;
+    max-width: none;
+    height: auto;
+    min-height: 0;
+    max-height: 100vh;
+    max-height: 100dvh;
+    padding: env(safe-area-inset-top, 0px) 0 0;
+    overflow-y: auto;
+    box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.9);
+  }
+
+  .staff-shell .sidebar > div:first-of-type {
+    padding: 0.75rem 4.6rem 0.75rem 1rem !important;
+  }
+
+  .staff-shell .sidebar > div:first-of-type .small {
+    display: none;
+  }
+
+  .staff-shell .sidebar.rr-summaries-menu-open > div:first-of-type .small {
+    display: block;
+  }
+
+  .rr-summaries-burger {
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 1px solid var(--rr-summaries-line-strong);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--rr-summaries-text);
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+  }
+
+  .rr-summaries-burger:hover {
+    background: rgba(255, 255, 255, 0.09);
+  }
+
+  .rr-summaries-burger:focus-visible {
+    outline: 2px solid var(--rr-summaries-amber);
+    outline-offset: 2px;
+  }
+
+  .rr-summaries-burger[aria-expanded="true"] {
+    border-color: var(--rr-summaries-orange);
+    background: rgba(228, 87, 46, 0.16);
+  }
+
+  .rr-summaries-burger-bars,
+  .rr-summaries-burger-bars::before,
+  .rr-summaries-burger-bars::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .rr-summaries-burger-bars {
+    position: relative;
+  }
+
+  .rr-summaries-burger-bars::before,
+  .rr-summaries-burger-bars::after {
+    content: "";
+    position: absolute;
+    left: 0;
+  }
+
+  .rr-summaries-burger-bars::before {
+    top: -6px;
+  }
+
+  .rr-summaries-burger-bars::after {
+    top: 6px;
+  }
+
+  .rr-summaries-burger[aria-expanded="true"] .rr-summaries-burger-bars {
+    background: transparent;
+  }
+
+  .rr-summaries-burger[aria-expanded="true"] .rr-summaries-burger-bars::before {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .rr-summaries-burger[aria-expanded="true"] .rr-summaries-burger-bars::after {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* Closed: only the top bar shows. */
+  .staff-shell .sidebar:not(.rr-summaries-menu-open) .rr-summaries-nav-label,
+  .staff-shell .sidebar:not(.rr-summaries-menu-open) .side-nav,
+  .staff-shell .sidebar:not(.rr-summaries-menu-open) .sidebar-foot {
+    display: none;
+  }
+
+  /* Open: a vertical list, then the user block. */
+  .staff-shell .sidebar.rr-summaries-menu-open .side-nav {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 2px;
+    padding: 0.25rem 0.75rem 0.5rem;
+  }
+
+  .staff-shell .sidebar.rr-summaries-menu-open .side-nav a {
+    min-height: 46px;
+  }
+
+  .staff-shell .sidebar.rr-summaries-menu-open .sidebar-foot {
+    display: block;
+    margin: 0;
+    padding: 0.85rem 1rem 1.1rem;
+    border-top: 1px solid var(--rr-summaries-line);
+  }
+}
+
+/* ==========================================================================
+   Small-screen safety — nothing may push the page wider than the screen.
+   ========================================================================== */
+.staff-main img,
+.staff-main svg,
+.staff-main canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 991.98px) {
+  /* Safety net: clip anything that still spills sideways (inner scrollers such as tables keep scrolling). */
+  .staff-main {
+    min-width: 0;
+    overflow-x: clip;
+  }
+
+  .staff-main td,
+  .staff-main .panel p,
+  .staff-main .form-text {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 575.98px) {
+  /* Filter bars: every control may shrink, whatever min-width the shared styles give it. */
+  .staff-main .filter-bar,
+  .staff-main .filter-bar > * {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .staff-main .filter-bar .form-control,
+  .staff-main .filter-bar .form-select,
+  .staff-main .filter-bar .btn {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .staff-main .filter-bar input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+@media (max-width: 419.98px) {
+  /* Narrow phones: one control per row, so dates and dropdown labels are never cut off. */
+  .staff-main .filter-bar > *,
+  .staff-main .filter-bar .form-control,
+  .staff-main .filter-bar .form-select,
+  .staff-main .filter-bar .form-check,
+  .staff-main .filter-bar .btn,
+  .staff-main .filter-bar input[type="date"] {
+    flex: 1 1 100% !important;
+    width: 100%;
+  }
+
+  .staff-main .filter-bar .form-check {
+    justify-content: flex-start;
+  }
+}

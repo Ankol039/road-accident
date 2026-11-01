@@ -78,7 +78,7 @@ The repo root **is** the React app. Everything below is relative to the repo roo
 ├── index.html                 # Vite entry; loads fonts, sets theme-color
 ├── vite.config.js             # manualChunks splits firebase/charts/maps; outDir: dist
 ├── firebase.json              # Hosting (public: dist, SPA rewrite) + rules refs
-├── .firebaserc                # project: group3finalproj-9761b
+├── .firebaserc                # project: roadreport-402a6
 ├── firestore.rules            # ← the real backend; review before every deploy
 ├── firestore.indexes.json
 ├── .env / .env.example        # Firebase web config (see §6)
@@ -142,8 +142,9 @@ the live Firestore project — no runtime or console errors on any route):
 
 ### 6.1 Fill in `.env` (required before anything works)
 
-The app will not talk to Firebase until you paste the **Web app config**.
-Get it from:
+The current project is **`roadreport-402a6`**. Its Web SDK configuration is set
+in `.env` and `.env.example`. Copy `.env.example` to `.env` on a fresh checkout.
+To retrieve the configuration again, get it from:
 
 > Firebase console → ⚙️ Project settings → **General** → *Your apps* → Web app (`</>`)
 > If no Web app exists, click **`</>` Add app**, register one, then copy the config.
@@ -152,15 +153,17 @@ Then edit `.env` (at the repo root):
 
 ```dotenv
 VITE_FIREBASE_API_KEY=AIza...
-VITE_FIREBASE_AUTH_DOMAIN=group3finalproj-9761b.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=group3finalproj-9761b
-VITE_FIREBASE_STORAGE_BUCKET=group3finalproj-9761b.firebasestorage.app
-VITE_FIREBASE_MESSAGING_SENDER_ID=123456789012
-VITE_FIREBASE_APP_ID=1:123456789012:web:abc123
+VITE_FIREBASE_AUTH_DOMAIN=roadreport-402a6.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=roadreport-402a6
+VITE_FIREBASE_STORAGE_BUCKET=roadreport-402a6.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=481949702737
+VITE_FIREBASE_APP_ID=1:481949702737:web:6dc5049dfeb19853113670
 ```
 
 > ⚠️ The key in `~/private/firebase-service-account.json` is a **service account**
-> key (server-side, for the scripts). It is **not** the web config and must never
+> key and must belong to **`roadreport-402a6`**. The scripts reject credentials whose
+> `project_id` differs from `.firebaserc`. Set `GOOGLE_APPLICATION_CREDENTIALS`
+> to the new key file to override auto-discovery. It is **not** the web config and must never
 > be put in `.env` or shipped to the browser.
 >
 > `scripts/seed.mjs` and `scripts/create-user.mjs` locate it as
@@ -206,7 +209,9 @@ firebase deploy --only firestore:rules
 ```
 
 `firebase.json` already sets `public: "dist"` and rewrites every path to
-`/index.html`, so client-side routes work on refresh.
+`/index.html`, so client-side routes work on refresh. The `primary` target now maps
+to the default `roadreport-402a6` Hosting site. The previous secondary-site
+mapping was removed; add another target only after creating a site in the new project.
 
 ---
 

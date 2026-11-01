@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0e1214" />
+    <title>Dashboard — RoadReport mockup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../_shared/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../_shared/leaflet.css" />
+    <link rel="stylesheet" href="../../_shared/app.css" />
+    <link rel="stylesheet" href="../../_shared/mock.css" />
+    <link rel="stylesheet" href="./screen.css" />
+  </head>
+  <body>
+    <!--
+  ROADREPORT UI MOCKUP — Dashboard
+  Route: /admin
+  Source: src/pages/Dashboard.jsx
+
+  This file is a static visual reference. Edit this file and ./screen.css ONLY.
+  Do not edit _shared/app.css, other screens, or add new frameworks/fonts.
+  Read ../../README.md before changing anything.
+  Preserve data-rr-* attributes and {{ ... }} expressions.
+  Links point at the sibling mockups; data-rr-href remembers the real SPA route.
+-->
+    <div id="mock-root">
+      <div class="staff-shell" data-rr-screen="dashboard" data-rr-source="src/pages/Dashboard.jsx">
+        <a class="skip-link" href="#page">Skip to content</a>
+        <aside class="sidebar" data-rr-region="shell/sidebar">
+          <div class="px-3 pt-3 pb-4">
+            <a class="text-decoration-none" href="../dashboard/index.html" data-rr-href="/admin"
+              ><span class="brand brand-light"
+                ><svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
+                  <rect
+                    x="10"
+                    y="10"
+                    width="44"
+                    height="44"
+                    rx="6"
+                    transform="rotate(45 32 32)"
+                    fill="#F2B705"
+                    stroke="#23272B"
+                    stroke-width="4"
+                  ></rect>
+                  <rect x="29" y="18" width="6" height="18" rx="3" fill="#23272B"></rect>
+                  <circle cx="32" cy="43" r="3.5" fill="#23272B"></circle></svg
+                ><span>RoadReport</span></span
+              ></a
+            >
+            <div class="small text-white-50 mt-2">Administrator</div>
+          </div>
+          <nav class="side-nav" aria-label="Main" data-rr-region="shell/nav">
+            <a
+              aria-current="page"
+              class="active"
+              href="../dashboard/index.html"
+              data-rr-href="/admin"
+              >Dashboard</a
+            ><a href="../reports/index.html" data-rr-href="/admin/reports">Accident reports</a
+            ><a href="../summaries/index.html" data-rr-href="/admin/summaries"
+              >Summaries and export</a
+            ><a href="../users/index.html" data-rr-href="/admin/users">Users</a
+            ><a href="../settings/index.html" data-rr-href="/admin/settings"
+              >Categories and settings</a
+            ><a href="../audit/index.html" data-rr-href="/admin/audit">Audit trail</a
+            ><a href="../notifications/index.html" data-rr-href="/admin/notifications"
+              >Notifications<span class="count-pill">3</span></a
+            ><a href="../account/index.html" data-rr-href="/admin/account">My account</a>
+          </nav>
+          <div class="sidebar-foot">
+            <div class="small text-white mb-2 text-truncate" data-user-name="true">Demo User</div>
+            <button type="button" class="btn btn-sm btn-outline-light w-100">Log out</button>
+          </div>
+        </aside>
+        <main id="page" class="staff-main" tabindex="-1" data-rr-region="page/root">
+          <h1 class="h3" data-rr-region="page/title">Dashboard</h1>
+          <form class="filter-bar" id="range-form" role="search" data-rr-region="filter-bar">
+            <input
+              type="date"
+              class="form-control"
+              aria-label="From date"
+              value="2026-09-23"
+            /><input
+              type="date"
+              class="form-control"
+              aria-label="To date"
+              value="2026-10-23"
+            /><button type="submit" class="btn btn-sm btn-guide">Apply</button
+            ><button type="button" class="btn btn-sm btn-link">All dates</button>
+          </form>
+          <div class="stack">
+            <div class="stat-grid" id="cards" data-rr-region="stat-grid">
+              <a
+                class="stat-card stat-on_scene"
+                href="../dashboard/index.html"
+                data-rr-region="stat-card"
+                data-rr-repeat="stats"
+                data-rr-href="/admin/reports?status=on_scene"
+                ><span class="stat-value">0</span
+                ><span class="stat-label">Officer on scene</span></a
+              ><a
+                class="stat-card stat-pending"
+                href="../dashboard/index.html"
+                data-rr-region="stat-card"
+                data-rr-repeat="stats"
+                data-rr-href="/admin/reports?status=submitted"
+                ><span class="stat-value">5</span><span class="stat-label">Needs review</span></a
+              ><a
+                class="stat-card stat-dispatched"
+                href="../dashboard/index.html"
+                data-rr-region="stat-card"
+                data-rr-repeat="stats"
+                data-rr-href="/admin/reports?status=assigned"
+                ><span class="stat-value">1</span><span class="stat-label">Dispatched</span></a
+              ><a
+                class="stat-card"
+                href="../reports/index.html"
+                data-rr-region="stat-card"
+                data-rr-repeat="stats"
+                data-rr-href="/admin/reports"
+                ><span class="stat-value">11</span><span class="stat-label">All reports</span></a
+              ><a
+                class="stat-card stat-verified"
+                href="../dashboard/index.html"
+                data-rr-region="stat-card"
+                data-rr-repeat="stats"
+                data-rr-href="/admin/reports?official=1"
+                ><span class="stat-value">2</span><span class="stat-label">Verified</span></a
+              ><a
+                class="stat-card stat-closed"
+                href="../dashboard/index.html"
+                data-rr-region="stat-card"
+                data-rr-repeat="stats"
+                data-rr-href="/admin/reports?status=resolved"
+                ><span class="stat-value">3</span><span class="stat-label">Closed</span></a
+              ><a
+                class="stat-card stat-duplicates"
+                href="../dashboard/index.html"
+                data-rr-region="stat-card"
+                data-rr-repeat="stats"
+                data-rr-href="/admin/reports?status=duplicate"
+                ><span class="stat-value">0</span><span class="stat-label">Duplicates</span></a
+              ><a
+                class="stat-card"
+                href="../reports/index.html"
+                data-rr-region="stat-card"
+                data-rr-repeat="stats"
+                data-rr-href="/admin/reports"
+                ><span class="stat-value">0</span><span class="stat-label">Reported today</span></a
+              ><a
+                class="stat-card stat-flagged"
+                href="../dashboard/index.html"
+                data-rr-region="stat-card"
+                data-rr-repeat="stats"
+                data-rr-href="/admin/reports?flagged=1"
+                ><span class="stat-value">1</span><span class="stat-label">Flagged</span></a
+              >
+            </div>
+            <p class="small text-secondary" id="official-note">
+              4 of 11 reports in this range are verified accident records.
+            </p>
+            <div class="row g-4">
+              <div class="col-lg-6">
+                <section class="panel" data-rr-region="panel">
+                  <h2 class="h6">Reports per month</h2>
+                  <div class="chart-box" data-rr-region="chart" style="height: 260px">
+                    <img
+                      src="./assets/chart-1.png"
+                      alt="Chart preview"
+                      data-rr-static="chart"
+                      class="rr-static-canvas"
+                      width="510"
+                      height="260"
+                    />
+                  </div>
+                </section>
+              </div>
+              <div class="col-lg-6">
+                <section class="panel" data-rr-region="panel">
+                  <h2 class="h6">Accident type</h2>
+                  <div class="chart-box" data-rr-region="chart" style="height: 260px">
+                    <img
+                      src="./assets/chart-2.png"
+                      alt="Chart preview"
+                      data-rr-static="chart"
+                      class="rr-static-canvas"
+                      width="510"
+                      height="260"
+                    />
+                  </div>
+                </section>
+              </div>
+              <div class="col-lg-6">
+                <section class="panel" data-rr-region="panel">
+                  <h2 class="h6">By municipality</h2>
+                  <div class="chart-box" data-rr-region="chart" style="height: 260px">
+                    <img
+                      src="./assets/chart-3.png"
+                      alt="Chart preview"
+                      data-rr-static="chart"
+                      class="rr-static-canvas"
+                      width="510"
+                      height="260"
+                    />
+                  </div>
+                </section>
+              </div>
+              <div class="col-lg-6">
+                <section class="panel" data-rr-region="panel">
+                  <h2 class="h6">Time of day</h2>
+                  <div class="chart-box" data-rr-region="chart" style="height: 260px">
+                    <img
+                      src="./assets/chart-4.png"
+                      alt="Chart preview"
+                      data-rr-static="chart"
+                      class="rr-static-canvas"
+                      width="510"
+                      height="260"
+                    />
+                  </div>
+                </section>
+              </div>
+              <div class="col-lg-6">
+                <section class="panel" data-rr-region="panel">
+                  <h2 class="h6">By status</h2>
+                  <div class="chart-box" data-rr-region="chart" style="height: 260px">
+                    <img
+                      src="./assets/chart-5.png"
+                      alt="Chart preview"
+                      data-rr-static="chart"
+                      class="rr-static-canvas"
+                      width="510"
+                      height="260"
+                    />
+                  </div>
+                </section>
+              </div>
+              <div class="col-lg-6">
+                <section class="panel" data-rr-region="panel">
+                  <h2 class="h6">Injury outcome</h2>
+                  <div class="chart-box" data-rr-region="chart" style="height: 260px">
+                    <img
+                      src="./assets/chart-6.png"
+                      alt="Chart preview"
+                      data-rr-static="chart"
+                      class="rr-static-canvas"
+                      width="510"
+                      height="260"
+                    />
+                  </div>
+                </section>
+              </div>
+            </div>
+            <section class="panel" data-rr-region="panel">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="h6 mb-0">Report locations</h2>
+                <span class="small text-secondary" id="map-count">10 shown</span>
+              </div>
+              <div class="map-box" data-rr-region="map" style="height: 380px">
+                <img
+                  src="./assets/map-1.png"
+                  alt="Map preview"
+                  data-rr-static="map"
+                  class="rr-static-map"
+                  width="1084"
+                  height="378"
+                  style="width: 100%; height: 100%; object-fit: cover"
+                />
+              </div>
+              <p class="small text-secondary mt-2 mb-0">
+                <span class="me-3"
+                  ><span class="legend-dot" style="background: rgb(108, 117, 125)"></span
+                  >Submitted</span
+                ><span class="me-3"
+                  ><span class="legend-dot" style="background: rgb(11, 110, 138)"></span>Officer On
+                  Scene</span
+                ><span class="me-3"
+                  ><span class="legend-dot" style="background: rgb(11, 80, 57)"></span
+                  >Verified</span
+                ><span class="me-3"
+                  ><span class="legend-dot" style="background: rgb(196, 97, 15)"></span>In
+                  Progress</span
+                ><span class="me-3"
+                  ><span class="legend-dot" style="background: rgb(15, 107, 76)"></span>Resolved /
+                  Closed</span
+                ><span class="me-3"
+                  ><span class="legend-dot" style="background: rgb(160, 165, 170)"></span
+                  >Duplicate</span
+                >
+              </p>
+            </section>
+            <section class="panel" data-rr-region="panel">
+              <h2 class="h6">Accident-prone spots</h2>
+              <ol class="list-plain" id="hotspots">
+                <li class="d-flex justify-content-between py-1 border-bottom">
+                  <span>Barangay 3, Marilao</span><span class="text-secondary">1</span>
+                </li>
+                <li class="d-flex justify-content-between py-1 border-bottom">
+                  <span>Barangay 2, San Jose del Monte</span><span class="text-secondary">1</span>
+                </li>
+                <li class="d-flex justify-content-between py-1 border-bottom">
+                  <span>Barangay 9, Malolos</span><span class="text-secondary">1</span>
+                </li>
+                <li class="d-flex justify-content-between py-1 border-bottom">
+                  <span>Barangay 5, Santa Maria</span><span class="text-secondary">1</span>
+                </li>
+                <li class="d-flex justify-content-between py-1 border-bottom">
+                  <span>Barangay 8, Bocaue</span><span class="text-secondary">1</span>
+                </li>
+                <li class="d-flex justify-content-between py-1 border-bottom">
+                  <span>Barangay 2, Meycauayan</span><span class="text-secondary">1</span>
+                </li>
+              </ol>
+            </section>
+            <section class="panel p-0" data-rr-region="panel">
+              <div class="table-responsive" data-rr-region="table">
+                <table class="table table-hover align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>Report ID</th>
+                      <th>Date</th>
+                      <th>Location</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent">
+                    <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                      <td class="code-cell">
+                        <a
+                          href="../report-detail/index.html"
+                          data-rr-href="/admin/reports/report-0003"
+                          >RA-2026-000003</a
+                        >
+                      </td>
+                      <td>Oct 19, 2026</td>
+                      <td>Paseo del Congreso, Marilao, Barangay 3, Marilao</td>
+                      <td>
+                        <span
+                          class="status-badge status-under_review"
+                          data-rr-component="StatusBadge"
+                          data-status="under_review"
+                          >Under Review</span
+                        >
+                      </td>
+                    </tr>
+                    <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                      <td class="code-cell">
+                        <a
+                          href="../report-detail/index.html"
+                          data-rr-href="/admin/reports/report-0014"
+                          >RA-2026-000014</a
+                        >
+                      </td>
+                      <td>Oct 11, 2026</td>
+                      <td>Quirino Hwy, San Jose del Monte, Barangay 2, San Jose del Monte</td>
+                      <td>
+                        <span
+                          class="status-badge status-verified"
+                          data-rr-component="StatusBadge"
+                          data-status="verified"
+                          >Verified</span
+                        >
+                      </td>
+                    </tr>
+                    <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                      <td class="code-cell">
+                        <a
+                          href="../report-detail/index.html"
+                          data-rr-href="/admin/reports/report-0009"
+                          >RA-2026-000009</a
+                        >
+                      </td>
+                      <td>Oct 10, 2026</td>
+                      <td>Quirino Hwy, Malolos, Barangay 9, Malolos</td>
+                      <td>
+                        <span
+                          class="status-badge status-rejected"
+                          data-rr-component="StatusBadge"
+                          data-status="rejected"
+                          >Rejected</span
+                        >
+                      </td>
+                    </tr>
+                    <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                      <td class="code-cell">
+                        <a
+                          href="../report-detail/index.html"
+                          data-rr-href="/admin/reports/report-0005"
+                          >RA-2026-000005</a
+                        >
+                      </td>
+                      <td>Oct 10, 2026</td>
+                      <td>Bulacan–Candaba Hwy, Santa Maria, Barangay 5, Santa Maria</td>
+                      <td>
+                        <span
+                          class="status-badge status-assigned"
+                          data-rr-component="StatusBadge"
+                          data-status="assigned"
+                          >Assigned</span
+                        >
+                      </td>
+                    </tr>
+                    <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                      <td class="code-cell">
+                        <a
+                          href="../report-detail/index.html"
+                          data-rr-href="/admin/reports/report-0020"
+                          >RA-2026-000020</a
+                        >
+                      </td>
+                      <td>Oct 9, 2026</td>
+                      <td>Bulacan–Candaba Hwy, Bocaue, Barangay 8, Bocaue</td>
+                      <td>
+                        <span
+                          class="status-badge status-resolved"
+                          data-rr-component="StatusBadge"
+                          data-status="resolved"
+                          >Resolved / Closed</span
+                        >
+                      </td>
+                    </tr>
+                    <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                      <td class="code-cell">
+                        <a
+                          href="../report-detail/index.html"
+                          data-rr-href="/admin/reports/report-0002"
+                          >RA-2026-000002</a
+                        >
+                      </td>
+                      <td>Oct 6, 2026</td>
+                      <td>Maharlika Hwy, Meycauayan, Barangay 2, Meycauayan</td>
+                      <td>
+                        <span
+                          class="status-badge status-verified"
+                          data-rr-component="StatusBadge"
+                          data-status="verified"
+                          >Verified</span
+                        >
+                      </td>
+                    </tr>
+                    <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                      <td class="code-cell">
+                        <a
+                          href="../report-detail/index.html"
+                          data-rr-href="/admin/reports/report-0016"
+                          >RA-2026-000016</a
+                        >
+                      </td>
+                      <td>Oct 4, 2026</td>
+                      <td>MacArthur Hwy, Guiguinto, Barangay 4, Guiguinto</td>
+                      <td>
+                        <span
+                          class="status-badge status-under_review"
+                          data-rr-component="StatusBadge"
+                          data-status="under_review"
+                          >Under Review</span
+                        >
+                      </td>
+                    </tr>
+                    <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                      <td class="code-cell">
+                        <a
+                          href="../report-detail/index.html"
+                          data-rr-href="/admin/reports/report-0017"
+                          >RA-2026-000017</a
+                        >
+                      </td>
+                      <td>Oct 3, 2026</td>
+                      <td>Maharlika Hwy, Malolos, Barangay 5, Malolos</td>
+                      <td>
+                        <span
+                          class="status-badge status-submitted"
+                          data-rr-component="StatusBadge"
+                          data-status="submitted"
+                          >Submitted</span
+                        >
+                      </td>
+                    </tr>
+                    <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                      <td class="code-cell">
+                        <a
+                          href="../report-detail/index.html"
+                          data-rr-href="/admin/reports/report-0008"
+                          >RA-2026-000008</a
+                        >
+                      </td>
+                      <td>Sep 30, 2026</td>
+                      <td>Paseo del Congreso, Guiguinto, Barangay 8, Guiguinto</td>
+                      <td>
+                        <span
+                          class="status-badge status-resolved"
+                          data-rr-component="StatusBadge"
+                          data-status="resolved"
+                          >Resolved / Closed</span
+                        >
+                      </td>
+                    </tr>
+                    <tr class="clickable" data-rr-region="table-row" data-rr-repeat="rows">
+                      <td class="code-cell">
+                        <a
+                          href="../report-detail/index.html"
+                          data-rr-href="/admin/reports/report-0012"
+                          >RA-2026-000012</a
+                        >
+                      </td>
+                      <td>Sep 29, 2026</td>
+                      <td>Maharlika Hwy, Bocaue, Barangay 12, Bocaue</td>
+                      <td>
+                        <span
+                          class="status-badge status-under_review"
+                          data-rr-component="StatusBadge"
+                          data-status="under_review"
+                          >Under Review</span
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

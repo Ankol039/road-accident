@@ -1,0 +1,31 @@
+{
+  "checks": [
+    "account/320",
+    "account/360",
+    "account/390",
+    "account/414",
+    "account/768",
+    "account/1024",
+    "account/1440",
+    "settings/320",
+    "settings/360",
+    "settings/390",
+    "settings/414",
+    "settings/768",
+    "settings/1024",
+    "settings/1440",
+    "login/320",
+    "login/360",
+    "login/390",
+    "login/414",
+    "login/768",
+    "login/1024",
+    "login/1440"
+  ],
+  "errors": [],
+  "contrastFailures": [],
+  "auth": "fixture sign in/out + missing-profile sign-out",
+  "states": "settings loading/error/empty",
+  "toggle": "keyboard + pointer passed",
+  "routes": "all 9 at 1440 and 390 captured"
+}

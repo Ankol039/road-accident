@@ -38,13 +38,19 @@ export const markRead = (id) => patchDoc(COLLECTIONS.notifications, id, { read: 
 
 /** Mark every unread notification for this user as read. */
 export async function markAllRead(uid) {
-  const snap = await getDocs(
-    query(ref(COLLECTIONS.notifications), where('user_id', '==', uid), where('read', '==', false), limit(500)),
-  )
-  const batch = writeBatch(db)
-  snap.docs.forEach((d) => batch.update(d.ref, { read: true }))
-  await batch.commit()
-  return snap.size
+  let total = 0
+  // Firestore batches hold at most 500 writes; keep going if the inbox is larger.
+  while (true) {
+    const snap = await getDocs(
+      query(ref(COLLECTIONS.notifications), where('user_id', '==', uid), where('read', '==', false), limit(500)),
+    )
+    if (!snap.size) return total
+    const batch = writeBatch(db)
+    snap.docs.forEach((d) => batch.update(d.ref, { read: true }))
+    await batch.commit()
+    total += snap.size
+    if (snap.size < 500) return total
+  }
 }
 
 /**

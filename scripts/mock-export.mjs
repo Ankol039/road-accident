@@ -29,6 +29,7 @@
  *   --force             overwrite screen.css and notes.md
  *   --strict            stop on the first screen that fails
  */
+import { readServiceAccount } from './service-account.mjs'
 import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync, cpSync } from 'node:fs'
 import { resolve, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -102,7 +103,7 @@ function getDb() {
   if (db) return db
   const keyPath = serviceAccountPath()
   if (!keyPath) throw new Error('No Firebase service-account key found.')
-  initializeApp({ credential: cert(JSON.parse(readFileSync(keyPath, 'utf8'))) })
+  initializeApp({ credential: cert(readServiceAccount(keyPath)) })
   db = getFirestore()
   return db
 }

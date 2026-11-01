@@ -17,7 +17,7 @@ import {
   EmailAuthProvider,
 } from 'firebase/auth'
 import { auth } from '../lib/firebase.js'
-import { docRef, getDoc, setDoc, serverTimestamp } from '../lib/firestore.js'
+import { docRef, getDoc } from '../lib/firestore.js'
 import { COLLECTIONS, STAFF_ROLES } from '../lib/constants.js'
 
 /** Sign in with email + password; resolves the Firebase user. */
@@ -42,23 +42,13 @@ export async function loadProfile(uid) {
 export const canUsePortal = (profile) => Boolean(profile && STAFF_ROLES.includes(profile.role))
 
 /**
- * Make sure a `users/{uid}` doc exists for the signed-in account.
- * The first admin is created in the Firebase console; this only backfills the
- * profile document so the rest of the app has a role to read.
+ * Load the signed-in account's existing profile without creating one.
+ * A missing profile stays null so the auth guard can deny portal access.
  */
-export async function ensureProfile(user, defaults = {}) {
-  const existing = await loadProfile(user.uid)
-  if (existing) return existing
-  const profile = {
-    email: user.email,
-    full_name: user.displayName || user.email?.split('@')[0] || 'Administrator',
-    role: 'admin',
-    status: 'active',
-    ...defaults,
-    created_at: serverTimestamp(),
-  }
-  await setDoc(docRef(COLLECTIONS.users, user.uid), profile, { merge: true })
-  return { id: user.uid, ...profile }
+export async function ensureProfile(user) {
+  // Profiles come from an admin (Users screen), `npm run create-user`,
+  // or the user's own mobile registration. Never create one here.
+  return await loadProfile(user.uid)   // null when there is no profile
 }
 
 /** Change the signed-in user's password (requires a recent login). */

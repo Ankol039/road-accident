@@ -7,3 +7,768 @@
  */
 
 /* Add screen overrides below this line. */
+
+/* ==========================================================================
+   0. Tokens — lifted from the public landing page so both screens read as
+      one product: ink-black ground, cream text, signal orange, hazard amber.
+   ========================================================================== */
+.staff-shell {
+  --rr-audit-bg: #0e1214;
+  --rr-audit-surface: #151a1d;
+  --rr-audit-raised: #1b2226;
+  --rr-audit-line: rgba(236, 232, 223, 0.09);
+  --rr-audit-line-strong: rgba(236, 232, 223, 0.18);
+  --rr-audit-text: #ece8df;
+  --rr-audit-muted: #8d979b;
+  --rr-audit-orange: #e4572e;
+  --rr-audit-amber: #f5c518;
+  --rr-audit-teal: #5fb7a5;
+  --rr-audit-display: "Jost", "Inter", system-ui, sans-serif;
+  background:
+    radial-gradient(56rem 26rem at 78% -8%, rgba(228, 87, 46, 0.13), transparent 62%),
+    var(--rr-audit-bg);
+  color: var(--rr-audit-text);
+}
+
+.staff-main {
+  /* Lets the table scroll inside its panel instead of widening the page. */
+  min-width: 0;
+  color: var(--rr-audit-text);
+}
+
+.staff-main .text-secondary {
+  color: var(--rr-audit-muted) !important;
+}
+
+/* ==========================================================================
+   1. Sidebar — keeps the shared layout and divider, restyles the contents.
+   ========================================================================== */
+.staff-shell .sidebar {
+  background: linear-gradient(180deg, #12181b 0%, #0e1214 100%);
+}
+
+.staff-shell .sidebar .brand {
+  font-family: var(--rr-audit-display);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.rr-audit-nav-label {
+  margin: 0 1.25rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rr-audit-orange);
+}
+
+.staff-shell .side-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  color: #aab3b7;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.staff-shell .side-nav a:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.staff-shell .side-nav a.active,
+.staff-shell .side-nav a[aria-current="page"] {
+  background: linear-gradient(90deg, rgba(228, 87, 46, 0.28), rgba(228, 87, 46, 0.06));
+  box-shadow: inset 3px 0 0 var(--rr-audit-orange);
+  color: #fff;
+}
+
+.staff-shell .side-nav a:focus-visible,
+.staff-shell .sidebar-foot .btn:focus-visible,
+.staff-main a:focus-visible,
+.staff-main .btn:focus-visible,
+.staff-main .form-control:focus-visible {
+  outline: 2px solid var(--rr-audit-amber);
+  outline-offset: 2px;
+}
+
+.rr-audit-ico {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--rr-audit-orange);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.staff-shell .side-nav .count-pill {
+  margin-left: auto;
+  background: var(--rr-audit-amber);
+  color: #15191b;
+  font-weight: 700;
+}
+
+.staff-shell .sidebar-foot .btn {
+  border-radius: 999px;
+  border-color: var(--rr-audit-line-strong);
+  color: var(--rr-audit-text);
+  font-weight: 500;
+}
+
+.staff-shell .sidebar-foot .btn:hover {
+  background: var(--rr-audit-orange);
+  border-color: var(--rr-audit-orange);
+  color: #fff;
+}
+
+/* ==========================================================================
+   2. Page header + hazard tape
+   ========================================================================== */
+.rr-audit-head {
+  margin-bottom: 1.25rem;
+}
+
+.rr-audit-eyebrow {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rr-audit-orange);
+}
+
+.rr-audit-head h1 {
+  margin: 0.45rem 0 0.35rem !important;
+  font-family: var(--rr-audit-display);
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--rr-audit-text);
+}
+
+.rr-audit-sub {
+  margin: 0;
+  max-width: 40rem;
+  font-size: 0.95rem;
+  color: var(--rr-audit-muted);
+}
+
+.rr-audit-tape {
+  height: 8px;
+  margin-bottom: 1.5rem;
+  border-radius: 3px;
+  background: repeating-linear-gradient(-45deg, var(--rr-audit-amber) 0 12px, #14191b 12px 24px);
+  opacity: 0.85;
+}
+
+/* ==========================================================================
+   3. Filter bar — one raised panel: search, role, status, action.
+   ========================================================================== */
+.staff-main .filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 1.25rem;
+  padding: 14px;
+  border: 1px solid var(--rr-audit-line);
+  border-radius: 20px;
+  background: linear-gradient(180deg, #171d20 0%, #12171a 100%);
+  box-shadow: 0 22px 44px -28px rgba(0, 0, 0, 0.8);
+}
+
+.staff-main .filter-bar .form-control,
+.staff-main .filter-bar .form-select {
+  min-height: 42px;
+  border: 1px solid var(--rr-audit-line);
+  border-radius: 12px;
+  background-color: var(--rr-audit-raised);
+  color: var(--rr-audit-text);
+  color-scheme: dark;
+  font-size: 0.9rem;
+}
+
+.staff-main .filter-bar .form-control::placeholder {
+  color: var(--rr-audit-muted);
+}
+
+.staff-main .filter-bar .form-control:focus,
+.staff-main .filter-bar .form-select:focus {
+  border-color: var(--rr-audit-orange);
+  box-shadow: 0 0 0 3px rgba(228, 87, 46, 0.25);
+  outline: 0;
+}
+
+.staff-main .filter-bar input[type="search"] {
+  flex: 1 1 340px;
+  width: auto;
+  padding-left: 2.4rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238d979b' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cpath d='m16 16 4 4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0.8rem center;
+  background-size: 1.1rem;
+}
+
+.staff-main .filter-bar .form-select {
+  flex: 0 1 200px;
+  width: auto;
+}
+
+.staff-main .filter-bar .btn-outline-secondary {
+  min-height: 42px;
+  padding: 0 1.1rem;
+  border: 1px solid var(--rr-audit-line-strong);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--rr-audit-text);
+}
+
+.staff-main .filter-bar .btn-outline-secondary:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ==========================================================================
+   3. Filter bar extras — dates and the orange Search button
+   ========================================================================== */
+.staff-main .filter-bar input[type="date"] {
+  flex: 0 1 165px;
+  width: auto;
+}
+
+.staff-main .filter-bar .btn-guide {
+  min-height: 42px;
+  padding: 0 1.4rem;
+  border: 0;
+  border-radius: 12px;
+  background: var(--rr-audit-orange);
+  color: #fff;
+  font-weight: 600;
+  transition: background-color 0.18s ease;
+}
+
+.staff-main .filter-bar .btn-guide:hover {
+  background: #f06a41;
+}
+
+/* ==========================================================================
+   4. Audit table — a log with a timeline rail down the first column
+   ========================================================================== */
+.staff-main .panel {
+  position: relative;
+  border: 1px solid var(--rr-audit-line);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #171d20 0%, #12171a 100%);
+  box-shadow: 0 22px 44px -28px rgba(0, 0, 0, 0.8);
+  color: var(--rr-audit-text);
+}
+
+.staff-main .panel.p-0 {
+  padding: 0;
+}
+
+.staff-main .rr-audit-table::before {
+  content: "";
+  position: sticky;
+  top: 0;
+  left: 0;
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, var(--rr-audit-orange), transparent 60%);
+}
+
+.staff-main .text-secondary {
+  color: var(--rr-audit-muted) !important;
+}
+
+.staff-main .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--rr-audit-text);
+  --bs-table-border-color: var(--rr-audit-line);
+  --bs-table-hover-bg: rgba(228, 87, 46, 0.07);
+  --bs-table-hover-color: var(--rr-audit-text);
+  color: var(--rr-audit-text);
+}
+
+.staff-main .table > :not(caption) > * > * {
+  background-color: transparent;
+  border-color: var(--rr-audit-line);
+  box-shadow: none;
+}
+
+.staff-main .table thead th {
+  padding: 0.95rem 1.1rem;
+  border-bottom: 1px solid var(--rr-audit-line-strong);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--rr-audit-muted);
+}
+
+.staff-main .table thead th:first-child {
+  padding-left: 2.4rem;
+}
+
+.staff-main .table tbody td {
+  padding: 0.8rem 1.1rem;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.staff-main .table tbody tr:hover > * {
+  background-color: rgba(228, 87, 46, 0.07);
+}
+
+/* When: muted timestamp with a lamp on a vertical rail that runs row to row. */
+.staff-main .table tbody td:first-child {
+  position: relative;
+  padding-left: 2.4rem;
+  color: #c4c9c6;
+  font-size: 0.82rem;
+}
+
+.staff-main .table tbody td:first-child::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 1.05rem;
+  width: 1px;
+  background: var(--rr-audit-line-strong);
+}
+
+.staff-main .table tbody td:first-child::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 1.05rem;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--rr-audit-orange);
+  box-shadow: 0 0 8px var(--rr-audit-orange);
+}
+
+.staff-main .table tbody td:nth-child(2) {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.staff-main .table tbody td:nth-child(2) .small {
+  font-size: 0.74rem;
+  font-weight: 400;
+}
+
+.staff-main .table tbody td:nth-child(3) {
+  min-width: 11rem;
+}
+
+.staff-main .table tbody td:nth-child(4) {
+  min-width: 11.5rem;
+}
+
+.staff-main .table tbody td:nth-child(4) a {
+  font-weight: 600;
+  color: var(--rr-audit-orange);
+  text-decoration: none;
+}
+
+.staff-main .table tbody td:nth-child(4) a:hover {
+  color: #ff7a52;
+  text-decoration: underline;
+}
+
+/* Details read like log output. */
+.staff-main .table tbody td:nth-child(5) {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   6. Responsive
+   ========================================================================== */
+@media (max-width: 767.98px) {
+  .staff-main .rr-audit-table {
+    overflow: hidden;
+  }
+
+  /* Rows become cards: action, item, details, then when + who. */
+  .staff-main .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .staff-main .table,
+  .staff-main .table tbody {
+    display: block;
+  }
+
+  .staff-main .table tbody tr {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: center;
+    gap: 0.3rem 0.5rem;
+    padding: 14px 18px;
+    border-top: 1px solid var(--rr-audit-line);
+  }
+
+  .staff-main .table tbody tr:first-child {
+    border-top: 0;
+  }
+
+  .staff-main .table tbody td {
+    display: block;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .staff-main .table tbody td:nth-child(3) {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    min-width: 0;
+    font-weight: 600;
+  }
+  .staff-main .table tbody td:nth-child(4) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .staff-main .table tbody td:nth-child(5) {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin-top: 0.1rem;
+    overflow-wrap: anywhere;
+  }
+  .staff-main .table tbody td:first-child {
+    grid-column: 1 / 8;
+    grid-row: 4;
+    padding-left: 0;
+    margin-top: 0.4rem;
+    font-size: 0.74rem;
+    color: var(--rr-audit-muted);
+    white-space: normal !important;
+  }
+  .staff-main .table tbody td:first-child::before,
+  .staff-main .table tbody td:first-child::after {
+    display: none;
+  }
+  .staff-main .table tbody td:nth-child(2) {
+    grid-column: 8 / -1;
+    grid-row: 4;
+    justify-self: end;
+    margin-top: 0.4rem;
+    font-size: 0.74rem;
+    font-weight: 500;
+    text-align: right;
+    color: var(--rr-audit-muted);
+    white-space: normal;
+  }
+  .staff-main .table tbody td:nth-child(2) .d-block {
+    display: inline !important;
+    font-size: inherit;
+  }
+  .staff-main .table tbody td:nth-child(2) .d-block::before {
+    content: " · ";
+  }
+}
+
+@media (max-width: 575.98px) {
+  .staff-main .filter-bar {
+    padding: 12px;
+    border-radius: 18px;
+  }
+
+  .staff-main .filter-bar input[type="search"] {
+    flex: 1 1 100%;
+  }
+
+  .staff-main .filter-bar .form-select {
+    flex: 1 1 100%;
+  }
+
+  .staff-main .filter-bar input[type="date"] {
+    flex: 1 1 calc(50% - 5px);
+    min-width: 0;
+  }
+
+  .staff-main .filter-bar .btn-guide {
+    flex: 1 1 100%;
+  }
+
+  .staff-main .rr-audit-table {
+    border-radius: 18px;
+  }
+}
+
+/* ==========================================================================
+   5. Pager
+   ========================================================================== */
+.staff-main .text-secondary {
+  color: var(--rr-audit-muted) !important;
+}
+
+.staff-main [data-rr-region="pager"] .btn {
+  min-height: 38px;
+  padding: 0 1rem;
+  border: 1px solid var(--rr-audit-line-strong);
+  background: transparent;
+  color: var(--rr-audit-text);
+  font-weight: 500;
+}
+
+.staff-main [data-rr-region="pager"] .btn:first-child {
+  border-radius: 10px 0 0 10px;
+}
+
+.staff-main [data-rr-region="pager"] .btn:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+.staff-main [data-rr-region="pager"] .btn:hover:not(:disabled) {
+  background: var(--rr-audit-orange);
+  border-color: var(--rr-audit-orange);
+}
+
+.staff-main [data-rr-region="pager"] .btn:disabled {
+  opacity: 0.45;
+}
+
+/* ==========================================================================
+   8. Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .staff-shell *,
+  .staff-shell *::before,
+  .staff-shell *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   Burger menu — under 992px the sidebar becomes a sticky top bar with a menu
+   button; the navigation and the user / log out block open from it.
+   ========================================================================== */
+.rr-audit-burger {
+  display: none;
+}
+
+@media (max-width: 991.98px) {
+  .staff-shell {
+    display: block;
+  }
+
+  .staff-shell .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: block;
+    width: auto;
+    max-width: none;
+    height: auto;
+    min-height: 0;
+    max-height: 100vh;
+    max-height: 100dvh;
+    padding: env(safe-area-inset-top, 0px) 0 0;
+    overflow-y: auto;
+    box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.9);
+  }
+
+  .staff-shell .sidebar > div:first-of-type {
+    padding: 0.75rem 4.6rem 0.75rem 1rem !important;
+  }
+
+  .staff-shell .sidebar > div:first-of-type .small {
+    display: none;
+  }
+
+  .staff-shell .sidebar.rr-audit-menu-open > div:first-of-type .small {
+    display: block;
+  }
+
+  .rr-audit-burger {
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 1px solid var(--rr-audit-line-strong);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--rr-audit-text);
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+  }
+
+  .rr-audit-burger:hover {
+    background: rgba(255, 255, 255, 0.09);
+  }
+
+  .rr-audit-burger:focus-visible {
+    outline: 2px solid var(--rr-audit-amber);
+    outline-offset: 2px;
+  }
+
+  .rr-audit-burger[aria-expanded="true"] {
+    border-color: var(--rr-audit-orange);
+    background: rgba(228, 87, 46, 0.16);
+  }
+
+  .rr-audit-burger-bars,
+  .rr-audit-burger-bars::before,
+  .rr-audit-burger-bars::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .rr-audit-burger-bars {
+    position: relative;
+  }
+
+  .rr-audit-burger-bars::before,
+  .rr-audit-burger-bars::after {
+    content: "";
+    position: absolute;
+    left: 0;
+  }
+
+  .rr-audit-burger-bars::before {
+    top: -6px;
+  }
+
+  .rr-audit-burger-bars::after {
+    top: 6px;
+  }
+
+  .rr-audit-burger[aria-expanded="true"] .rr-audit-burger-bars {
+    background: transparent;
+  }
+
+  .rr-audit-burger[aria-expanded="true"] .rr-audit-burger-bars::before {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .rr-audit-burger[aria-expanded="true"] .rr-audit-burger-bars::after {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* Closed: only the top bar shows. */
+  .staff-shell .sidebar:not(.rr-audit-menu-open) .rr-audit-nav-label,
+  .staff-shell .sidebar:not(.rr-audit-menu-open) .side-nav,
+  .staff-shell .sidebar:not(.rr-audit-menu-open) .sidebar-foot {
+    display: none;
+  }
+
+  /* Open: a vertical list, then the user block. */
+  .staff-shell .sidebar.rr-audit-menu-open .side-nav {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 2px;
+    padding: 0.25rem 0.75rem 0.5rem;
+  }
+
+  .staff-shell .sidebar.rr-audit-menu-open .side-nav a {
+    min-height: 46px;
+  }
+
+  .staff-shell .sidebar.rr-audit-menu-open .sidebar-foot {
+    display: block;
+    margin: 0;
+    padding: 0.85rem 1rem 1.1rem;
+    border-top: 1px solid var(--rr-audit-line);
+  }
+}
+
+/* ==========================================================================
+   Small-screen safety — nothing may push the page wider than the screen.
+   ========================================================================== */
+.staff-main img,
+.staff-main svg,
+.staff-main canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 991.98px) {
+  /* Safety net: clip anything that still spills sideways (inner scrollers such as tables keep scrolling). */
+  .staff-main {
+    min-width: 0;
+    overflow-x: clip;
+  }
+
+  .staff-main td,
+  .staff-main .panel p,
+  .staff-main .form-text {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 575.98px) {
+  /* Filter bars: every control may shrink, whatever min-width the shared styles give it. */
+  .staff-main .filter-bar,
+  .staff-main .filter-bar > * {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .staff-main .filter-bar .form-control,
+  .staff-main .filter-bar .form-select,
+  .staff-main .filter-bar .btn {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .staff-main .filter-bar input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .staff-main .filter-bar input[type="search"],
+  .staff-main .filter-bar .form-select {
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 419.98px) {
+  /* Narrow phones: one control per row, so dates and dropdown labels are never cut off. */
+  .staff-main .filter-bar > *,
+  .staff-main .filter-bar .form-control,
+  .staff-main .filter-bar .form-select,
+  .staff-main .filter-bar .form-check,
+  .staff-main .filter-bar .btn,
+  .staff-main .filter-bar input[type="date"] {
+    flex: 1 1 100% !important;
+    width: 100%;
+  }
+
+  .staff-main .filter-bar .form-check {
+    justify-content: flex-start;
+  }
+}

@@ -26,7 +26,7 @@ import {
   fetchDoc,
   serverTimestamp,
 } from '../lib/firestore.js'
-import { COLLECTIONS, USER_ROLES, OFFICER_ACTIVE_STATUSES } from '../lib/constants.js'
+import { COLLECTIONS, USER_ROLES, ADMIN_CREATABLE_ROLES, OFFICER_ACTIVE_STATUSES } from '../lib/constants.js'
 import { apiKey } from '../lib/firebase.js'
 import { logAudit } from './audit.service.js'
 import { ValidationError } from '../lib/errors.js'
@@ -148,7 +148,7 @@ export async function validateUserFields(fields, { needPassword = false, current
   }
 
   if (fields.role !== undefined && !USER_ROLES.includes(fields.role)) {
-    errors.role = 'Choose reporter, officer or admin'
+    errors.role = 'Choose Administrator or Traffic officer'
   }
   if (fields.status !== undefined && !['active', 'inactive'].includes(fields.status)) {
     errors.status = 'Choose active or inactive'
@@ -244,6 +244,9 @@ export async function sendPasswordReset(email) {
  * two systems, so the account is opened first and the profile follows.
  */
 export async function createStaffUser(fields, actor) {
+  if (!ADMIN_CREATABLE_ROLES.includes(fields.role)) {
+    throw new ValidationError({ role: 'Choose Administrator or Traffic officer. Public users register themselves in the mobile app.' })
+  }
   const email = String(fields.email).trim().toLowerCase()
   const errors = await validateUserFields({ ...fields, email }, { needPassword: true })
   if (Object.keys(errors).length) throw new ValidationError(errors)
@@ -281,6 +284,9 @@ export async function createStaffUser(fields, actor) {
  */
 export async function updateStaffUser(uid, fields, actor, current) {
   const errors = await validateUserFields(fields, { currentUid: uid })
+  if (fields.role === 'reporter' && current?.role !== 'reporter') {
+    errors.role = 'Staff accounts cannot be changed into public users'
+  }
 
   // An administrator cannot demote or deactivate their own account.
   // api/users/save.php refused both, and the dialog disables the two fields.

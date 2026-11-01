@@ -18,7 +18,8 @@
  *   node scripts/probe-indexes.mjs
  *   node scripts/probe-indexes.mjs --json     # only the firestore.indexes.json array
  */
-import { readFileSync, existsSync } from 'node:fs'
+import { readServiceAccount } from './service-account.mjs'
+import { existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { initializeApp, cert } from 'firebase-admin/app'
@@ -36,7 +37,7 @@ if (!keyPath) {
   process.exit(1)
 }
 
-initializeApp({ credential: cert(JSON.parse(readFileSync(keyPath, 'utf8'))) })
+initializeApp({ credential: cert(readServiceAccount(keyPath)) })
 const db = getFirestore()
 
 const REPORTS = 'reports'

@@ -16,8 +16,7 @@ if (!$privateDir) {
 $privateDir = $privateDir ?: dirname(__DIR__, 3) . '/private';
 $defaults = [
     'firebase' => [
-        // Leave empty to read it from the service account file
-        'project_id'           => getenv('FIREBASE_PROJECT_ID') ?: '',
+        'project_id'           => getenv('FIREBASE_PROJECT_ID') ?: 'roadreport-402a6',
         'service_account_file' => getenv('FIREBASE_KEY_FILE') ?: $privateDir . '/firebase-service-account.json',
         'database_id'          => '(default)',
         // Google login tokens are cached here for up to 1 hour (folder is blocked from the web)

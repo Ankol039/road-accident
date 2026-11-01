@@ -7,3 +7,971 @@
  */
 
 /* Add screen overrides below this line. */
+
+/* ==========================================================================
+   0. Tokens — lifted from the public landing page so both screens read as
+      one product: ink-black ground, cream text, signal orange, hazard amber.
+   ========================================================================== */
+.staff-shell {
+  --rr-dashboard-bg: #0e1214;
+  --rr-dashboard-surface: #151a1d;
+  --rr-dashboard-raised: #1b2226;
+  --rr-dashboard-line: rgba(236, 232, 223, 0.09);
+  --rr-dashboard-line-strong: rgba(236, 232, 223, 0.18);
+  --rr-dashboard-text: #ece8df;
+  --rr-dashboard-muted: #8d979b;
+  --rr-dashboard-orange: #e4572e;
+  --rr-dashboard-amber: #f5c518;
+  --rr-dashboard-teal: #5fb7a5;
+  --rr-dashboard-display: "Jost", "Inter", system-ui, sans-serif;
+  background:
+    radial-gradient(56rem 26rem at 78% -8%, rgba(228, 87, 46, 0.13), transparent 62%),
+    var(--rr-dashboard-bg);
+  color: var(--rr-dashboard-text);
+}
+
+.staff-main {
+  color: var(--rr-dashboard-text);
+}
+
+.staff-main .text-secondary {
+  color: var(--rr-dashboard-muted) !important;
+}
+
+/* ==========================================================================
+   1. Sidebar — keeps the shared layout and divider, restyles the contents.
+   ========================================================================== */
+.staff-shell .sidebar {
+  background: linear-gradient(180deg, #12181b 0%, #0e1214 100%);
+}
+
+.staff-shell .sidebar .brand {
+  font-family: var(--rr-dashboard-display);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.rr-dashboard-nav-label {
+  margin: 0 1.25rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rr-dashboard-orange);
+}
+
+.staff-shell .side-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  color: #aab3b7;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.staff-shell .side-nav a:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.staff-shell .side-nav a.active,
+.staff-shell .side-nav a[aria-current="page"] {
+  background: linear-gradient(90deg, rgba(228, 87, 46, 0.28), rgba(228, 87, 46, 0.06));
+  box-shadow: inset 3px 0 0 var(--rr-dashboard-orange);
+  color: #fff;
+}
+
+.staff-shell .side-nav a:focus-visible,
+.staff-shell .sidebar-foot .btn:focus-visible,
+.staff-main a:focus-visible,
+.staff-main .btn:focus-visible,
+.staff-main .form-control:focus-visible {
+  outline: 2px solid var(--rr-dashboard-amber);
+  outline-offset: 2px;
+}
+
+.rr-dashboard-ico {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--rr-dashboard-orange);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.staff-shell .side-nav .count-pill {
+  margin-left: auto;
+  background: var(--rr-dashboard-amber);
+  color: #15191b;
+  font-weight: 700;
+}
+
+.staff-shell .sidebar-foot .btn {
+  border-radius: 999px;
+  border-color: var(--rr-dashboard-line-strong);
+  color: var(--rr-dashboard-text);
+  font-weight: 500;
+}
+
+.staff-shell .sidebar-foot .btn:hover {
+  background: var(--rr-dashboard-orange);
+  border-color: var(--rr-dashboard-orange);
+  color: #fff;
+}
+
+/* ==========================================================================
+   2. Page header + filter bar + hazard tape
+   ========================================================================== */
+.rr-dashboard-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-bottom: 1.25rem;
+}
+
+.rr-dashboard-eyebrow {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rr-dashboard-orange);
+}
+
+.rr-dashboard-head h1 {
+  margin: 0.45rem 0 0.35rem;
+  font-family: var(--rr-dashboard-display);
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--rr-dashboard-text);
+}
+
+.rr-dashboard-sub {
+  margin: 0;
+  max-width: 34rem;
+  font-size: 0.95rem;
+  color: var(--rr-dashboard-muted);
+}
+
+.staff-main .filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.4rem;
+  border: 1px solid var(--rr-dashboard-line);
+  border-radius: 16px;
+  background: var(--rr-dashboard-surface);
+}
+
+.staff-main .filter-bar .form-control {
+  width: auto;
+  min-height: 40px;
+  border: 1px solid var(--rr-dashboard-line);
+  border-radius: 10px;
+  background-color: var(--rr-dashboard-raised);
+  color: var(--rr-dashboard-text);
+  color-scheme: dark;
+  font-size: 0.88rem;
+}
+
+.staff-main .filter-bar .btn-guide {
+  min-height: 40px;
+  padding: 0 1.1rem;
+  border: 0;
+  border-radius: 10px;
+  background: var(--rr-dashboard-orange);
+  color: #fff;
+  font-weight: 600;
+}
+
+.staff-main .filter-bar .btn-guide:hover {
+  background: #f06a41;
+}
+
+.staff-main .filter-bar .btn-link {
+  color: var(--rr-dashboard-amber);
+  font-size: 0.85rem;
+}
+
+/* Thin caution tape — the landing page's divider, scaled down for work screens. */
+.rr-dashboard-tape {
+  height: 8px;
+  margin-bottom: 1.5rem;
+  border-radius: 3px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--rr-dashboard-amber) 0 12px,
+    #14191b 12px 24px
+  );
+  opacity: 0.85;
+}
+
+/* ==========================================================================
+   3. Stat cards — a ring + lamp on the right, like the reference's action
+      tiles, coloured like the landing page's traffic-light lamps
+      (gray / green / yellow / red by count — see data-level below).
+   ========================================================================== */
+.staff-main .rr-dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.staff-main .rr-dashboard-stats .stat-card {
+  --rr-dashboard-c: var(--rr-dashboard-orange);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.2rem;
+  min-width: 0;
+  min-height: 96px;
+  padding: 16px 88px 16px 22px;
+  overflow: hidden;
+  border: 1px solid var(--rr-dashboard-line);
+  border-radius: 18px;
+  background: linear-gradient(160deg, #1b2226 0%, #14191b 100%);
+  color: var(--rr-dashboard-text);
+  text-decoration: none;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.staff-main .rr-dashboard-stats .stat-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--rr-dashboard-c), transparent 72%);
+}
+
+.staff-main .rr-dashboard-stats .stat-card::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  margin-top: -25px;
+  border: 1.5px solid var(--rr-dashboard-c);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--rr-dashboard-c) 0 5px, transparent 6px);
+  box-shadow: 0 0 22px -6px var(--rr-dashboard-c);
+  opacity: 0.9;
+}
+
+.staff-main .rr-dashboard-stats .stat-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--rr-dashboard-line-strong);
+}
+
+.staff-main .rr-dashboard-stats .stat-value {
+  font-family: var(--rr-dashboard-display);
+  font-size: 2.35rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--rr-dashboard-text);
+}
+
+.staff-main .rr-dashboard-stats .stat-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rr-dashboard-muted);
+}
+
+/* Lamp colour = how many reports are in the card (set via data-level):
+   0 gray | 1-5 green | 6-10 yellow | 11+ red. The level is set by the
+   inline script in index.html and re-evaluated whenever the number changes. */
+.staff-main .rr-dashboard-stats .stat-card[data-level="none"] {
+  --rr-dashboard-c: #8d979b;
+}
+.staff-main .rr-dashboard-stats .stat-card[data-level="low"] {
+  --rr-dashboard-c: #3fbf7f;
+}
+.staff-main .rr-dashboard-stats .stat-card[data-level="moderate"] {
+  --rr-dashboard-c: #f5c518;
+}
+.staff-main .rr-dashboard-stats .stat-card[data-level="high"] {
+  --rr-dashboard-c: #e5483a;
+}
+
+/* An empty card goes quiet: no glow, dimmer ring and number. */
+.staff-main .rr-dashboard-stats .stat-card[data-level="none"]::after {
+  box-shadow: none;
+  opacity: 0.6;
+}
+.staff-main .rr-dashboard-stats .stat-card[data-level="none"] .stat-value {
+  color: var(--rr-dashboard-muted);
+}
+
+/* Colour is not the only signal: the level is also exposed as hidden text. */
+.rr-dashboard-level-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.staff-main .rr-dashboard-note {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.25rem 0 0.5rem;
+  font-size: 0.85rem;
+  color: var(--rr-dashboard-muted);
+}
+
+.staff-main .rr-dashboard-note::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--rr-dashboard-amber);
+  box-shadow: 0 0 10px var(--rr-dashboard-amber);
+}
+
+/* ==========================================================================
+   4. Panels + charts
+   ========================================================================== */
+.staff-main .panel {
+  position: relative;
+  overflow: hidden;
+  padding: 20px 22px 22px;
+  border: 1px solid var(--rr-dashboard-line);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #171d20 0%, #12171a 100%);
+  box-shadow: 0 22px 44px -28px rgba(0, 0, 0, 0.8);
+  color: var(--rr-dashboard-text);
+}
+
+.staff-main .panel.p-0 {
+  padding: 0;
+}
+
+.staff-main .panel h2.h6 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  font-family: var(--rr-dashboard-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  color: var(--rr-dashboard-text);
+}
+
+.staff-main .panel h2.h6::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--rr-dashboard-orange);
+  box-shadow: 0 0 10px var(--rr-dashboard-orange);
+}
+
+/* Equal-height chart tiles in the 2-up grid. */
+.rr-dashboard-charts > [class*="col-"] {
+  display: flex;
+}
+
+.rr-dashboard-charts > [class*="col-"] > .panel {
+  width: 100%;
+}
+
+.staff-main .chart-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: transparent;
+}
+
+.staff-main .chart-box .rr-static-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ==========================================================================
+   5. Map + accident-prone spots
+   ========================================================================== */
+.rr-dashboard-split {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+.staff-main .map-box {
+  overflow: hidden;
+  border: 1px solid var(--rr-dashboard-line);
+  border-radius: 14px;
+}
+
+/* The light basemap is toned down so it does not glare against the dark UI. */
+.staff-main .map-box .rr-static-map,
+.staff-main .map-box .leaflet-tile-pane {
+  filter: saturate(0.8) brightness(0.78) contrast(1.05);
+}
+
+.staff-main .map-box + p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.2rem;
+  font-size: 0.78rem;
+}
+
+.staff-main .map-box + p .legend-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 0.4rem;
+  border-radius: 50%;
+}
+
+.staff-main #hotspots {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: rr-dashboard-rank;
+}
+
+.staff-main #hotspots li {
+  counter-increment: rr-dashboard-rank;
+  justify-content: flex-start !important;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.7rem 0 !important;
+  border-bottom: 1px solid var(--rr-dashboard-line) !important;
+}
+
+.staff-main #hotspots li:last-child {
+  border-bottom: 0 !important;
+}
+
+.staff-main #hotspots li::before {
+  content: counter(rr-dashboard-rank, decimal-leading-zero);
+  flex: none;
+  min-width: 1.6rem;
+  font-family: var(--rr-dashboard-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--rr-dashboard-orange);
+}
+
+.staff-main #hotspots li > span:first-child {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.92rem;
+}
+
+.staff-main #hotspots li > span:last-child {
+  flex: none;
+  min-width: 1.9rem;
+  padding: 0.1rem 0.55rem;
+  border: 1px solid var(--rr-dashboard-line-strong);
+  border-radius: 999px;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--rr-dashboard-text) !important;
+}
+
+/* ==========================================================================
+   6. Recent reports table
+   ========================================================================== */
+.rr-dashboard-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 18px 22px 12px;
+}
+
+.rr-dashboard-panel-head h2.h6 {
+  margin-bottom: 0 !important;
+}
+
+.rr-dashboard-link {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--rr-dashboard-amber);
+  text-decoration: none;
+}
+
+.rr-dashboard-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.staff-main .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--rr-dashboard-text);
+  --bs-table-border-color: var(--rr-dashboard-line);
+  --bs-table-hover-bg: rgba(228, 87, 46, 0.07);
+  --bs-table-hover-color: var(--rr-dashboard-text);
+  color: var(--rr-dashboard-text);
+}
+
+.staff-main .table > :not(caption) > * > * {
+  background-color: transparent;
+  border-color: var(--rr-dashboard-line);
+  box-shadow: none;
+}
+
+.staff-main .table thead th {
+  padding: 0.75rem 1.4rem;
+  border-top: 1px solid var(--rr-dashboard-line);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rr-dashboard-muted);
+}
+
+.staff-main .table tbody td {
+  padding: 0.85rem 1.4rem;
+  font-size: 0.9rem;
+}
+
+.staff-main .table tbody tr:hover > * {
+  background-color: rgba(228, 87, 46, 0.07);
+}
+
+.staff-main .table .code-cell a {
+  font-family: var(--rr-dashboard-display);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--rr-dashboard-orange);
+  text-decoration: none;
+}
+
+.staff-main .table .code-cell a:hover {
+  color: #ff7a52;
+  text-decoration: underline;
+}
+
+.staff-main .status-badge {
+  display: inline-block;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   7. Responsive
+   ========================================================================== */
+@media (max-width: 991.98px) {
+  .rr-dashboard-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .rr-dashboard-head {
+    align-items: stretch;
+  }
+
+  .staff-main .filter-bar {
+    width: 100%;
+  }
+
+  .staff-main .filter-bar .form-control {
+    flex: 1 1 8.5rem;
+  }
+
+  /* Recent reports become stacked cards: ID + status, then date, then place. */
+  .staff-main .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .staff-main .table,
+  .staff-main .table tbody {
+    display: block;
+  }
+
+  .staff-main .table tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "id status"
+      "date date"
+      "place place";
+    gap: 0.3rem 0.75rem;
+    padding: 14px 20px;
+    border-top: 1px solid var(--rr-dashboard-line);
+  }
+
+  .staff-main .table tbody td {
+    display: block;
+    padding: 0;
+    border: 0;
+    font-size: 0.88rem;
+  }
+
+  .staff-main .table tbody td:nth-child(1) {
+    grid-area: id;
+    white-space: nowrap;
+  }
+  .staff-main .table .code-cell a {
+    white-space: nowrap;
+    font-size: 0.9rem;
+  }
+  .staff-main .table .status-badge {
+    font-size: 0.7rem;
+    padding: 0.24rem 0.6rem;
+  }
+  .staff-main .table tbody td:nth-child(2) {
+    grid-area: date;
+    font-size: 0.78rem;
+    color: var(--rr-dashboard-muted);
+  }
+  .staff-main .table tbody td:nth-child(3) {
+    grid-area: place;
+  }
+  .staff-main .table tbody td:nth-child(4) {
+    grid-area: status;
+    align-self: start;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .staff-main .rr-dashboard-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  /* 9 cards: let the last one span so there is no orphan gap. */
+  .staff-main .rr-dashboard-stats .stat-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .staff-main .rr-dashboard-stats .stat-card {
+    min-height: 88px;
+    padding: 14px 58px 14px 16px;
+  }
+
+  .staff-main .rr-dashboard-stats .stat-card::after {
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    margin-top: -17px;
+    background: radial-gradient(circle, var(--rr-dashboard-c) 0 4px, transparent 5px);
+  }
+
+  .staff-main .rr-dashboard-stats .stat-value {
+    font-size: 2rem;
+  }
+
+  .staff-main .panel {
+    padding: 16px 16px 18px;
+    border-radius: 18px;
+  }
+
+  .rr-dashboard-panel-head {
+    padding: 16px 16px 10px;
+  }
+}
+
+/* ==========================================================================
+   8. Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .staff-shell *,
+  .staff-shell *::before,
+  .staff-shell *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .staff-main .rr-dashboard-stats .stat-card:hover {
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   Burger menu — under 992px the sidebar becomes a sticky top bar with a menu
+   button; the navigation and the user / log out block open from it.
+   ========================================================================== */
+.rr-dashboard-burger {
+  display: none;
+}
+
+@media (max-width: 991.98px) {
+  .staff-shell {
+    display: block;
+  }
+
+  .staff-shell .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: block;
+    width: auto;
+    max-width: none;
+    height: auto;
+    min-height: 0;
+    max-height: 100vh;
+    max-height: 100dvh;
+    padding: env(safe-area-inset-top, 0px) 0 0;
+    overflow-y: auto;
+    box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.9);
+  }
+
+  .staff-shell .sidebar > div:first-of-type {
+    padding: 0.75rem 4.6rem 0.75rem 1rem !important;
+  }
+
+  .staff-shell .sidebar > div:first-of-type .small {
+    display: none;
+  }
+
+  .staff-shell .sidebar.rr-dashboard-menu-open > div:first-of-type .small {
+    display: block;
+  }
+
+  .rr-dashboard-burger {
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 1px solid var(--rr-dashboard-line-strong);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--rr-dashboard-text);
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+  }
+
+  .rr-dashboard-burger:hover {
+    background: rgba(255, 255, 255, 0.09);
+  }
+
+  .rr-dashboard-burger:focus-visible {
+    outline: 2px solid var(--rr-dashboard-amber);
+    outline-offset: 2px;
+  }
+
+  .rr-dashboard-burger[aria-expanded="true"] {
+    border-color: var(--rr-dashboard-orange);
+    background: rgba(228, 87, 46, 0.16);
+  }
+
+  .rr-dashboard-burger-bars,
+  .rr-dashboard-burger-bars::before,
+  .rr-dashboard-burger-bars::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .rr-dashboard-burger-bars {
+    position: relative;
+  }
+
+  .rr-dashboard-burger-bars::before,
+  .rr-dashboard-burger-bars::after {
+    content: "";
+    position: absolute;
+    left: 0;
+  }
+
+  .rr-dashboard-burger-bars::before {
+    top: -6px;
+  }
+
+  .rr-dashboard-burger-bars::after {
+    top: 6px;
+  }
+
+  .rr-dashboard-burger[aria-expanded="true"] .rr-dashboard-burger-bars {
+    background: transparent;
+  }
+
+  .rr-dashboard-burger[aria-expanded="true"] .rr-dashboard-burger-bars::before {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .rr-dashboard-burger[aria-expanded="true"] .rr-dashboard-burger-bars::after {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* Closed: only the top bar shows. */
+  .staff-shell .sidebar:not(.rr-dashboard-menu-open) .rr-dashboard-nav-label,
+  .staff-shell .sidebar:not(.rr-dashboard-menu-open) .side-nav,
+  .staff-shell .sidebar:not(.rr-dashboard-menu-open) .sidebar-foot {
+    display: none;
+  }
+
+  /* Open: a vertical list, then the user block. */
+  .staff-shell .sidebar.rr-dashboard-menu-open .side-nav {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 2px;
+    padding: 0.25rem 0.75rem 0.5rem;
+  }
+
+  .staff-shell .sidebar.rr-dashboard-menu-open .side-nav a {
+    min-height: 46px;
+  }
+
+  .staff-shell .sidebar.rr-dashboard-menu-open .sidebar-foot {
+    display: block;
+    margin: 0;
+    padding: 0.85rem 1rem 1.1rem;
+    border-top: 1px solid var(--rr-dashboard-line);
+  }
+}
+
+/* ==========================================================================
+   Small-screen safety — nothing may push the page wider than the screen.
+   ========================================================================== */
+.staff-main img,
+.staff-main svg,
+.staff-main canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 991.98px) {
+  /* Safety net: clip anything that still spills sideways (inner scrollers such as tables keep scrolling). */
+  .staff-main {
+    min-width: 0;
+    overflow-x: clip;
+  }
+
+  .staff-main td,
+  .staff-main .panel p,
+  .staff-main .form-text {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 575.98px) {
+  /* Filter bars: every control may shrink, whatever min-width the shared styles give it. */
+  .staff-main .filter-bar,
+  .staff-main .filter-bar > * {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .staff-main .filter-bar .form-control,
+  .staff-main .filter-bar .form-select,
+  .staff-main .filter-bar .btn {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .staff-main .filter-bar input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+/* Chart tiles: a real grid, with no negative Bootstrap row margins to spill past the page edge. */
+.staff-main .rr-dashboard-charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin: 0;
+}
+
+.staff-main .rr-dashboard-charts > * {
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 991.98px) {
+  .staff-main .rr-dashboard-charts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767.98px) {
+  /* Stat cards: the ring moves to the top-right corner so labels get the full card width. */
+  .staff-main .rr-dashboard-stats .stat-card {
+    min-height: 84px;
+    padding: 14px 14px 14px 16px;
+  }
+
+  .staff-main .rr-dashboard-stats .stat-card::after {
+    top: 14px;
+    right: 14px;
+    width: 26px;
+    height: 26px;
+    margin-top: 0;
+    background: radial-gradient(circle, var(--rr-dashboard-c) 0 3.5px, transparent 4.5px);
+  }
+
+  .staff-main .rr-dashboard-stats .stat-value {
+    padding-right: 34px;
+  }
+
+  .staff-main .rr-dashboard-stats .stat-label {
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .staff-main .filter-bar .form-control {
+    flex: 1 1 calc(50% - 5px);
+  }
+}
+
+@media (max-width: 419.98px) {
+  /* Narrow phones: one control per row, so dates and dropdown labels are never cut off. */
+  .staff-main .filter-bar > *,
+  .staff-main .filter-bar .form-control,
+  .staff-main .filter-bar .form-select,
+  .staff-main .filter-bar .form-check,
+  .staff-main .filter-bar .btn,
+  .staff-main .filter-bar input[type="date"] {
+    flex: 1 1 100% !important;
+    width: 100%;
+  }
+
+  .staff-main .filter-bar .form-check {
+    justify-content: flex-start;
+  }
+}

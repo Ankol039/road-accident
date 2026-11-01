@@ -33,6 +33,7 @@
       <div class="staff-shell" data-rr-screen="account" data-rr-source="src/pages/Account.jsx">
         <a class="skip-link" href="#page">Skip to content</a>
         <aside class="sidebar" data-rr-region="shell/sidebar">
+          <button type="button" class="rr-account-burger" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu"><span class="rr-account-burger-bars" aria-hidden="true"></span></button>
           <div class="px-3 pt-3 pb-4">
             <a class="text-decoration-none" href="../dashboard/index.html" data-rr-href="/admin"
               ><span class="brand brand-light"
@@ -55,23 +56,24 @@
             >
             <div class="small text-white-50 mt-2">Administrator</div>
           </div>
-          <nav class="side-nav" aria-label="Main" data-rr-region="shell/nav">
-            <a href="../dashboard/index.html" data-rr-href="/admin">Dashboard</a
-            ><a href="../reports/index.html" data-rr-href="/admin/reports">Accident reports</a
+          <div class="rr-account-nav-label" aria-hidden="true">Main menu</div>
+          <nav class="side-nav" id="site-nav" aria-label="Main" data-rr-region="shell/nav">
+            <a href="../dashboard/index.html" data-rr-href="/admin"><svg class="rr-account-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg>Dashboard</a
+            ><a href="../reports/index.html" data-rr-href="/admin/reports"><svg class="rr-account-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3h8.5L19 7.5V21H6z"/><path d="M14 3v5h5"/><path d="M9.5 13h6M9.5 17h4"/></svg>Accident reports</a
             ><a href="../summaries/index.html" data-rr-href="/admin/summaries"
-              >Summaries and export</a
-            ><a href="../users/index.html" data-rr-href="/admin/users">Users</a
+              ><svg class="rr-account-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20V11M10 20V4M16 20v-7"/><path d="M2.5 20.5h19"/><path d="M19 4v6m0 0-2.2-2.2M19 10l2.2-2.2"/></svg>Summaries and export</a
+            ><a href="../users/index.html" data-rr-href="/admin/users"><svg class="rr-account-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.7a3.5 3.5 0 0 1 0 6.6M18.5 14.8c1.8.8 3 2.4 3.3 5.2"/></svg>Users</a
             ><a href="../settings/index.html" data-rr-href="/admin/settings"
-              >Categories and settings</a
-            ><a href="../audit/index.html" data-rr-href="/admin/audit">Audit trail</a
+              ><svg class="rr-account-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 7h10M18 7h2.5M3.5 17H6m4.5 0h10"/><circle cx="15.7" cy="7" r="2.2"/><circle cx="8.2" cy="17" r="2.2"/></svg>Categories and settings</a
+            ><a href="../audit/index.html" data-rr-href="/admin/audit"><svg class="rr-account-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.2 1.9"/></svg>Audit trail</a
             ><a href="../notifications/index.html" data-rr-href="/admin/notifications"
-              >Notifications<span class="count-pill">3</span></a
+              ><svg class="rr-account-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l2 2H4z"/><path d="M10 21.2h4"/></svg>Notifications<span class="count-pill">3</span></a
             ><a
               aria-current="page"
               class="active"
               href="../account/index.html"
               data-rr-href="/admin/account"
-              >My account</a
+              ><svg class="rr-account-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.4 18.2c1.2-2.2 3-3.2 5.6-3.2s4.4 1 5.6 3.2"/></svg>My account</a
             >
           </nav>
           <div class="sidebar-foot">
@@ -81,9 +83,13 @@
         </aside>
         <main id="page" class="staff-main" tabindex="-1" data-rr-region="page/root">
           <div class="form-page">
-            <h1 class="h3 mb-1" data-rr-region="page/title">My account</h1>
-            <p class="text-secondary">Administrator</p>
-            <div class="row g-4">
+            <header class="rr-account-head">
+              <span class="rr-account-eyebrow">Bulacan admin portal</span>
+              <h1 class="h3 mb-1" data-rr-region="page/title">My account</h1>
+              <p class="text-secondary rr-account-role">Administrator</p>
+            </header>
+            <div class="rr-account-tape" aria-hidden="true"></div>
+            <div class="row g-4 rr-account-grid">
               <div class="col-md-7">
                 <form class="panel" id="profile-form" novalidate="">
                   <h2 class="h5">Profile</h2>
@@ -162,5 +168,38 @@
         </main>
       </div>
     </div>
+    <script>
+      /*
+       * Burger menu (mockup behaviour): the button opens and closes the sidebar's navigation
+       * on small screens. It keeps aria-expanded and the accessible name in sync, closes on
+       * Escape or after choosing a link, and resets when the window grows past 992px.
+       */
+      (function () {
+        var aside = document.querySelector(".staff-shell .sidebar");
+        var btn = aside && aside.querySelector(".rr-account-burger");
+        if (!btn) return;
+        var OPEN = "rr-account-menu-open";
+        function set(open) {
+          aside.classList.toggle(OPEN, open);
+          btn.setAttribute("aria-expanded", open ? "true" : "false");
+          btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+        }
+        btn.addEventListener("click", function () {
+          set(!aside.classList.contains(OPEN));
+        });
+        aside.addEventListener("click", function (e) {
+          if (e.target.closest(".side-nav a")) set(false);
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && aside.classList.contains(OPEN)) {
+            set(false);
+            btn.focus();
+          }
+        });
+        window.matchMedia("(min-width: 992px)").addEventListener("change", function (e) {
+          if (e.matches) set(false);
+        });
+      })();
+    </script>
   </body>
 </html>

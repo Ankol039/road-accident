@@ -12,6 +12,7 @@
  *   node scripts/deploy-rules.mjs
  *   node scripts/deploy-rules.mjs --dry-run
  */
+import { readServiceAccount } from './service-account.mjs'
 import { readFileSync, existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -30,7 +31,7 @@ if (!keyPath) {
   process.exit(1)
 }
 
-const key = JSON.parse(readFileSync(keyPath, 'utf8'))
+const key = readServiceAccount(keyPath)
 const projectId = key.project_id
 const rulesPath = resolve(here, '../firestore.rules')
 const source = readFileSync(rulesPath, 'utf8')

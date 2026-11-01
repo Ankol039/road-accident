@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RoadReport design system — mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../_shared/bootstrap.min.css" />
+  <link rel="stylesheet" href="../_shared/app.css" />
+  <link rel="stylesheet" href="../_shared/mock.css" />
+  <link rel="stylesheet" href="./system.css" />
+</head>
+<body>
+<!--
+  ROADREPORT UI MOCKUP — design system and shell
+  Source: src/styles/app.css, src/components/Layout.jsx, src/components/*.jsx
+
+  Design this page FIRST. Freeze the tokens, buttons, forms, badges and shell,
+  then apply the same language to every screen. Edit index.html and system.css
+  only; leave ../_shared/app.css alone.
+-->
+<div class="staff-shell" data-rr-screen="system" data-rr-source="src/styles/app.css">
+  <aside class="sidebar" data-rr-region="shell/sidebar">
+    <div class="px-3 pt-3 pb-4">
+      <a href="#" class="text-decoration-none" aria-label="RoadReport home">
+        <span class="brand brand-light">
+          <svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
+            <rect x="10" y="10" width="44" height="44" rx="6" transform="rotate(45 32 32)" fill="#F2B705" stroke="#23272B" stroke-width="4" />
+            <rect x="29" y="18" width="6" height="18" rx="3" fill="#23272B" />
+            <circle cx="32" cy="43" r="3.5" fill="#23272B" />
+          </svg>
+          <span>RoadReport</span>
+        </span>
+      </a>
+      <div class="small text-white-50 mt-2">Administrator</div>
+    </div>
+
+    <nav class="side-nav" aria-label="Main" data-rr-region="shell/nav">
+      <a class="active" href="#">Dashboard</a>
+      <a href="#">Accident reports</a>
+      <a href="#">Summaries and export</a>
+      <a href="#">Users</a>
+      <a href="#">Categories and settings</a>
+      <a href="#">Audit trail</a>
+      <a href="#">Notifications <span class="count-pill">3</span></a>
+      <a href="#">My account</a>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="small text-white mb-2 text-truncate">Demo User</div>
+      <button type="button" class="btn btn-sm btn-outline-light w-100">Log out</button>
+    </div>
+  </aside>
+
+  <main class="staff-main rr-system" data-rr-region="page/root">
+    <header class="rr-system-head">
+      <p class="eyebrow mb-1">RoadReport Bulacan</p>
+      <h1 class="h3 mb-2">Design system and shell</h1>
+      <p class="text-secondary mb-0">
+        This page is the shared vocabulary for every screen. Change tokens and component
+        styles once here, then use the same classes in the screen mockups. Do not redesign
+        the same button five different ways.
+      </p>
+    </header>
+
+    <section class="panel rr-system-section" data-rr-region="panel/tokens">
+      <h2 class="h5">Colour tokens</h2>
+      <p class="small text-secondary">
+        Defined in <code>src/styles/app.css</code>. Edit the token in
+        <code>system.css</code> only if you intend to change the whole product.
+      </p>
+      <div class="rr-swatches">
+        <div class="rr-swatch"><i style="background:#0e1214"></i><b>--kerb</b><span>#0e1214</span></div>
+        <div class="rr-swatch"><i style="background:#171c1f"></i><b>--asphalt-2</b><span>#171c1f</span></div>
+        <div class="rr-swatch"><i style="background:#2a3236"></i><b>--asphalt-3</b><span>#2a3236</span></div>
+        <div class="rr-swatch"><i style="background:#0f6b4c"></i><b>--guide</b><span>#0f6b4c</span></div>
+        <div class="rr-swatch"><i style="background:#f2b705"></i><b>--lane</b><span>#f2b705</span></div>
+        <div class="rr-swatch"><i style="background:#e4572e"></i><b>--acc</b><span>#e4572e</span></div>
+        <div class="rr-swatch"><i style="background:#c8322b"></i><b>--siren</b><span>#c8322b</span></div>
+        <div class="rr-swatch"><i style="background:#f0ece2"></i><b>--ink</b><span>#f0ece2</span></div>
+        <div class="rr-swatch"><i style="background:#98a09c"></i><b>--muted</b><span>#98a09c</span></div>
+      </div>
+    </section>
+
+    <section class="panel rr-system-section" data-rr-region="panel/type">
+      <h2 class="h5">Typography</h2>
+      <div class="rr-type">
+        <div><span class="rr-type-label">Jost · h1</span><h1>Where road safety meets response</h1></div>
+        <div><span class="rr-type-label">Jost · h2</span><h2>Accident reports</h2></div>
+        <div><span class="rr-type-label">Jost · h3</span><h3>Report detail</h3></div>
+        <div><span class="rr-type-label">Inter · h5</span><h5>Status history</h5></div>
+        <div><span class="rr-type-label">Inter · body</span><p class="mb-0">Reports from the RoadReport app, verified by administrators and answered by traffic officers across Bulacan.</p></div>
+        <div><span class="rr-type-label">Inter · small</span><p class="small text-secondary mb-0">Updated 12 minutes ago · 20 total records</p></div>
+        <div><span class="rr-type-label">eyebrow</span><p class="eyebrow mb-0">Bulacan Admin Portal</p></div>
+      </div>
+    </section>
+
+    <section class="panel rr-system-section" data-rr-region="panel/buttons">
+      <h2 class="h5">Buttons</h2>
+      <p class="small text-secondary">One loud action per screen. <code>.btn-report</code> is reserved for the public reporting action; admin screens use <code>.btn-guide</code>.</p>
+      <div class="rr-row">
+        <button class="btn btn-guide">Primary action</button>
+        <button class="btn btn-outline-guide">Secondary action</button>
+        <button class="btn btn-outline-secondary">Neutral</button>
+        <button class="btn btn-link">Link button</button>
+        <button class="btn btn-report">Report an accident</button>
+        <button class="btn btn-guide" disabled>Disabled</button>
+      </div>
+      <div class="rr-row">
+        <button class="btn btn-sm btn-guide">Small primary</button>
+        <button class="btn btn-sm btn-outline-guide">Small secondary</button>
+        <button class="btn btn-sm btn-outline-secondary">Small neutral</button>
+      </div>
+    </section>
+
+    <section class="panel rr-system-section" data-rr-region="panel/forms">
+      <h2 class="h5">Forms and filters</h2>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label" for="sample-text">Text input</label>
+          <input class="form-control" id="sample-text" placeholder="Search report ID, location or officer" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="sample-select">Select</label>
+          <select class="form-select" id="sample-select">
+            <option>All statuses</option>
+            <option>Submitted</option>
+            <option>Verified</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="sample-date">Date</label>
+          <input class="form-control" id="sample-date" type="date" value="2026-10-23" />
+        </div>
+      </div>
+      <div class="rr-row mt-3">
+        <label class="form-check d-inline-flex align-items-center gap-1">
+          <input class="form-check-input" type="checkbox" checked />
+          <span>Flagged only</span>
+        </label>
+        <label class="form-check d-inline-flex align-items-center gap-1">
+          <input class="form-check-input" type="checkbox" />
+          <span>Verified only</span>
+        </label>
+      </div>
+      <form class="filter-bar mt-3" onsubmit="return false">
+        <input class="form-control" type="search" placeholder="Search reports" />
+        <select class="form-select"><option>All statuses</option></select>
+        <select class="form-select"><option>All types</option></select>
+        <input class="form-control" type="date" value="2026-09-23" />
+        <input class="form-control" type="date" value="2026-10-23" />
+        <button class="btn btn-sm btn-guide" type="submit">Apply</button>
+        <button class="btn btn-sm btn-outline-secondary" type="button">Clear</button>
+      </form>
+    </section>
+
+    <section class="panel rr-system-section" data-rr-region="panel/badges">
+      <h2 class="h5">Status badges</h2>
+      <div class="rr-row">
+        <span class="status-badge status-submitted" data-rr-component="StatusBadge" data-status="submitted">Submitted</span>
+        <span class="status-badge status-under_review" data-rr-component="StatusBadge" data-status="under_review">Under Review</span>
+        <span class="status-badge status-info_required" data-rr-component="StatusBadge" data-status="info_required">Additional Information Required</span>
+        <span class="status-badge status-verified" data-rr-component="StatusBadge" data-status="verified">Verified</span>
+        <span class="status-badge status-assigned" data-rr-component="StatusBadge" data-status="assigned">Assigned</span>
+        <span class="status-badge status-on_scene" data-rr-component="StatusBadge" data-status="on_scene">Officer On Scene</span>
+        <span class="status-badge status-in_progress" data-rr-component="StatusBadge" data-status="in_progress">In Progress</span>
+        <span class="status-badge status-resolved" data-rr-component="StatusBadge" data-status="resolved">Resolved / Closed</span>
+        <span class="status-badge status-rejected" data-rr-component="StatusBadge" data-status="rejected">Rejected</span>
+        <span class="status-badge status-duplicate" data-rr-component="StatusBadge" data-status="duplicate">Duplicate</span>
+      </div>
+      <div class="rr-row mt-3">
+        <span class="record-kind">Unverified submission</span>
+        <span class="record-kind is-official">Official accident record</span>
+        <span class="flag-dot">flagged</span>
+        <span class="src-badge src-camera">Camera</span>
+        <span class="src-badge src-gallery">Gallery</span>
+      </div>
+    </section>
+
+    <section class="panel p-0 rr-system-section" data-rr-region="panel/table">
+      <div class="p-3 pb-0"><h2 class="h5">Table</h2><p class="small text-secondary mb-0">Dense but readable. Status is a badge, not coloured text.</p></div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Report ID</th>
+              <th>Accident date</th>
+              <th>Location</th>
+              <th>Type</th>
+              <th>Officer</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="clickable">
+              <td class="code-cell"><a href="#">RA-2026-000003</a></td>
+              <td>Oct 19, 2026</td>
+              <td>Paseo del Congreso, Marilao, Barangay 3</td>
+              <td>Rollover</td>
+              <td>—</td>
+              <td><span class="status-badge status-under_review">Under Review</span></td>
+            </tr>
+            <tr class="clickable">
+              <td class="code-cell"><a href="#">RA-2026-000014</a></td>
+              <td>Oct 11, 2026</td>
+              <td>Quirino Hwy, San Jose del Monte, Barangay 2</td>
+              <td>Hit and run</td>
+              <td>Demo User</td>
+              <td><span class="status-badge status-verified">Verified</span></td>
+            </tr>
+            <tr class="clickable">
+              <td class="code-cell"><a href="#">RA-2026-000012</a> <span class="flag-dot">flagged</span></td>
+              <td>Sep 29, 2026</td>
+              <td>Maharlika Hwy, Bocaue, Barangay 12</td>
+              <td>Road obstruction</td>
+              <td>—</td>
+              <td><span class="status-badge status-resolved">Resolved / Closed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap p-3">
+        <span class="text-secondary small">20 total, page 1 of 1</span>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-outline-secondary" disabled>Previous</button>
+          <button class="btn btn-sm btn-outline-secondary" disabled>Next</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="rr-system-section" data-rr-region="panel/cards">
+      <h2 class="h5">Cards and stats</h2>
+      <div class="stat-grid">
+        <a class="stat-card" href="#"><span class="stat-value">14</span><span class="stat-label">Pending review</span></a>
+        <a class="stat-card stat-verified" href="#"><span class="stat-value">32</span><span class="stat-label">Verified</span></a>
+        <a class="stat-card stat-on_scene has-items" href="#"><span class="stat-value">2</span><span class="stat-label">Officers on scene</span></a>
+        <a class="stat-card stat-flagged" href="#"><span class="stat-value">5</span><span class="stat-label">Flagged</span></a>
+        <a class="stat-card stat-duplicates" href="#"><span class="stat-value">3</span><span class="stat-label">Duplicates</span></a>
+      </div>
+      <div class="row g-3 mt-1">
+        <div class="col-md-6"><section class="panel mb-0"><h2 class="h6">Panel title</h2><p class="text-secondary mb-0">A panel groups one job. Use a <code>.stack</code> to space several panels.</p></section></div>
+        <div class="col-md-6"><section class="panel border-warning mb-0"><h2 class="h6">Attention panel</h2><p class="text-secondary mb-0">Use sparingly for a report that needs a second look.</p></section></div>
+      </div>
+    </section>
+
+    <section class="panel rr-system-section" data-rr-region="panel/charts">
+      <h2 class="h5">Charts and maps</h2>
+      <div class="row g-3">
+        <div class="col-md-6"><div class="chart-box"><img class="rr-static-canvas" src="../_shared/photo-placeholder.svg" alt="Chart placeholder" style="width:100%;height:100%;object-fit:cover;opacity:.55" /></div></div>
+        <div class="col-md-6"><div class="map-box"><img class="rr-static-map" src="../_shared/photo-placeholder.svg" alt="Map placeholder" style="width:100%;height:100%;object-fit:cover;opacity:.55" /></div></div>
+      </div>
+    </section>
+
+    <section class="panel rr-system-section" data-rr-region="panel/alerts">
+      <h2 class="h5">Alerts, states and toasts</h2>
+      <div class="alert alert-danger mb-2" role="alert">Could not load reports. Check your connection and try again.</div>
+      <div class="alert alert-success mb-2" role="alert">Report updated and the officer was notified.</div>
+      <div class="alert alert-warning mb-2" role="alert">This report has been flagged for a second look.</div>
+      <div class="alert alert-info mb-2" role="alert">Notifications are written by the mobile app and refresh every minute.</div>
+      <p class="text-secondary mb-2">Nothing to show yet.</p>
+      <div class="page-loading">Loading…</div>
+      <div class="toast-msg mb-2" role="status">Saved.</div>
+      <div class="toast-msg toast-error mb-0" role="status">That did not save.</div>
+    </section>
+
+    <section class="panel rr-system-section" data-rr-region="panel/modal">
+      <h2 class="h5">Modal</h2>
+      <p class="small text-secondary">Bootstrap's JavaScript is not loaded. Use the same markup and the app's custom <code>Modal</code> component.</p>
+      <div class="rr-modal-preview">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add an accident category</h5>
+            <button type="button" class="btn-close" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <label class="form-label" for="modal-name">Name</label>
+            <input class="form-control" id="modal-name" placeholder="e.g. Vehicle collision" />
+            <label class="form-label mt-3" for="modal-desc">Description</label>
+            <textarea class="form-control" id="modal-desc" rows="3"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-sm btn-outline-secondary" type="button">Cancel</button>
+            <button class="btn btn-sm btn-guide" type="button">Save category</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel rr-system-section" data-rr-region="panel/timeline">
+      <h2 class="h5">Timeline</h2>
+      <ol class="timeline">
+        <li class="is-done"><b>Submitted</b><div class="small text-secondary">Sep 13, 2026 · 1:08 PM · Public reporter</div><p class="mb-0 small">Report created.</p></li>
+        <li class="is-done"><b>Under review</b><div class="small text-secondary">Sep 13, 2026 · 2:08 PM · Demo User</div><p class="mb-0 small">Administrator started reviewing the report.</p></li>
+        <li class="is-done"><b>Assigned</b><div class="small text-secondary">Sep 13, 2026 · 3:08 PM · Demo User</div><p class="mb-0 small">Officer dispatched to the pinned location.</p></li>
+        <li class="is-current"><b>Officer on scene</b><div class="small text-secondary">Sep 13, 2026 · 4:08 PM · Demo User</div><p class="mb-0 small">Officer tapped “I have arrived” in the app.</p></li>
+      </ol>
+    </section>
+
+    <section class="panel rr-system-section" data-rr-region="panel/photos">
+      <h2 class="h5">Photo evidence</h2>
+      <div class="photo-section">
+        <div class="photo-grid">
+          <figure class="photo-item">
+            <div class="photo-tile"><img src="../_shared/photo-placeholder.svg" alt="Photo placeholder" /></div>
+            <figcaption class="small text-secondary">Scene photo</figcaption>
+          </figure>
+          <figure class="photo-item">
+            <div class="photo-tile"><img src="../_shared/photo-placeholder.svg" alt="Photo placeholder" /></div>
+            <figcaption class="small text-secondary">Plate photo</figcaption>
+          </figure>
+          <div class="photo-add">+ Add photo</div>
+        </div>
+      </div>
+      <p class="privacy-note">Sensitive photos are blurred until an administrator reveals them.</p>
+      <div class="photo-section is-sensitive">
+        <div class="photo-grid">
+          <figure class="photo-item">
+            <div class="photo-tile"><img src="../_shared/photo-placeholder.svg" alt="Sensitive photo placeholder" /></div>
+            <figcaption class="small text-secondary">Sensitive photo (blurred)</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel rr-system-section" data-rr-region="panel/arrival">
+      <h2 class="h5">Officer arrival check</h2>
+      <section class="panel arrival-check is-match mb-2">
+        <div class="verdict">Arrival matches the report</div>
+        <p class="mb-0 small text-secondary">The officer's GPS is 18 m from the reporter's pin.</p>
+      </section>
+      <section class="panel arrival-check is-mismatch mb-0">
+        <div class="verdict">Arrival does not match</div>
+        <p class="mb-0 small text-secondary">The officer's GPS is 2.4 km from the reporter's pin.</p>
+      </section>
+    </section>
+
+    <section class="panel rr-system-section" data-rr-region="panel/notifications">
+      <h2 class="h5">Notification rows</h2>
+      <div class="stack">
+        <div class="notif-row is-unread">
+          <div class="d-flex justify-content-between gap-3">
+            <b>New report submitted</b>
+            <span class="small text-secondary">2 minutes ago</span>
+          </div>
+          <p class="mb-0 small text-secondary">RA-2026-000021 · Vehicle collision · Malolos</p>
+        </div>
+        <div class="notif-row">
+          <div class="d-flex justify-content-between gap-3">
+            <b>Status updated</b>
+            <span class="small text-secondary">1 hour ago</span>
+          </div>
+          <p class="mb-0 small text-secondary">RA-2026-000014 moved to Verified.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="rr-system-foot">
+      <span>RoadReport Bulacan Admin Portal · design reference</span>
+      <span>Tokens and shared classes: <code>src/styles/app.css</code></span>
+    </footer>
+  </main>
+</div>
+</body>
+</html>

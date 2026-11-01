@@ -12,7 +12,8 @@
  * USAGE
  *   node scripts/check-settings.mjs
  */
-import { existsSync, readFileSync } from 'node:fs'
+import { readServiceAccount } from './service-account.mjs'
+import { existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import puppeteer from 'puppeteer-core'
@@ -49,7 +50,7 @@ if (!keyPath) {
   console.error('Could not find a service-account key. Looked in:\n  ' + keyCandidates.join('\n  '))
   process.exit(1)
 }
-initializeApp({ credential: cert(JSON.parse(readFileSync(keyPath, 'utf8'))) })
+initializeApp({ credential: cert(readServiceAccount(keyPath)) })
 const db = getFirestore()
 
 const executablePath = CHROME_PATHS.find((p) => existsSync(p))

@@ -7,3 +7,573 @@
  */
 
 /* Add screen overrides below this line. */
+
+/* ==========================================================================
+   0. Tokens — lifted from the public landing page so both screens read as
+      one product: ink-black ground, cream text, signal orange, hazard amber.
+   ========================================================================== */
+.staff-shell {
+  --rr-notifications-bg: #0e1214;
+  --rr-notifications-surface: #151a1d;
+  --rr-notifications-raised: #1b2226;
+  --rr-notifications-line: rgba(236, 232, 223, 0.09);
+  --rr-notifications-line-strong: rgba(236, 232, 223, 0.18);
+  --rr-notifications-text: #ece8df;
+  --rr-notifications-muted: #8d979b;
+  --rr-notifications-orange: #e4572e;
+  --rr-notifications-amber: #f5c518;
+  --rr-notifications-teal: #5fb7a5;
+  --rr-notifications-display: "Jost", "Inter", system-ui, sans-serif;
+  background:
+    radial-gradient(56rem 26rem at 78% -8%, rgba(228, 87, 46, 0.13), transparent 62%),
+    var(--rr-notifications-bg);
+  color: var(--rr-notifications-text);
+}
+
+.staff-main {
+  /* Lets the table scroll inside its panel instead of widening the page. */
+  min-width: 0;
+  color: var(--rr-notifications-text);
+}
+
+.staff-main .text-secondary {
+  color: var(--rr-notifications-muted) !important;
+}
+
+/* ==========================================================================
+   1. Sidebar — keeps the shared layout and divider, restyles the contents.
+   ========================================================================== */
+.staff-shell .sidebar {
+  background: linear-gradient(180deg, #12181b 0%, #0e1214 100%);
+}
+
+.staff-shell .sidebar .brand {
+  font-family: var(--rr-notifications-display);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.rr-notifications-nav-label {
+  margin: 0 1.25rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rr-notifications-orange);
+}
+
+.staff-shell .side-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  color: #aab3b7;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.staff-shell .side-nav a:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.staff-shell .side-nav a.active,
+.staff-shell .side-nav a[aria-current="page"] {
+  background: linear-gradient(90deg, rgba(228, 87, 46, 0.28), rgba(228, 87, 46, 0.06));
+  box-shadow: inset 3px 0 0 var(--rr-notifications-orange);
+  color: #fff;
+}
+
+.staff-shell .side-nav a:focus-visible,
+.staff-shell .sidebar-foot .btn:focus-visible,
+.staff-main a:focus-visible,
+.staff-main .btn:focus-visible,
+.staff-main .form-control:focus-visible {
+  outline: 2px solid var(--rr-notifications-amber);
+  outline-offset: 2px;
+}
+
+.rr-notifications-ico {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--rr-notifications-orange);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.staff-shell .side-nav .count-pill {
+  margin-left: auto;
+  background: var(--rr-notifications-amber);
+  color: #15191b;
+  font-weight: 700;
+}
+
+.staff-shell .sidebar-foot .btn {
+  border-radius: 999px;
+  border-color: var(--rr-notifications-line-strong);
+  color: var(--rr-notifications-text);
+  font-weight: 500;
+}
+
+.staff-shell .sidebar-foot .btn:hover {
+  background: var(--rr-notifications-orange);
+  border-color: var(--rr-notifications-orange);
+  color: #fff;
+}
+
+/* ==========================================================================
+   2. Page header, actions + hazard tape
+   ========================================================================== */
+.rr-notifications-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-bottom: 1.25rem;
+}
+
+.rr-notifications-eyebrow {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rr-notifications-orange);
+}
+
+.rr-notifications-head h1 {
+  margin: 0.45rem 0 0.35rem;
+  font-family: var(--rr-notifications-display);
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--rr-notifications-text);
+}
+
+.rr-notifications-sub {
+  margin: 0;
+  max-width: 34rem;
+  font-size: 0.95rem;
+  color: var(--rr-notifications-muted);
+}
+
+.rr-notifications-tape {
+  height: 8px;
+  margin-bottom: 1.5rem;
+  border-radius: 3px;
+  background: repeating-linear-gradient(-45deg, var(--rr-notifications-amber) 0 12px, #14191b 12px 24px);
+  opacity: 0.85;
+}
+
+.staff-main .btn-outline-guide {
+  min-height: 40px;
+  padding: 0 1rem;
+  border: 1px solid rgba(228, 87, 46, 0.55);
+  border-radius: 10px;
+  background: transparent;
+  color: #ff9b7a;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.staff-main .btn-outline-guide:hover {
+  border-color: var(--rr-notifications-orange);
+  background: var(--rr-notifications-orange);
+  color: #fff;
+}
+
+/* ==========================================================================
+   3. Header action + notification list
+   ========================================================================== */
+.staff-main .rr-notifications-head .btn-outline-secondary {
+  min-height: 42px;
+  padding: 0 1.2rem;
+  border: 1px solid var(--rr-notifications-line-strong);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--rr-notifications-text);
+  font-size: 0.86rem;
+  font-weight: 600;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.staff-main .rr-notifications-head .btn-outline-secondary:hover {
+  border-color: var(--rr-notifications-orange);
+  background: var(--rr-notifications-orange);
+  color: #fff;
+}
+
+.staff-main .rr-notifications-list {
+  display: grid;
+  gap: 12px;
+  max-width: 60rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A row is a card with a ring + lamp: amber and glowing while unread, gray once read. */
+.staff-main .notif-row {
+  --rr-notifications-c: #8d979b;
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 78px;
+  padding: 16px 22px 16px 82px;
+  overflow: hidden;
+  border: 1px solid var(--rr-notifications-line);
+  border-radius: 18px;
+  background: linear-gradient(160deg, #1b2226 0%, #14191b 100%);
+  color: var(--rr-notifications-muted);
+  text-align: left;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.staff-main .notif-row::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 22px;
+  width: 42px;
+  height: 42px;
+  margin-top: -21px;
+  border: 1.5px solid var(--rr-notifications-c);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--rr-notifications-c) 0 5px, transparent 6px);
+  opacity: 0.55;
+}
+
+.staff-main .notif-row::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--rr-notifications-c), transparent 72%);
+  opacity: 0.6;
+}
+
+.staff-main .notif-row strong {
+  margin-bottom: 0.15rem;
+  font-family: var(--rr-notifications-display);
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: var(--rr-notifications-text);
+}
+
+.staff-main .notif-row span.d-block {
+  font-size: 0.92rem;
+  color: #c4c9c6;
+}
+
+.staff-main .notif-row .small {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+}
+
+.staff-main .notif-row.is-unread {
+  --rr-notifications-c: var(--rr-notifications-amber);
+  border-color: rgba(245, 197, 24, 0.3);
+  background: linear-gradient(160deg, rgba(245, 197, 24, 0.1) 0%, #14191b 62%);
+}
+
+.staff-main .notif-row.is-unread::before {
+  opacity: 1;
+  box-shadow: 0 0 22px -4px var(--rr-notifications-c);
+}
+
+.staff-main .notif-row.is-unread::after {
+  opacity: 1;
+}
+
+/* Read rows step back: calmer title and body. */
+.staff-main .notif-row:not(.is-unread) strong {
+  font-weight: 500;
+  color: #c4c9c6;
+}
+
+.staff-main .notif-row:not(.is-unread) span.d-block {
+  color: var(--rr-notifications-muted);
+}
+
+.staff-main .notif-row:hover {
+  transform: translateY(-2px);
+  border-color: var(--rr-notifications-line-strong);
+}
+
+.staff-main .notif-row.is-unread:hover {
+  border-color: rgba(245, 197, 24, 0.5);
+}
+
+.staff-main .notif-row:focus-visible {
+  outline: 2px solid var(--rr-notifications-amber);
+  outline-offset: 2px;
+}
+
+.staff-main .text-secondary {
+  color: var(--rr-notifications-muted) !important;
+}
+
+/* ==========================================================================
+   4. Responsive
+   ========================================================================== */
+@media (max-width: 575.98px) {
+  .rr-notifications-head {
+    align-items: stretch;
+  }
+
+  .staff-main .rr-notifications-head .btn-outline-secondary {
+    width: 100%;
+  }
+
+  .staff-main .notif-row {
+    padding: 14px 16px 14px 66px;
+    border-radius: 16px;
+  }
+
+  .staff-main .notif-row::before {
+    left: 16px;
+    width: 36px;
+    height: 36px;
+    margin-top: -18px;
+  }
+}
+
+/* ==========================================================================
+   8. Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .staff-shell *,
+  .staff-shell *::before,
+  .staff-shell *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .staff-main .notif-row:hover {
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   Burger menu — under 992px the sidebar becomes a sticky top bar with a menu
+   button; the navigation and the user / log out block open from it.
+   ========================================================================== */
+.rr-notifications-burger {
+  display: none;
+}
+
+@media (max-width: 991.98px) {
+  .staff-shell {
+    display: block;
+  }
+
+  .staff-shell .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: block;
+    width: auto;
+    max-width: none;
+    height: auto;
+    min-height: 0;
+    max-height: 100vh;
+    max-height: 100dvh;
+    padding: env(safe-area-inset-top, 0px) 0 0;
+    overflow-y: auto;
+    box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.9);
+  }
+
+  .staff-shell .sidebar > div:first-of-type {
+    padding: 0.75rem 4.6rem 0.75rem 1rem !important;
+  }
+
+  .staff-shell .sidebar > div:first-of-type .small {
+    display: none;
+  }
+
+  .staff-shell .sidebar.rr-notifications-menu-open > div:first-of-type .small {
+    display: block;
+  }
+
+  .rr-notifications-burger {
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 1px solid var(--rr-notifications-line-strong);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--rr-notifications-text);
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+  }
+
+  .rr-notifications-burger:hover {
+    background: rgba(255, 255, 255, 0.09);
+  }
+
+  .rr-notifications-burger:focus-visible {
+    outline: 2px solid var(--rr-notifications-amber);
+    outline-offset: 2px;
+  }
+
+  .rr-notifications-burger[aria-expanded="true"] {
+    border-color: var(--rr-notifications-orange);
+    background: rgba(228, 87, 46, 0.16);
+  }
+
+  .rr-notifications-burger-bars,
+  .rr-notifications-burger-bars::before,
+  .rr-notifications-burger-bars::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .rr-notifications-burger-bars {
+    position: relative;
+  }
+
+  .rr-notifications-burger-bars::before,
+  .rr-notifications-burger-bars::after {
+    content: "";
+    position: absolute;
+    left: 0;
+  }
+
+  .rr-notifications-burger-bars::before {
+    top: -6px;
+  }
+
+  .rr-notifications-burger-bars::after {
+    top: 6px;
+  }
+
+  .rr-notifications-burger[aria-expanded="true"] .rr-notifications-burger-bars {
+    background: transparent;
+  }
+
+  .rr-notifications-burger[aria-expanded="true"] .rr-notifications-burger-bars::before {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .rr-notifications-burger[aria-expanded="true"] .rr-notifications-burger-bars::after {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* Closed: only the top bar shows. */
+  .staff-shell .sidebar:not(.rr-notifications-menu-open) .rr-notifications-nav-label,
+  .staff-shell .sidebar:not(.rr-notifications-menu-open) .side-nav,
+  .staff-shell .sidebar:not(.rr-notifications-menu-open) .sidebar-foot {
+    display: none;
+  }
+
+  /* Open: a vertical list, then the user block. */
+  .staff-shell .sidebar.rr-notifications-menu-open .side-nav {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 2px;
+    padding: 0.25rem 0.75rem 0.5rem;
+  }
+
+  .staff-shell .sidebar.rr-notifications-menu-open .side-nav a {
+    min-height: 46px;
+  }
+
+  .staff-shell .sidebar.rr-notifications-menu-open .sidebar-foot {
+    display: block;
+    margin: 0;
+    padding: 0.85rem 1rem 1.1rem;
+    border-top: 1px solid var(--rr-notifications-line);
+  }
+}
+
+/* ==========================================================================
+   Small-screen safety — nothing may push the page wider than the screen.
+   ========================================================================== */
+.staff-main img,
+.staff-main svg,
+.staff-main canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 991.98px) {
+  /* Safety net: clip anything that still spills sideways (inner scrollers such as tables keep scrolling). */
+  .staff-main {
+    min-width: 0;
+    overflow-x: clip;
+  }
+
+  .staff-main td,
+  .staff-main .panel p,
+  .staff-main .form-text {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 575.98px) {
+  /* Filter bars: every control may shrink, whatever min-width the shared styles give it. */
+  .staff-main .filter-bar,
+  .staff-main .filter-bar > * {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .staff-main .filter-bar .form-control,
+  .staff-main .filter-bar .form-select,
+  .staff-main .filter-bar .btn {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .staff-main .filter-bar input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+@media (max-width: 419.98px) {
+  /* Narrow phones: one control per row, so dates and dropdown labels are never cut off. */
+  .staff-main .filter-bar > *,
+  .staff-main .filter-bar .form-control,
+  .staff-main .filter-bar .form-select,
+  .staff-main .filter-bar .form-check,
+  .staff-main .filter-bar .btn,
+  .staff-main .filter-bar input[type="date"] {
+    flex: 1 1 100% !important;
+    width: 100%;
+  }
+
+  .staff-main .filter-bar .form-check {
+    justify-content: flex-start;
+  }
+}

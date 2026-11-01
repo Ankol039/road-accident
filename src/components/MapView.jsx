@@ -14,8 +14,20 @@ import { place } from '../utils/format.js'
 function InvalidateOnMount() {
   const map = useMap()
   useEffect(() => {
-    const t = setTimeout(() => map.invalidateSize(), 120)
-    return () => clearTimeout(t)
+    const page = map.getContainer().closest('.rr-page-enter')
+    const invalidate = () => map.invalidateSize({ pan: false })
+    // Also covers reduced motion, late data, and a missing animationend event.
+    const t = setTimeout(invalidate, page ? 250 : 120)
+    const onEnterEnd = (event) => {
+      if (event.target !== page || event.animationName !== 'rr-page-enter') return
+      clearTimeout(t)
+      invalidate()
+    }
+    page?.addEventListener('animationend', onEnterEnd)
+    return () => {
+      clearTimeout(t)
+      page?.removeEventListener('animationend', onEnterEnd)
+    }
   }, [map])
   return null
 }

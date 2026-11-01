@@ -22,11 +22,14 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
-/** True when .env still has the placeholder values. */
+/** True when the required web app values have replaced the placeholders. */
 export const isFirebaseConfigured = Boolean(
   firebaseConfig.apiKey &&
     firebaseConfig.apiKey !== 'your-api-key' &&
-    firebaseConfig.projectId,
+    firebaseConfig.projectId &&
+    firebaseConfig.authDomain &&
+    firebaseConfig.appId &&
+    firebaseConfig.appId !== 'your-app-id',
 )
 
 /**

@@ -1,0 +1,53 @@
+{
+  "name": "roadreport-admin",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "RoadReport Bulacan Admin Portal - React + Vite (Firebase Spark: Hosting + Auth + Firestore)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "seed": "node scripts/seed.mjs",
+    "create-user": "node scripts/create-user.mjs",
+    "check:browser": "node scripts/browser-check.mjs",
+    "check:status": "node scripts/check-status-change.mjs",
+    "check:users": "node scripts/check-user-management.mjs",
+    "check:settings": "node scripts/check-settings.mjs",
+    "check:audit": "node scripts/check-audit.mjs",
+    "check:landing": "node scripts/check-landing.mjs",
+    "check:db": "node scripts/smoke-test.mjs",
+    "check:indexes": "node scripts/probe-indexes.mjs",
+    "mock:export": "node scripts/mock-export.mjs",
+    "mock:serve": "node scripts/mock-serve.mjs",
+    "mock:verify": "node scripts/mock-verify.mjs",
+    "mock:convert": "node scripts/html-to-jsx.mjs",
+    "deploy": "npm run build && firebase deploy --only hosting"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.1",
+    "firebase": "^10.12.2",
+    "leaflet": "^1.9.4",
+    "react": "^18.3.1",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18.3.1",
+    "react-leaflet": "^4.2.1",
+    "react-router-dom": "^6.24.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "firebase-admin": "^12.3.1",
+    "node-html-parser": "^9.0.5",
+    "pixelmatch": "^8.0.0",
+    "pngjs": "^7.0.0",
+    "prettier": "^3.9.10",
+    "puppeteer-core": "^25.15.0",
+    "vite": "^5.3.3"
+  },
+  "allowScripts": {
+    "esbuild@0.21.5": true,
+    "protobufjs@7.6.6": true,
+    "fsevents@2.3.3": true
+  }
+}

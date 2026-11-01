@@ -35,3 +35,6 @@ firebase-debug.*.log*
 
 # Firebase
 .firebase/
+
+# Server-only Firebase credentials
+firebase-service-account*.json

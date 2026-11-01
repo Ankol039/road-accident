@@ -7,3 +7,375 @@
  */
 
 /* Add screen overrides below this line. */
+
+/* ==========================================================================
+   0. Tokens + stage — the landing page's ink-black ground, orange glow and
+      perspective road, scaled down to a sign-in screen.
+   ========================================================================== */
+.rr-login-page {
+  --rr-login-bg: #0e1214;
+  --rr-login-line: rgba(236, 232, 223, 0.09);
+  --rr-login-line-strong: rgba(236, 232, 223, 0.18);
+  --rr-login-raised: #1b2226;
+  --rr-login-text: #ece8df;
+  --rr-login-muted: #8d979b;
+  --rr-login-orange: #e4572e;
+  --rr-login-amber: #f5c518;
+  --rr-login-green: #3fbf7f;
+  --rr-login-red: #e5483a;
+  --rr-login-display: "Jost", "Inter", system-ui, sans-serif;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 100vh;
+  padding: 3.5rem 1rem 4rem;
+  background:
+    radial-gradient(44rem 26rem at 50% 34%, rgba(228, 87, 46, 0.2), transparent 66%),
+    radial-gradient(60rem 30rem at 50% 120%, rgba(245, 197, 24, 0.06), transparent 70%),
+    var(--rr-login-bg);
+  color: var(--rr-login-text);
+}
+
+/* Caution tape along the top edge, as on the landing page. */
+.rr-login-tape {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 0;
+  height: 12px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--rr-login-amber) 0 14px,
+    #14191b 14px 28px
+  );
+  opacity: 0.9;
+}
+
+/* Perspective road: lane lines converging to a horizon, with orange speed streaks. */
+.rr-login-road {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 0;
+  height: 58%;
+  overflow: hidden;
+  pointer-events: none;
+  perspective: 520px;
+  -webkit-mask-image: linear-gradient(to top, #000 25%, transparent 96%);
+  mask-image: linear-gradient(to top, #000 25%, transparent 96%);
+}
+
+.rr-login-road::before {
+  content: "";
+  position: absolute;
+  inset: -40% -60% 0 -60%;
+  background:
+    repeating-linear-gradient(90deg, rgba(236, 232, 223, 0.22) 0 1px, transparent 1px 96px),
+    repeating-linear-gradient(0deg, rgba(236, 232, 223, 0.13) 0 1px, transparent 1px 72px);
+  transform: rotateX(64deg);
+  transform-origin: 50% 100%;
+}
+
+.rr-login-road::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent, var(--rr-login-orange), transparent) 14% 62% / 190px 2px no-repeat,
+    linear-gradient(90deg, transparent, rgba(236, 232, 223, 0.8), transparent) 70% 48% / 230px 2px no-repeat,
+    linear-gradient(90deg, transparent, var(--rr-login-orange), transparent) 78% 78% / 150px 2px no-repeat,
+    linear-gradient(90deg, transparent, rgba(236, 232, 223, 0.7), transparent) 26% 86% / 170px 2px no-repeat,
+    linear-gradient(90deg, transparent, var(--rr-login-orange), transparent) 52% 34% / 120px 2px no-repeat;
+  opacity: 0.8;
+}
+
+/* ==========================================================================
+   1. Card
+   ========================================================================== */
+.rr-login-page .auth-card.rr-login-card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 27.5rem);
+  max-width: 27.5rem;
+  padding: 2.4rem 2.2rem 2rem;
+  overflow: hidden;
+  border: 1px solid var(--rr-login-line-strong);
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(23, 29, 32, 0.96) 0%, rgba(18, 23, 26, 0.96) 100%);
+  box-shadow:
+    0 50px 90px -34px rgba(0, 0, 0, 0.95),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  color: var(--rr-login-text);
+}
+
+.rr-login-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--rr-login-orange), var(--rr-login-amber) 55%, transparent);
+}
+
+/* A tiny traffic light: amber is lit, like the landing page's "No Lost Reports". */
+.rr-login-lamps {
+  position: absolute;
+  top: 2.15rem;
+  right: 2.2rem;
+  display: flex;
+  gap: 7px;
+}
+
+.rr-login-lamps span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  opacity: 0.32;
+}
+
+.rr-login-lamps span:nth-child(1) {
+  background: var(--rr-login-red);
+}
+
+.rr-login-lamps span:nth-child(2) {
+  background: var(--rr-login-amber);
+  box-shadow: 0 0 12px var(--rr-login-amber);
+  opacity: 1;
+}
+
+.rr-login-lamps span:nth-child(3) {
+  background: var(--rr-login-green);
+}
+
+.rr-login-card .brand {
+  font-family: var(--rr-login-display);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--rr-login-text);
+}
+
+.rr-login-eyebrow {
+  display: block;
+  margin: 0.9rem 0 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rr-login-orange);
+}
+
+.rr-login-card h1 {
+  margin: 0 0 0.6rem;
+  font-family: var(--rr-login-display);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--rr-login-text);
+}
+
+.rr-login-card .text-secondary {
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--rr-login-muted) !important;
+}
+
+/* ==========================================================================
+   2. Fields + password reveal
+   ========================================================================== */
+.rr-login-card .form-label {
+  margin-bottom: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rr-login-muted);
+}
+
+.rr-login-card .form-control {
+  min-height: 48px;
+  border: 1px solid var(--rr-login-line);
+  border-radius: 14px;
+  background-color: var(--rr-login-raised);
+  color: var(--rr-login-text);
+  color-scheme: dark;
+  font-size: 0.95rem;
+}
+
+.rr-login-card .form-control:focus {
+  border-color: var(--rr-login-orange);
+  box-shadow: 0 0 0 3px rgba(228, 87, 46, 0.25);
+  outline: 0;
+}
+
+.rr-login-field {
+  position: relative;
+}
+
+.rr-login-field .form-control {
+  padding-right: 3.2rem;
+}
+
+.rr-login-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  margin-top: -19px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--rr-login-muted);
+  cursor: pointer;
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.rr-login-toggle:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--rr-login-text);
+}
+
+.rr-login-toggle:focus-visible {
+  outline: 2px solid var(--rr-login-amber);
+  outline-offset: 1px;
+}
+
+.rr-login-toggle[aria-pressed="true"] {
+  color: var(--rr-login-amber);
+}
+
+.rr-login-toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.rr-login-toggle .rr-login-eye-off {
+  display: none;
+}
+
+.rr-login-toggle[aria-pressed="true"] .rr-login-eye {
+  display: none;
+}
+
+.rr-login-toggle[aria-pressed="true"] .rr-login-eye-off {
+  display: block;
+}
+
+/* ==========================================================================
+   3. Actions + footer
+   ========================================================================== */
+.rr-login-card .btn-guide {
+  min-height: 50px;
+  margin-top: 0.5rem;
+  border: 0;
+  border-radius: 14px;
+  background: var(--rr-login-orange);
+  box-shadow: 0 18px 32px -16px rgba(228, 87, 46, 0.8);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.18s ease;
+}
+
+.rr-login-card .btn-guide:hover {
+  background: #f06a41;
+}
+
+.rr-login-card .btn-guide:focus-visible,
+.rr-login-card .btn-link:focus-visible,
+.rr-login-card a:focus-visible {
+  outline: 2px solid var(--rr-login-amber);
+  outline-offset: 2px;
+}
+
+.rr-login-card .d-flex.justify-content-between {
+  align-items: baseline !important;
+}
+
+.rr-login-card .btn-link {
+  line-height: 1.5;
+  color: var(--rr-login-amber);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.rr-login-card .btn-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.rr-login-card .d-flex a.small {
+  color: var(--rr-login-muted) !important;
+  font-size: 0.86rem;
+  text-decoration: none;
+}
+
+.rr-login-card .d-flex a.small::before {
+  content: "\2190\00a0";
+}
+
+.rr-login-card .d-flex a.small:hover {
+  color: var(--rr-login-text) !important;
+}
+
+.rr-login-foot {
+  position: absolute;
+  right: 1rem;
+  bottom: 1.1rem;
+  left: 1rem;
+  z-index: 1;
+  margin: 0;
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--rr-login-muted);
+}
+
+/* ==========================================================================
+   4. Responsive
+   ========================================================================== */
+@media (max-width: 575.98px) {
+  .rr-login-page {
+    padding: 3rem 0.9rem 4.5rem;
+  }
+
+  .rr-login-page .auth-card.rr-login-card {
+    padding: 2rem 1.4rem 1.6rem;
+    border-radius: 22px;
+  }
+
+  .rr-login-lamps {
+    top: 1.75rem;
+    right: 1.4rem;
+  }
+
+  .rr-login-card h1 {
+    font-size: 1.7rem;
+  }
+
+  .rr-login-road {
+    height: 48%;
+  }
+}
+
+/* ==========================================================================
+   5. Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .rr-login-page *,
+  .rr-login-page *::before,
+  .rr-login-page *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

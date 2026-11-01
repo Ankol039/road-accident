@@ -1,0 +1,1190 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/pages/Settings.jsx");import __vite__cjsImport0_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=8895a4cf"; const Fragment = __vite__cjsImport0_react_jsxDevRuntime["Fragment"]; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
+let prevRefreshReg;
+let prevRefreshSig;
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+  prevRefreshReg = window.$RefreshReg$;
+  prevRefreshSig = window.$RefreshSig$;
+  window.$RefreshReg$ = RefreshRuntime.getRefreshReg("/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx");
+  window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
+}
+var _s = $RefreshSig$();
+import __vite__cjsImport3_react from "/node_modules/.vite/deps/react.js?v=8895a4cf"; const useEffect = __vite__cjsImport3_react["useEffect"]; const useState = __vite__cjsImport3_react["useState"];
+import { useAsync } from "/src/hooks/useAsync.js";
+import { useActor } from "/src/hooks/useAuth.jsx";
+import { useToast } from "/src/hooks/useToast.jsx";
+import {
+  listAccidentTypes,
+  accidentTypeUsage,
+  saveAccidentType,
+  toggleAccidentType,
+  getSystemSettings,
+  saveSystemSettings,
+  DEFAULT_SETTINGS,
+  listEmergencyContacts,
+  saveEmergencyContact,
+  deleteEmergencyContact
+} from "/src/services/settings.service.js";
+import Modal from "/src/components/Modal.jsx";
+import States from "/src/components/States.jsx";
+import { errorMessage, ValidationError } from "/src/lib/errors.js";
+const EMPTY_TYPE = { id: "", name: "", description: "" };
+const EMPTY_CONTACT = { id: "", name: "", phone: "", category: "", sort_order: 0, is_active: true };
+const CONTACT_CATEGORIES = ["Emergency", "Police", "Rescue", "Medical", "Fire"];
+export default function Settings() {
+  _s();
+  const actor = useActor();
+  const toast = useToast();
+  const { data: types, loading: typesLoading, error: typesError, reload: reloadTypes } = useAsync(
+    () => listAccidentTypes(),
+    [],
+    []
+  );
+  const { data: usage, error: usageError, reload: reloadUsage } = useAsync(() => accidentTypeUsage(), [], {});
+  const [typeForm, setTypeForm] = useState(EMPTY_TYPE);
+  const [typeErrors, setTypeErrors] = useState({});
+  const [typeBusy, setTypeBusy] = useState(false);
+  const { data: settings, loading: settingsLoading, error: settingsError, reload: reloadSettings } = useAsync(
+    () => getSystemSettings(),
+    [],
+    DEFAULT_SETTINGS
+  );
+  const [settingsForm, setSettingsForm] = useState(null);
+  const [settingsErrors, setSettingsErrors] = useState({});
+  const [settingsBusy, setSettingsBusy] = useState(false);
+  useEffect(() => {
+    if (!settingsLoading && settings) setSettingsForm({ ...settings });
+  }, [settingsLoading, settings]);
+  const { data: contacts, loading: contactsLoading, error: contactsError, reload: reloadContacts } = useAsync(
+    () => listEmergencyContacts(),
+    [],
+    []
+  );
+  const [contactForm, setContactForm] = useState(EMPTY_CONTACT);
+  const [contactErrors, setContactErrors] = useState({});
+  const [contactBusy, setContactBusy] = useState(false);
+  const [removing, setRemoving] = useState(null);
+  const editType = (type) => {
+    setTypeForm({ id: type.id, name: type.name || "", description: type.description || "" });
+    setTypeErrors({});
+  };
+  const resetTypeForm = () => {
+    setTypeForm(EMPTY_TYPE);
+    setTypeErrors({});
+  };
+  const submitType = async (event) => {
+    event.preventDefault();
+    setTypeErrors({});
+    setTypeBusy(true);
+    try {
+      await saveAccidentType(typeForm.id || null, typeForm, actor);
+      toast.success(typeForm.id ? "Category saved" : "Category added");
+      resetTypeForm();
+      reloadTypes();
+      reloadUsage();
+    } catch (err) {
+      if (err instanceof ValidationError) setTypeErrors(err.errors);
+      else
+        toast.failure(errorMessage(err));
+    } finally {
+      setTypeBusy(false);
+    }
+  };
+  const flipType = async (type) => {
+    try {
+      await toggleAccidentType(type.id, type.active === false, actor);
+      toast.success(type.active === false ? `${type.name} is shown again` : `${type.name} is hidden from the report form`);
+      reloadTypes();
+    } catch (err) {
+      toast.failure(errorMessage(err));
+    }
+  };
+  const submitSettings = async (event) => {
+    event.preventDefault();
+    setSettingsErrors({});
+    setSettingsBusy(true);
+    try {
+      const { changed } = await saveSystemSettings(settingsForm, actor);
+      toast.success(Object.keys(changed).length ? "Settings saved" : "Nothing changed");
+      reloadSettings();
+    } catch (err) {
+      if (err instanceof ValidationError) setSettingsErrors(err.errors);
+      else
+        toast.failure(errorMessage(err));
+    } finally {
+      setSettingsBusy(false);
+    }
+  };
+  const editContact = (contact) => {
+    setContactForm({
+      id: contact.id,
+      name: contact.name || "",
+      phone: contact.phone || "",
+      category: contact.category || "",
+      sort_order: contact.sort_order ?? 0,
+      is_active: contact.is_active !== false
+    });
+    setContactErrors({});
+  };
+  const resetContactForm = () => {
+    setContactForm(EMPTY_CONTACT);
+    setContactErrors({});
+  };
+  const submitContact = async (event) => {
+    event.preventDefault();
+    setContactErrors({});
+    setContactBusy(true);
+    try {
+      await saveEmergencyContact(contactForm.id || null, contactForm, actor);
+      toast.success(contactForm.id ? "Contact saved" : "Contact added");
+      resetContactForm();
+      reloadContacts();
+    } catch (err) {
+      if (err instanceof ValidationError) setContactErrors(err.errors);
+      else
+        toast.failure(errorMessage(err));
+    } finally {
+      setContactBusy(false);
+    }
+  };
+  const confirmRemove = async () => {
+    if (!removing) return;
+    try {
+      await deleteEmergencyContact(removing.id, actor);
+      toast.success("Contact removed");
+      reloadContacts();
+    } catch (err) {
+      toast.failure(errorMessage(err));
+    } finally {
+      setRemoving(null);
+    }
+  };
+  return /* @__PURE__ */ jsxDEV("div", { className: "rr-settings-page", children: [
+    /* @__PURE__ */ jsxDEV("header", { className: "rr-head rr-settings-head", children: /* @__PURE__ */ jsxDEV("div", { children: [
+      /* @__PURE__ */ jsxDEV("span", { className: "rr-eyebrow", children: "Bulacan admin portal" }, void 0, false, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+        lineNumber: 209,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV("h1", { children: "Categories and settings" }, void 0, false, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+        lineNumber: 210,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV("p", { className: "rr-sub", children: "Accident categories, duplicate and arrival rules, and the emergency contacts shown in the mobile app." }, void 0, false, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+        lineNumber: 211,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, true, {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+      lineNumber: 208,
+      columnNumber: 52
+    }, this) }, void 0, false, {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+      lineNumber: 208,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV("div", { className: "rr-tape", "aria-hidden": "true" }, void 0, false, {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+      lineNumber: 213,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV("div", { className: "row g-4 rr-settings-grid", children: [
+      /* @__PURE__ */ jsxDEV("div", { className: "col-xl-7", children: /* @__PURE__ */ jsxDEV("section", { className: "panel", children: [
+        /* @__PURE__ */ jsxDEV("h2", { className: "h5", children: "Accident categories" }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 218,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("p", { className: "small text-secondary", children: "Categories that reports already use cannot be deleted. Hide them instead: they disappear from the report form but old reports keep them." }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 219,
+          columnNumber: 13
+        }, this),
+        usageError && /* @__PURE__ */ jsxDEV(States, { error: usageError }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 223,
+          columnNumber: 28
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "table-responsive rr-settings-categories", children: /* @__PURE__ */ jsxDEV("table", { className: "table align-middle", children: [
+          /* @__PURE__ */ jsxDEV("thead", { children: /* @__PURE__ */ jsxDEV("tr", { children: [
+            /* @__PURE__ */ jsxDEV("th", { children: "Category" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 228,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ jsxDEV("th", { className: "text-end", children: "Reports" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 229,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ jsxDEV("th", { children: "Form" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 230,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ jsxDEV("th", {}, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 231,
+              columnNumber: 21
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 227,
+            columnNumber: 19
+          }, this) }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 226,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV("tbody", { children: [
+            (typesLoading || typesError || types.length === 0) && /* @__PURE__ */ jsxDEV("tr", { className: "rr-settings-state-row", children: /* @__PURE__ */ jsxDEV("td", { colSpan: 4, children: /* @__PURE__ */ jsxDEV(States, { loading: typesLoading, error: typesError, empty: types.length === 0, emptyText: "No categories yet." }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 237,
+              columnNumber: 23
+            }, this) }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 236,
+              columnNumber: 57
+            }, this) }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 236,
+              columnNumber: 19
+            }, this),
+            types.map(
+              (t) => /* @__PURE__ */ jsxDEV("tr", { role: "row", className: t.active === false ? "rr-settings-hidden" : "", children: [
+                /* @__PURE__ */ jsxDEV("td", { role: "cell", children: [
+                  /* @__PURE__ */ jsxDEV("strong", { children: t.name }, void 0, false, {
+                    fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                    lineNumber: 243,
+                    columnNumber: 25
+                  }, this),
+                  t.description ? /* @__PURE__ */ jsxDEV("span", { className: "small text-secondary d-block", children: t.description }, void 0, false, {
+                    fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                    lineNumber: 245,
+                    columnNumber: 23
+                  }, this) : null
+                ] }, void 0, true, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                  lineNumber: 242,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("td", { role: "cell", className: "text-end", children: usage?.[t.id] ?? 0 }, void 0, false, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                  lineNumber: 248,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("td", { role: "cell", children: t.active === false ? "Hidden" : "Shown on the form" }, void 0, false, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                  lineNumber: 249,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("td", { role: "cell", className: "text-end text-nowrap", children: [
+                  /* @__PURE__ */ jsxDEV(
+                    "button",
+                    {
+                      type: "button",
+                      className: "btn btn-sm btn-outline-secondary",
+                      onClick: () => editType(t),
+                      children: "Edit"
+                    },
+                    void 0,
+                    false,
+                    {
+                      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                      lineNumber: 251,
+                      columnNumber: 25
+                    },
+                    this
+                  ),
+                  /* @__PURE__ */ jsxDEV(
+                    "button",
+                    {
+                      type: "button",
+                      className: "btn btn-sm btn-outline-secondary",
+                      onClick: () => flipType(t),
+                      children: t.active === false ? "Show" : "Hide"
+                    },
+                    void 0,
+                    false,
+                    {
+                      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                      lineNumber: 258,
+                      columnNumber: 25
+                    },
+                    this
+                  )
+                ] }, void 0, true, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                  lineNumber: 250,
+                  columnNumber: 23
+                }, this)
+              ] }, t.id, true, {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 241,
+                columnNumber: 19
+              }, this)
+            )
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 234,
+            columnNumber: 17
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 225,
+          columnNumber: 15
+        }, this) }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 224,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("form", { className: "row g-2 align-items-end rr-settings-add", onSubmit: submitType, noValidate: true, children: [
+          /* @__PURE__ */ jsxDEV("div", { className: "col-sm-4", children: [
+            /* @__PURE__ */ jsxDEV("label", { className: "form-label small", htmlFor: "t-name", children: "Name" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 274,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV(
+              "input",
+              {
+                id: "t-name",
+                name: "name",
+                className: `form-control${typeErrors.name ? " is-invalid" : ""}`,
+                value: typeForm.name,
+                onChange: (e) => setTypeForm((f) => ({ ...f, name: e.target.value }))
+              },
+              void 0,
+              false,
+              {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 277,
+                columnNumber: 17
+              },
+              this
+            ),
+            typeErrors.name ? /* @__PURE__ */ jsxDEV("div", { className: "invalid-feedback d-block", children: typeErrors.name }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 285,
+              columnNumber: 17
+            }, this) : null
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 273,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "col-sm-5", children: [
+            /* @__PURE__ */ jsxDEV("label", { className: "form-label small", htmlFor: "t-desc", children: "Description" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 289,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV(
+              "input",
+              {
+                id: "t-desc",
+                name: "description",
+                className: "form-control",
+                value: typeForm.description,
+                onChange: (e) => setTypeForm((f) => ({ ...f, description: e.target.value }))
+              },
+              void 0,
+              false,
+              {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 292,
+                columnNumber: 17
+              },
+              this
+            )
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 288,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "col-sm-3 d-flex gap-1", children: [
+            /* @__PURE__ */ jsxDEV("button", { className: "btn btn-guide flex-grow-1", type: "submit", disabled: typeBusy, children: typeBusy ? "Saving‚Ä¶" : typeForm.id ? "Save category" : "Add category" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 301,
+              columnNumber: 17
+            }, this),
+            typeForm.id ? /* @__PURE__ */ jsxDEV(
+              "button",
+              {
+                type: "button",
+                className: "btn btn-link px-1",
+                onClick: resetTypeForm,
+                "aria-label": "Cancel",
+                children: "Cancel"
+              },
+              void 0,
+              false,
+              {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 305,
+                columnNumber: 17
+              },
+              this
+            ) : null
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 300,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 272,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, true, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+        lineNumber: 217,
+        columnNumber: 11
+      }, this) }, void 0, false, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+        lineNumber: 216,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: "col-xl-5", children: /* @__PURE__ */ jsxDEV("form", { className: "panel rr-settings-form", onSubmit: submitSettings, noValidate: true, children: [
+        /* @__PURE__ */ jsxDEV("h2", { className: "h5", children: "System settings" }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 321,
+          columnNumber: 13
+        }, this),
+        (settingsLoading || settingsError) && /* @__PURE__ */ jsxDEV("div", { className: "rr-settings-form-state", children: /* @__PURE__ */ jsxDEV(States, { loading: settingsLoading, error: settingsError }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 322,
+          columnNumber: 92
+        }, this) }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 322,
+          columnNumber: 52
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "rr-settings-group", children: [
+          /* @__PURE__ */ jsxDEV("h3", { className: "rr-settings-group-title", children: "General" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 325,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "mb-3", children: [
+            /* @__PURE__ */ jsxDEV("label", { className: "form-label", htmlFor: "s-name", children: "System name" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 327,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV(
+              "input",
+              {
+                id: "s-name",
+                name: "system_name",
+                className: `form-control${settingsErrors.system_name ? " is-invalid" : ""}`,
+                value: settingsForm?.system_name ?? "",
+                onChange: (e) => setSettingsForm((f) => ({ ...f, system_name: e.target.value })),
+                disabled: settingsLoading
+              },
+              void 0,
+              false,
+              {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 330,
+                columnNumber: 15
+              },
+              this
+            ),
+            settingsErrors.system_name ? /* @__PURE__ */ jsxDEV("div", { className: "invalid-feedback d-block", children: settingsErrors.system_name }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 339,
+              columnNumber: 17
+            }, this) : null
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 326,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "mb-3", children: [
+            /* @__PURE__ */ jsxDEV("label", { className: "form-label", htmlFor: "s-photos", children: "Photos allowed per report (all sections)" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 344,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV(
+              "input",
+              {
+                id: "s-photos",
+                name: "max_photos_per_report",
+                type: "number",
+                min: "3",
+                max: "15",
+                className: `form-control${settingsErrors.max_photos_per_report ? " is-invalid" : ""}`,
+                value: settingsForm?.max_photos_per_report ?? "",
+                onChange: (e) => setSettingsForm((f) => ({ ...f, max_photos_per_report: e.target.value })),
+                disabled: settingsLoading
+              },
+              void 0,
+              false,
+              {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 347,
+                columnNumber: 15
+              },
+              this
+            ),
+            settingsErrors.max_photos_per_report ? /* @__PURE__ */ jsxDEV("div", { className: "invalid-feedback d-block", children: settingsErrors.max_photos_per_report }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 361,
+              columnNumber: 17
+            }, this) : null,
+            /* @__PURE__ */ jsxDEV("div", { className: "form-text", children: "Sections: scene, plate number, damage (required), people affected, other. Up to 3 per section." }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 365,
+              columnNumber: 15
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 343,
+            columnNumber: 13
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 324,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("fieldset", { className: "rr-settings-group", children: [
+          /* @__PURE__ */ jsxDEV("legend", { className: "form-label", children: "Duplicate rule (FR-08)" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 374,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("p", { className: "small text-secondary mb-2", children: "Nearby reports with the same accident type and close incident times are flagged as possible duplicates. An admin reviews and confirms them; they are not automatically closed." }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 375,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "mb-3", children: [
+            /* @__PURE__ */ jsxDEV("label", { className: "form-label", htmlFor: "s-window", children: "Incident time window (minutes)" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 381,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV(
+              "input",
+              {
+                id: "s-window",
+                name: "duplicate_window_minutes",
+                type: "number",
+                min: "1",
+                max: "1440",
+                className: `form-control${settingsErrors.duplicate_window_minutes ? " is-invalid" : ""}`,
+                value: settingsForm?.duplicate_window_minutes ?? "",
+                onChange: (e) => setSettingsForm((f) => ({ ...f, duplicate_window_minutes: e.target.value })),
+                disabled: settingsLoading
+              },
+              void 0,
+              false,
+              {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 384,
+                columnNumber: 17
+              },
+              this
+            ),
+            settingsErrors.duplicate_window_minutes ? /* @__PURE__ */ jsxDEV("div", { className: "invalid-feedback d-block", children: settingsErrors.duplicate_window_minutes }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 398,
+              columnNumber: 17
+            }, this) : null
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 380,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "mb-3", children: [
+            /* @__PURE__ */ jsxDEV("label", { className: "form-label small", htmlFor: "s-radius", children: "Duplicate radius (meters)" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 404,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV(
+              "input",
+              {
+                id: "s-radius",
+                name: "duplicate_radius_m",
+                type: "number",
+                min: "1",
+                max: "500",
+                step: "1",
+                className: `form-control${settingsErrors.duplicate_radius_m ? " is-invalid" : ""}`,
+                value: settingsForm?.duplicate_radius_m ?? "",
+                onChange: (e) => setSettingsForm((f) => ({ ...f, duplicate_radius_m: e.target.value })),
+                disabled: settingsLoading
+              },
+              void 0,
+              false,
+              {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 407,
+                columnNumber: 17
+              },
+              this
+            ),
+            settingsErrors.duplicate_radius_m ? /* @__PURE__ */ jsxDEV("div", { className: "invalid-feedback d-block", children: settingsErrors.duplicate_radius_m }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 422,
+              columnNumber: 17
+            }, this) : null,
+            /* @__PURE__ */ jsxDEV("div", { className: "form-text", children: "Phone GPS is often 5 to 20 m off, so some real duplicates may be farther apart. You can still flag those by hand." }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 424,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 403,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 373,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("fieldset", { className: "rr-settings-group", children: [
+          /* @__PURE__ */ jsxDEV("legend", { className: "form-label", children: "Officer arrival check" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 432,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("p", { className: "small text-secondary mb-2", children: `When the officer taps "I've arrived", the locations match if he is this close to the reporter's pin. GPS supports the review. If the pins differ or accuracy is uncertain, record supporting evidence to approve or ask for another arrival.` }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 433,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "mb-3", children: [
+            /* @__PURE__ */ jsxDEV("label", { className: "form-label small", htmlFor: "s-match", children: "Match distance (meters)" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 440,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV(
+              "input",
+              {
+                id: "s-match",
+                name: "arrival_match_radius_m",
+                type: "number",
+                min: "5",
+                max: "500",
+                step: "1",
+                className: `form-control${settingsErrors.arrival_match_radius_m ? " is-invalid" : ""}`,
+                value: settingsForm?.arrival_match_radius_m ?? "",
+                onChange: (e) => setSettingsForm((f) => ({ ...f, arrival_match_radius_m: e.target.value })),
+                disabled: settingsLoading
+              },
+              void 0,
+              false,
+              {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 443,
+                columnNumber: 17
+              },
+              this
+            ),
+            settingsErrors.arrival_match_radius_m ? /* @__PURE__ */ jsxDEV("div", { className: "invalid-feedback d-block", children: settingsErrors.arrival_match_radius_m }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 458,
+              columnNumber: 17
+            }, this) : null
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 439,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 431,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("button", { className: "btn btn-guide", type: "submit", disabled: settingsBusy || settingsLoading, children: settingsBusy ? "Saving‚Ä¶" : "Save settings" }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 465,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, true, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+        lineNumber: 320,
+        columnNumber: 11
+      }, this) }, void 0, false, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+        lineNumber: 319,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: "col-12", children: /* @__PURE__ */ jsxDEV("section", { className: "panel", children: [
+        /* @__PURE__ */ jsxDEV("h2", { className: "h5", children: "Emergency contacts" }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 473,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("p", { className: "small text-secondary", children: "Shown on the home screen of the mobile app. Add your local MDRRMO, PNP station and hospitals." }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 474,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "table-responsive rr-settings-contacts", children: /* @__PURE__ */ jsxDEV("table", { className: "table align-middle", children: [
+          /* @__PURE__ */ jsxDEV("thead", { children: /* @__PURE__ */ jsxDEV("tr", { children: [
+            /* @__PURE__ */ jsxDEV("th", { children: "Order" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 482,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ jsxDEV("th", { children: "Name" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 483,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ jsxDEV("th", { children: "Phone" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 484,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ jsxDEV("th", { children: "Shown" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 485,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ jsxDEV("th", {}, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 486,
+              columnNumber: 21
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 481,
+            columnNumber: 19
+          }, this) }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 480,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV("tbody", { children: [
+            (contactsLoading || contactsError || contacts.length === 0) && /* @__PURE__ */ jsxDEV("tr", { className: "rr-settings-state-row", children: /* @__PURE__ */ jsxDEV("td", { colSpan: 5, children: /* @__PURE__ */ jsxDEV(States, { loading: contactsLoading, error: contactsError, empty: contacts.length === 0, emptyText: "No contacts yet." }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 492,
+              columnNumber: 23
+            }, this) }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 491,
+              columnNumber: 57
+            }, this) }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 491,
+              columnNumber: 19
+            }, this),
+            contacts.map(
+              (c) => /* @__PURE__ */ jsxDEV("tr", { role: "row", className: c.is_active === false ? "rr-settings-hidden" : "", children: [
+                /* @__PURE__ */ jsxDEV("td", { role: "cell", children: c.sort_order }, void 0, false, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                  lineNumber: 497,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("td", { role: "cell", children: [
+                  /* @__PURE__ */ jsxDEV("strong", { children: c.name }, void 0, false, {
+                    fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                    lineNumber: 499,
+                    columnNumber: 25
+                  }, this),
+                  c.category ? /* @__PURE__ */ jsxDEV("span", { className: "small text-secondary d-block", children: c.category }, void 0, false, {
+                    fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                    lineNumber: 501,
+                    columnNumber: 23
+                  }, this) : null
+                ] }, void 0, true, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                  lineNumber: 498,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("td", { role: "cell", children: c.phone }, void 0, false, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                  lineNumber: 504,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("td", { role: "cell", children: c.is_active === false ? "Hidden" : "Shown" }, void 0, false, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                  lineNumber: 505,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("td", { role: "cell", className: "text-end text-nowrap", children: [
+                  /* @__PURE__ */ jsxDEV(
+                    "button",
+                    {
+                      type: "button",
+                      className: "btn btn-sm btn-outline-secondary",
+                      onClick: () => editContact(c),
+                      children: "Edit"
+                    },
+                    void 0,
+                    false,
+                    {
+                      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                      lineNumber: 507,
+                      columnNumber: 25
+                    },
+                    this
+                  ),
+                  /* @__PURE__ */ jsxDEV(
+                    "button",
+                    {
+                      type: "button",
+                      className: "btn btn-sm btn-outline-danger",
+                      onClick: () => setRemoving(c),
+                      "aria-label": `Remove ${c.name}`,
+                      children: "Remove"
+                    },
+                    void 0,
+                    false,
+                    {
+                      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                      lineNumber: 514,
+                      columnNumber: 25
+                    },
+                    this
+                  )
+                ] }, void 0, true, {
+                  fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                  lineNumber: 506,
+                  columnNumber: 23
+                }, this)
+              ] }, c.id, true, {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 496,
+                columnNumber: 19
+              }, this)
+            )
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 489,
+            columnNumber: 17
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 479,
+          columnNumber: 15
+        }, this) }, void 0, false, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 478,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV("form", { className: "row g-2 align-items-end rr-settings-add", onSubmit: submitContact, noValidate: true, children: [
+          /* @__PURE__ */ jsxDEV("div", { className: "col-md-3", children: [
+            /* @__PURE__ */ jsxDEV("label", { className: "form-label small", htmlFor: "c-name", children: "Name" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 531,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV(
+              "input",
+              {
+                id: "c-name",
+                name: "name",
+                className: `form-control${contactErrors.name ? " is-invalid" : ""}`,
+                value: contactForm.name,
+                onChange: (e) => setContactForm((f) => ({ ...f, name: e.target.value }))
+              },
+              void 0,
+              false,
+              {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 534,
+                columnNumber: 17
+              },
+              this
+            ),
+            contactErrors.name ? /* @__PURE__ */ jsxDEV("div", { className: "invalid-feedback d-block", children: contactErrors.name }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 542,
+              columnNumber: 17
+            }, this) : null
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 530,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "col-md-2", children: [
+            /* @__PURE__ */ jsxDEV("label", { className: "form-label small", htmlFor: "c-phone", children: "Phone" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 546,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV(
+              "input",
+              {
+                id: "c-phone",
+                name: "phone",
+                className: `form-control${contactErrors.phone ? " is-invalid" : ""}`,
+                value: contactForm.phone,
+                onChange: (e) => setContactForm((f) => ({ ...f, phone: e.target.value }))
+              },
+              void 0,
+              false,
+              {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 549,
+                columnNumber: 17
+              },
+              this
+            ),
+            contactErrors.phone ? /* @__PURE__ */ jsxDEV("div", { className: "invalid-feedback d-block", children: contactErrors.phone }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 557,
+              columnNumber: 17
+            }, this) : null
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 545,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "col-md-2", children: [
+            /* @__PURE__ */ jsxDEV("label", { className: "form-label small", htmlFor: "c-cat", children: "Category" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 561,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV(
+              "input",
+              {
+                id: "c-cat",
+                name: "category",
+                className: "form-control",
+                list: "c-cats",
+                value: contactForm.category,
+                onChange: (e) => setContactForm((f) => ({ ...f, category: e.target.value }))
+              },
+              void 0,
+              false,
+              {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 564,
+                columnNumber: 17
+              },
+              this
+            ),
+            /* @__PURE__ */ jsxDEV("datalist", { id: "c-cats", children: CONTACT_CATEGORIES.map(
+              (c) => /* @__PURE__ */ jsxDEV("option", { value: c }, c, false, {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 574,
+                columnNumber: 19
+              }, this)
+            ) }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 572,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 560,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "col-md-1", children: [
+            /* @__PURE__ */ jsxDEV("label", { className: "form-label small", htmlFor: "c-order", children: "Order" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 579,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV(
+              "input",
+              {
+                id: "c-order",
+                name: "sort_order",
+                type: "number",
+                className: "form-control",
+                value: contactForm.sort_order,
+                onChange: (e) => setContactForm((f) => ({ ...f, sort_order: e.target.value }))
+              },
+              void 0,
+              false,
+              {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 582,
+                columnNumber: 17
+              },
+              this
+            )
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 578,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "col-md-1", children: /* @__PURE__ */ jsxDEV("div", { className: "form-check", children: [
+            /* @__PURE__ */ jsxDEV(
+              "input",
+              {
+                className: "form-check-input",
+                type: "checkbox",
+                id: "c-active",
+                name: "is_active",
+                checked: contactForm.is_active,
+                onChange: (e) => setContactForm((f) => ({ ...f, is_active: e.target.checked }))
+              },
+              void 0,
+              false,
+              {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 595,
+                columnNumber: 19
+              },
+              this
+            ),
+            /* @__PURE__ */ jsxDEV("label", { className: "form-check-label small", htmlFor: "c-active", children: "Shown" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 605,
+              columnNumber: 19
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 594,
+            columnNumber: 17
+          }, this) }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 593,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "col-md-3 d-flex gap-1", children: [
+            /* @__PURE__ */ jsxDEV("button", { className: "btn btn-guide flex-grow-1", type: "submit", disabled: contactBusy, children: contactBusy ? "Saving‚Ä¶" : contactForm.id ? "Save contact" : "Add contact" }, void 0, false, {
+              fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+              lineNumber: 611,
+              columnNumber: 17
+            }, this),
+            contactForm.id ? /* @__PURE__ */ jsxDEV(
+              "button",
+              {
+                type: "button",
+                className: "btn btn-link px-1",
+                onClick: resetContactForm,
+                "aria-label": "Cancel",
+                children: "Cancel"
+              },
+              void 0,
+              false,
+              {
+                fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+                lineNumber: 615,
+                columnNumber: 17
+              },
+              this
+            ) : null
+          ] }, void 0, true, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 610,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 529,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, true, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+        lineNumber: 472,
+        columnNumber: 11
+      }, this) }, void 0, false, {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+        lineNumber: 471,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, true, {
+      fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+      lineNumber: 215,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV(
+      Modal,
+      {
+        open: Boolean(removing),
+        title: "Remove this contact?",
+        onClose: () => setRemoving(null),
+        footer: /* @__PURE__ */ jsxDEV(Fragment, { children: [
+          /* @__PURE__ */ jsxDEV("button", { type: "button", className: "btn btn-outline-secondary", onClick: () => setRemoving(null), children: "Cancel" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 636,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV("button", { type: "button", className: "btn btn-outline-danger", onClick: confirmRemove, children: "Remove" }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 639,
+            columnNumber: 13
+          }, this)
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 635,
+          columnNumber: 9
+        }, this),
+        children: /* @__PURE__ */ jsxDEV("p", { className: "mb-0", children: [
+          /* @__PURE__ */ jsxDEV("strong", { children: removing?.name }, void 0, false, {
+            fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+            lineNumber: 646,
+            columnNumber: 11
+          }, this),
+          " will no longer be shown on the home screen of the mobile app."
+        ] }, void 0, true, {
+          fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+          lineNumber: 645,
+          columnNumber: 9
+        }, this)
+      },
+      void 0,
+      false,
+      {
+        fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+        lineNumber: 630,
+        columnNumber: 7
+      },
+      this
+    )
+  ] }, void 0, true, {
+    fileName: "/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx",
+    lineNumber: 207,
+    columnNumber: 5
+  }, this);
+}
+_s(Settings, "YEycD7rxML0jrocyXhOwf7zmhW4=", false, function() {
+  return [useActor, useToast, useAsync, useAsync, useAsync, useAsync];
+});
+_c = Settings;
+var _c;
+$RefreshReg$(_c, "Settings");
+if (import.meta.hot && !inWebWorker) {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+if (import.meta.hot && !inWebWorker) {
+  RefreshRuntime.__hmr_import(import.meta.url).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("/Users/polmacbook/roadreport-latest-hostinger/src/pages/Settings.jsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+
+//# sourceMappingURL=data:application/json;base64,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QUEsUUFDTixTQUFTLE1BQU1DLFlBQVksSUFBSTtBQUFBLFFBQy9CLFFBQ0UsbUNBQ0U7QUFBQSxpQ0FBQyxZQUFPLE1BQUssVUFBUyxXQUFVLDZCQUE0QixTQUFTLE1BQU1BLFlBQVksSUFBSSxHQUFFLHNCQUE3RjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUVBO0FBQUEsVUFDQSx1QkFBQyxZQUFPLE1BQUssVUFBUyxXQUFVLDBCQUF5QixTQUFTc0IsZUFBYyxzQkFBaEY7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFFQTtBQUFBLGFBTkY7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQU9BO0FBQUEsUUFHRixpQ0FBQyxPQUFFLFdBQVUsUUFDWDtBQUFBLGlDQUFDLFlBQVF2QixvQkFBVWpELFFBQW5CO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQXdCO0FBQUEsVUFBUztBQUFBLGFBRG5DO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFHQTtBQUFBO0FBQUEsTUFsQkY7QUFBQTtBQUFBO0FBQUE7QUFBQTtBQUFBO0FBQUE7QUFBQTtBQUFBLElBbUJBO0FBQUEsT0ExYkY7QUFBQTtBQUFBO0FBQUE7QUFBQSxTQTJiQTtBQUVKO0FBQUNTLEdBamxCdUJELFVBQVE7QUFBQSxVQUNoQjFCLFVBQ0FDLFVBR3lFRixVQUt2QkEsVUFNbUNBLFVBaUJBQSxRQUFRO0FBQUE7QUFBQSxLQWpDckYyQjtBQUFRLElBQUErRTtBQUFBLGFBQUFBLElBQUEiLCJuYW1lcyI6WyJ1c2VFZmZlY3QiLCJ1c2VTdGF0ZSIsInVzZUFzeW5jIiwidXNlQWN0b3IiLCJ1c2VUb2FzdCIsImxpc3RBY2NpZGVudFR5cGVzIiwiYWNjaWRlbnRUeXBlVXNhZ2UiLCJzYXZlQWNjaWRlbnRUeXBlIiwidG9nZ2xlQWNjaWRlbnRUeXBlIiwiZ2V0U3lzdGVtU2V0dGluZ3MiLCJzYXZlU3lzdGVtU2V0dGluZ3MiLCJERUZBVUxUX1NFVFRJTkdTIiwibGlzdEVtZXJnZW5jeUNvbnRhY3RzIiwic2F2ZUVtZXJnZW5jeUNvbnRhY3QiLCJkZWxldGVFbWVyZ2VuY3lDb250YWN0IiwiTW9kYWwiLCJTdGF0ZXMiLCJlcnJvck1lc3NhZ2UiLCJWYWxpZGF0aW9uRXJyb3IiLCJFTVBUWV9UWVBFIiwiaWQiLCJuYW1lIiwiZGVzY3JpcHRpb24iLCJFTVBUWV9DT05UQUNUIiwicGhvbmUiLCJjYXRlZ29yeSIsInNvcnRfb3JkZXIiLCJpc19hY3RpdmUiLCJDT05UQUNUX0NBVEVHT1JJRVMiLCJTZXR0aW5ncyIsIl9zIiwiYWN0b3IiLCJ0b2FzdCIsImRhdGEiLCJ0eXBlcyIsImxvYWRpbmciLCJ0eXBlc0xvYWRpbmciLCJlcnJvciIsInR5cGVzRXJyb3IiLCJyZWxvYWQiLCJyZWxvYWRUeXBlcyIsInVzYWdlIiwidXNhZ2VFcnJvciIsInJlbG9hZFVzYWdlIiwidHlwZUZvcm0iLCJzZXRUeXBlRm9ybSIsInR5cGVFcnJvcnMiLCJzZXRUeXBlRXJyb3JzIiwidHlwZUJ1c3kiLCJzZXRUeXBlQnVzeSIsInNldHRpbmdzIiwic2V0dGluZ3NMb2FkaW5nIiwic2V0dGluZ3NFcnJvciIsInJlbG9hZFNldHRpbmdzIiwic2V0dGluZ3NGb3JtIiwic2V0U2V0dGluZ3NGb3JtIiwic2V0dGluZ3NFcnJvcnMiLCJzZXRTZXR0aW5nc0Vycm9ycyIsInNldHRpbmdzQnVzeSIsInNldFNldHRpbmdzQnVzeSIsImNvbnRhY3RzIiwiY29udGFjdHNMb2FkaW5nIiwiY29udGFjdHNFcnJvciIsInJlbG9hZENvbnRhY3RzIiwiY29udGFjdEZvcm0iLCJzZXRDb250YWN0Rm9ybSIsImNvbnRhY3RFcnJvcnMiLCJzZXRDb250YWN0RXJyb3JzIiwiY29udGFjdEJ1c3kiLCJzZXRDb250YWN0QnVzeSIsInJlbW92aW5nIiwic2V0UmVtb3ZpbmciLCJlZGl0VHlwZSIsInR5cGUiLCJyZXNldFR5cGVGb3JtIiwic3VibWl0VHlwZSIsImV2ZW50IiwicHJldmVudERlZmF1bHQiLCJzdWNjZXNzIiwiZXJyIiwiZXJyb3JzIiwiZmFpbHVyZSIsImZsaXBUeXBlIiwiYWN0aXZlIiwic3VibWl0U2V0dGluZ3MiLCJjaGFuZ2VkIiwiT2JqZWN0Iiwia2V5cyIsImxlbmd0aCIsImVkaXRDb250YWN0IiwiY29udGFjdCIsInJlc2V0Q29udGFjdEZvcm0iLCJzdWJtaXRDb250YWN0IiwiY29uZmlybVJlbW92ZSIsIm1hcCIsInQiLCJlIiwiZiIsInRhcmdldCIsInZhbHVlIiwic3lzdGVtX25hbWUiLCJtYXhfcGhvdG9zX3Blcl9yZXBvcnQiLCJkdXBsaWNhdGVfd2luZG93X21pbnV0ZXMiLCJkdXBsaWNhdGVfcmFkaXVzX20iLCJhcnJpdmFsX21hdGNoX3JhZGl1c19tIiwiYyIsImNoZWNrZWQiLCJCb29sZWFuIiwiX2MiXSwiaWdub3JlTGlzdCI6W10sInNvdXJjZXMiOlsiU2V0dGluZ3MuanN4Il0sInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQ2F0ZWdvcmllcyBhbmQgc2V0dGluZ3MuIFJlcGxhY2VzIGFkbWluLXNldHRpbmdzLnBocCArXG4gKiBqcy1yZWxlYXNlLTIwMjYxMDIwYi9wYWdlcy9hZG1pbi1zZXR0aW5ncy5qcy5cbiAqXG4gKiBUaHJlZSBwYW5lbHMsIHRoZSB3YXkgdGhlIFBIUCBzY3JlZW4gaGFkIHRoZW06XG4gKiAgICogdGhlIGFjY2lkZW50IGNhdGVnb3JpZXMsIHdpdGggaG93IG1hbnkgcmVwb3J0cyB1c2UgZWFjaCBvbmVcbiAqICAgKiB0aGUgc3lzdGVtIHNldHRpbmdzLCBpbmNsdWRpbmcgdGhlIGR1cGxpY2F0ZSBydWxlIGFuZCB0aGUgb2ZmaWNlclxuICogICAgIGFycml2YWwgY2hlY2sgdGhlIHJlcG9ydCBkZXRhaWwgc2NyZWVuIHJlYWRzXG4gKiAgICogdGhlIGVtZXJnZW5jeSBjb250YWN0cyB0aGUgbW9iaWxlIGFwcCBzaG93cyBvbiBpdHMgaG9tZSBzY3JlZW5cbiAqXG4gKiBBIGNhdGVnb3J5IGlzIG5ldmVyIGRlbGV0ZWQsIGJlY2F1c2UgcmVwb3J0cyBhbHJlYWR5IHVzZSBpdDsgaXQgaXMgaGlkZGVuXG4gKiBmcm9tIHRoZSByZXBvcnQgZm9ybSBpbnN0ZWFkLlxuICovXG5pbXBvcnQgeyB1c2VFZmZlY3QsIHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnXG5pbXBvcnQgeyB1c2VBc3luYyB9IGZyb20gJy4uL2hvb2tzL3VzZUFzeW5jLmpzJ1xuaW1wb3J0IHsgdXNlQWN0b3IgfSBmcm9tICcuLi9ob29rcy91c2VBdXRoLmpzeCdcbmltcG9ydCB7IHVzZVRvYXN0IH0gZnJvbSAnLi4vaG9va3MvdXNlVG9hc3QuanN4J1xuaW1wb3J0IHtcbiAgbGlzdEFjY2lkZW50VHlwZXMsXG4gIGFjY2lkZW50VHlwZVVzYWdlLFxuICBzYXZlQWNjaWRlbnRUeXBlLFxuICB0b2dnbGVBY2NpZGVudFR5cGUsXG4gIGdldFN5c3RlbVNldHRpbmdzLFxuICBzYXZlU3lzdGVtU2V0dGluZ3MsXG4gIERFRkFVTFRfU0VUVElOR1MsXG4gIGxpc3RFbWVyZ2VuY3lDb250YWN0cyxcbiAgc2F2ZUVtZXJnZW5jeUNvbnRhY3QsXG4gIGRlbGV0ZUVtZXJnZW5jeUNvbnRhY3QsXG59IGZyb20gJy4uL3NlcnZpY2VzL3NldHRpbmdzLnNlcnZpY2UuanMnXG5pbXBvcnQgTW9kYWwgZnJvbSAnLi4vY29tcG9uZW50cy9Nb2RhbC5qc3gnXG5pbXBvcnQgU3RhdGVzIGZyb20gJy4uL2NvbXBvbmVudHMvU3RhdGVzLmpzeCdcbmltcG9ydCB7IGVycm9yTWVzc2FnZSwgVmFsaWRhdGlvbkVycm9yIH0gZnJvbSAnLi4vbGliL2Vycm9ycy5qcydcblxuY29uc3QgRU1QVFlfVFlQRSA9IHsgaWQ6ICcnLCBuYW1lOiAnJywgZGVzY3JpcHRpb246ICcnIH1cbmNvbnN0IEVNUFRZX0NPTlRBQ1QgPSB7IGlkOiAnJywgbmFtZTogJycsIHBob25lOiAnJywgY2F0ZWdvcnk6ICcnLCBzb3J0X29yZGVyOiAwLCBpc19hY3RpdmU6IHRydWUgfVxuXG4vKiogVGhlIGNhdGVnb3JpZXMgdGhlIGxlZ2FjeSBkYXRhbGlzdCBvZmZlcmVkIGZvciBhIGNvbnRhY3QuICovXG5jb25zdCBDT05UQUNUX0NBVEVHT1JJRVMgPSBbJ0VtZXJnZW5jeScsICdQb2xpY2UnLCAnUmVzY3VlJywgJ01lZGljYWwnLCAnRmlyZSddXG5cbmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIFNldHRpbmdzKCkge1xuICBjb25zdCBhY3RvciA9IHVzZUFjdG9yKClcbiAgY29uc3QgdG9hc3QgPSB1c2VUb2FzdCgpXG5cbiAgLyogLS0tLS0tLS0tLSBhY2NpZGVudCBjYXRlZ29yaWVzIC0tLS0tLS0tLS0gKi9cbiAgY29uc3QgeyBkYXRhOiB0eXBlcywgbG9hZGluZzogdHlwZXNMb2FkaW5nLCBlcnJvcjogdHlwZXNFcnJvciwgcmVsb2FkOiByZWxvYWRUeXBlcyB9ID0gdXNlQXN5bmMoXG4gICAgKCkgPT4gbGlzdEFjY2lkZW50VHlwZXMoKSxcbiAgICBbXSxcbiAgICBbXSxcbiAgKVxuICBjb25zdCB7IGRhdGE6IHVzYWdlLCBlcnJvcjogdXNhZ2VFcnJvciwgcmVsb2FkOiByZWxvYWRVc2FnZSB9ID0gdXNlQXN5bmMoKCkgPT4gYWNjaWRlbnRUeXBlVXNhZ2UoKSwgW10sIHt9KVxuICBjb25zdCBbdHlwZUZvcm0sIHNldFR5cGVGb3JtXSA9IHVzZVN0YXRlKEVNUFRZX1RZUEUpXG4gIGNvbnN0IFt0eXBlRXJyb3JzLCBzZXRUeXBlRXJyb3JzXSA9IHVzZVN0YXRlKHt9KVxuICBjb25zdCBbdHlwZUJ1c3ksIHNldFR5cGVCdXN5XSA9IHVzZVN0YXRlKGZhbHNlKVxuXG4gIC8qIC0tLS0tLS0tLS0gc3lzdGVtIHNldHRpbmdzIC0tLS0tLS0tLS0gKi9cbiAgY29uc3QgeyBkYXRhOiBzZXR0aW5ncywgbG9hZGluZzogc2V0dGluZ3NMb2FkaW5nLCBlcnJvcjogc2V0dGluZ3NFcnJvciwgcmVsb2FkOiByZWxvYWRTZXR0aW5ncyB9ID0gdXNlQXN5bmMoXG4gICAgKCkgPT4gZ2V0U3lzdGVtU2V0dGluZ3MoKSxcbiAgICBbXSxcbiAgICBERUZBVUxUX1NFVFRJTkdTLFxuICApXG4gIGNvbnN0IFtzZXR0aW5nc0Zvcm0sIHNldFNldHRpbmdzRm9ybV0gPSB1c2VTdGF0ZShudWxsKVxuICBjb25zdCBbc2V0dGluZ3NFcnJvcnMsIHNldFNldHRpbmdzRXJyb3JzXSA9IHVzZVN0YXRlKHt9KVxuICBjb25zdCBbc2V0dGluZ3NCdXN5LCBzZXRTZXR0aW5nc0J1c3ldID0gdXNlU3RhdGUoZmFsc2UpXG5cbiAgLy8gVGhlIGZvcm0gaXMgZmlsbGVkIG9uY2UgdGhlIHNldHRpbmdzIGhhdmUgYXJyaXZlZC4gV2FpdGluZyBmb3IgdGhlIGxvYWRcbiAgLy8gdG8gZmluaXNoIG1hdHRlcnM6IHVudGlsIHRoZW4gdGhlIGRhdGEgaXMgc3RpbGwgdGhlIGRlZmF1bHRzLCBhbmQgdGhvc2VcbiAgLy8gd291bGQgb3ZlcndyaXRlIHdoYXQgaXMgc3RvcmVkLlxuICB1c2VFZmZlY3QoKCkgPT4ge1xuICAgIGlmICghc2V0dGluZ3NMb2FkaW5nICYmIHNldHRpbmdzKSBzZXRTZXR0aW5nc0Zvcm0oeyAuLi5zZXR0aW5ncyB9KVxuICB9LCBbc2V0dGluZ3NMb2FkaW5nLCBzZXR0aW5nc10pXG5cbiAgLyogLS0tLS0tLS0tLSBlbWVyZ2VuY3kgY29udGFjdHMgLS0tLS0tLS0tLSAqL1xuICBjb25zdCB7IGRhdGE6IGNvbnRhY3RzLCBsb2FkaW5nOiBjb250YWN0c0xvYWRpbmcsIGVycm9yOiBjb250YWN0c0Vycm9yLCByZWxvYWQ6IHJlbG9hZENvbnRhY3RzIH0gPSB1c2VBc3luYyhcbiAgICAoKSA9PiBsaXN0RW1lcmdlbmN5Q29udGFjdHMoKSxcbiAgICBbXSxcbiAgICBbXSxcbiAgKVxuICBjb25zdCBbY29udGFjdEZvcm0sIHNldENvbnRhY3RGb3JtXSA9IHVzZVN0YXRlKEVNUFRZX0NPTlRBQ1QpXG4gIGNvbnN0IFtjb250YWN0RXJyb3JzLCBzZXRDb250YWN0RXJyb3JzXSA9IHVzZVN0YXRlKHt9KVxuICBjb25zdCBbY29udGFjdEJ1c3ksIHNldENvbnRhY3RCdXN5XSA9IHVzZVN0YXRlKGZhbHNlKVxuICBjb25zdCBbcmVtb3ZpbmcsIHNldFJlbW92aW5nXSA9IHVzZVN0YXRlKG51bGwpXG5cbiAgLyogLS0tLS0tLS0tLSBjYXRlZ29yaWVzIC0tLS0tLS0tLS0gKi9cbiAgY29uc3QgZWRpdFR5cGUgPSAodHlwZSkgPT4ge1xuICAgIHNldFR5cGVGb3JtKHsgaWQ6IHR5cGUuaWQsIG5hbWU6IHR5cGUubmFtZSB8fCAnJywgZGVzY3JpcHRpb246IHR5cGUuZGVzY3JpcHRpb24gfHwgJycgfSlcbiAgICBzZXRUeXBlRXJyb3JzKHt9KVxuICB9XG5cbiAgY29uc3QgcmVzZXRUeXBlRm9ybSA9ICgpID0+IHtcbiAgICBzZXRUeXBlRm9ybShFTVBUWV9UWVBFKVxuICAgIHNldFR5cGVFcnJvcnMoe30pXG4gIH1cblxuICBjb25zdCBzdWJtaXRUeXBlID0gYXN5bmMgKGV2ZW50KSA9PiB7XG4gICAgZXZlbnQucHJldmVudERlZmF1bHQoKVxuICAgIHNldFR5cGVFcnJvcnMoe30pXG4gICAgc2V0VHlwZUJ1c3kodHJ1ZSlcbiAgICB0cnkge1xuICAgICAgYXdhaXQgc2F2ZUFjY2lkZW50VHlwZSh0eXBlRm9ybS5pZCB8fCBudWxsLCB0eXBlRm9ybSwgYWN0b3IpXG4gICAgICB0b2FzdC5zdWNjZXNzKHR5cGVGb3JtLmlkID8gJ0NhdGVnb3J5IHNhdmVkJyA6ICdDYXRlZ29yeSBhZGRlZCcpXG4gICAgICByZXNldFR5cGVGb3JtKClcbiAgICAgIHJlbG9hZFR5cGVzKClcbiAgICAgIHJlbG9hZFVzYWdlKClcbiAgICB9IGNhdGNoIChlcnIpIHtcbiAgICAgIGlmIChlcnIgaW5zdGFuY2VvZiBWYWxpZGF0aW9uRXJyb3IpIHNldFR5cGVFcnJvcnMoZXJyLmVycm9ycylcbiAgICAgIGVsc2UgdG9hc3QuZmFpbHVyZShlcnJvck1lc3NhZ2UoZXJyKSlcbiAgICB9IGZpbmFsbHkge1xuICAgICAgc2V0VHlwZUJ1c3koZmFsc2UpXG4gICAgfVxuICB9XG5cbiAgY29uc3QgZmxpcFR5cGUgPSBhc3luYyAodHlwZSkgPT4ge1xuICAgIHRyeSB7XG4gICAgICBhd2FpdCB0b2dnbGVBY2NpZGVudFR5cGUodHlwZS5pZCwgdHlwZS5hY3RpdmUgPT09IGZhbHNlLCBhY3RvcilcbiAgICAgIHRvYXN0LnN1Y2Nlc3ModHlwZS5hY3RpdmUgPT09IGZhbHNlID8gYCR7dHlwZS5uYW1lfSBpcyBzaG93biBhZ2FpbmAgOiBgJHt0eXBlLm5hbWV9IGlzIGhpZGRlbiBmcm9tIHRoZSByZXBvcnQgZm9ybWApXG4gICAgICByZWxvYWRUeXBlcygpXG4gICAgfSBjYXRjaCAoZXJyKSB7XG4gICAgICB0b2FzdC5mYWlsdXJlKGVycm9yTWVzc2FnZShlcnIpKVxuICAgIH1cbiAgfVxuXG4gIC8qIC0tLS0tLS0tLS0gc3lzdGVtIHNldHRpbmdzIC0tLS0tLS0tLS0gKi9cbiAgY29uc3Qgc3VibWl0U2V0dGluZ3MgPSBhc3luYyAoZXZlbnQpID0+IHtcbiAgICBldmVudC5wcmV2ZW50RGVmYXVsdCgpXG4gICAgc2V0U2V0dGluZ3NFcnJvcnMoe30pXG4gICAgc2V0U2V0dGluZ3NCdXN5KHRydWUpXG4gICAgdHJ5IHtcbiAgICAgIGNvbnN0IHsgY2hhbmdlZCB9ID0gYXdhaXQgc2F2ZVN5c3RlbVNldHRpbmdzKHNldHRpbmdzRm9ybSwgYWN0b3IpXG4gICAgICB0b2FzdC5zdWNjZXNzKE9iamVjdC5rZXlzKGNoYW5nZWQpLmxlbmd0aCA/ICdTZXR0aW5ncyBzYXZlZCcgOiAnTm90aGluZyBjaGFuZ2VkJylcbiAgICAgIHJlbG9hZFNldHRpbmdzKClcbiAgICB9IGNhdGNoIChlcnIpIHtcbiAgICAgIGlmIChlcnIgaW5zdGFuY2VvZiBWYWxpZGF0aW9uRXJyb3IpIHNldFNldHRpbmdzRXJyb3JzKGVyci5lcnJvcnMpXG4gICAgICBlbHNlIHRvYXN0LmZhaWx1cmUoZXJyb3JNZXNzYWdlKGVycikpXG4gICAgfSBmaW5hbGx5IHtcbiAgICAgIHNldFNldHRpbmdzQnVzeShmYWxzZSlcbiAgICB9XG4gIH1cblxuICAvKiAtLS0tLS0tLS0tIGVtZXJnZW5jeSBjb250YWN0cyAtLS0tLS0tLS0tICovXG4gIGNvbnN0IGVkaXRDb250YWN0ID0gKGNvbnRhY3QpID0+IHtcbiAgICBzZXRDb250YWN0Rm9ybSh7XG4gICAgICBpZDogY29udGFjdC5pZCxcbiAgICAgIG5hbWU6IGNvbnRhY3QubmFtZSB8fCAnJyxcbiAgICAgIHBob25lOiBjb250YWN0LnBob25lIHx8ICcnLFxuICAgICAgY2F0ZWdvcnk6IGNvbnRhY3QuY2F0ZWdvcnkgfHwgJycsXG4gICAgICBzb3J0X29yZGVyOiBjb250YWN0LnNvcnRfb3JkZXIgPz8gMCxcbiAgICAgIGlzX2FjdGl2ZTogY29udGFjdC5pc19hY3RpdmUgIT09IGZhbHNlLFxuICAgIH0pXG4gICAgc2V0Q29udGFjdEVycm9ycyh7fSlcbiAgfVxuXG4gIGNvbnN0IHJlc2V0Q29udGFjdEZvcm0gPSAoKSA9PiB7XG4gICAgc2V0Q29udGFjdEZvcm0oRU1QVFlfQ09OVEFDVClcbiAgICBzZXRDb250YWN0RXJyb3JzKHt9KVxuICB9XG5cbiAgY29uc3Qgc3VibWl0Q29udGFjdCA9IGFzeW5jIChldmVudCkgPT4ge1xuICAgIGV2ZW50LnByZXZlbnREZWZhdWx0KClcbiAgICBzZXRDb250YWN0RXJyb3JzKHt9KVxuICAgIHNldENvbnRhY3RCdXN5KHRydWUpXG4gICAgdHJ5IHtcbiAgICAgIGF3YWl0IHNhdmVFbWVyZ2VuY3lDb250YWN0KGNvbnRhY3RGb3JtLmlkIHx8IG51bGwsIGNvbnRhY3RGb3JtLCBhY3RvcilcbiAgICAgIHRvYXN0LnN1Y2Nlc3MoY29udGFjdEZvcm0uaWQgPyAnQ29udGFjdCBzYXZlZCcgOiAnQ29udGFjdCBhZGRlZCcpXG4gICAgICByZXNldENvbnRhY3RGb3JtKClcbiAgICAgIHJlbG9hZENvbnRhY3RzKClcbiAgICB9IGNhdGNoIChlcnIpIHtcbiAgICAgIGlmIChlcnIgaW5zdGFuY2VvZiBWYWxpZGF0aW9uRXJyb3IpIHNldENvbnRhY3RFcnJvcnMoZXJyLmVycm9ycylcbiAgICAgIGVsc2UgdG9hc3QuZmFpbHVyZShlcnJvck1lc3NhZ2UoZXJyKSlcbiAgICB9IGZpbmFsbHkge1xuICAgICAgc2V0Q29udGFjdEJ1c3koZmFsc2UpXG4gICAgfVxuICB9XG5cbiAgY29uc3QgY29uZmlybVJlbW92ZSA9IGFzeW5jICgpID0+IHtcbiAgICBpZiAoIXJlbW92aW5nKSByZXR1cm5cbiAgICB0cnkge1xuICAgICAgYXdhaXQgZGVsZXRlRW1lcmdlbmN5Q29udGFjdChyZW1vdmluZy5pZCwgYWN0b3IpXG4gICAgICB0b2FzdC5zdWNjZXNzKCdDb250YWN0IHJlbW92ZWQnKVxuICAgICAgcmVsb2FkQ29udGFjdHMoKVxuICAgIH0gY2F0Y2ggKGVycikge1xuICAgICAgdG9hc3QuZmFpbHVyZShlcnJvck1lc3NhZ2UoZXJyKSlcbiAgICB9IGZpbmFsbHkge1xuICAgICAgc2V0UmVtb3ZpbmcobnVsbClcbiAgICB9XG4gIH1cblxuICByZXR1cm4gKFxuICAgIDxkaXYgY2xhc3NOYW1lPVwicnItc2V0dGluZ3MtcGFnZVwiPlxuICAgICAgPGhlYWRlciBjbGFzc05hbWU9XCJyci1oZWFkIHJyLXNldHRpbmdzLWhlYWRcIj48ZGl2PlxuICAgICAgICA8c3BhbiBjbGFzc05hbWU9XCJyci1leWVicm93XCI+QnVsYWNhbiBhZG1pbiBwb3J0YWw8L3NwYW4+XG4gICAgICAgIDxoMT5DYXRlZ29yaWVzIGFuZCBzZXR0aW5nczwvaDE+XG4gICAgICAgIDxwIGNsYXNzTmFtZT1cInJyLXN1YlwiPkFjY2lkZW50IGNhdGVnb3JpZXMsIGR1cGxpY2F0ZSBhbmQgYXJyaXZhbCBydWxlcywgYW5kIHRoZSBlbWVyZ2VuY3kgY29udGFjdHMgc2hvd24gaW4gdGhlIG1vYmlsZSBhcHAuPC9wPlxuICAgICAgPC9kaXY+PC9oZWFkZXI+XG4gICAgICA8ZGl2IGNsYXNzTmFtZT1cInJyLXRhcGVcIiBhcmlhLWhpZGRlbj1cInRydWVcIiAvPlxuXG4gICAgICA8ZGl2IGNsYXNzTmFtZT1cInJvdyBnLTQgcnItc2V0dGluZ3MtZ3JpZFwiPlxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImNvbC14bC03XCI+XG4gICAgICAgICAgPHNlY3Rpb24gY2xhc3NOYW1lPVwicGFuZWxcIj5cbiAgICAgICAgICAgIDxoMiBjbGFzc05hbWU9XCJoNVwiPkFjY2lkZW50IGNhdGVnb3JpZXM8L2gyPlxuICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwic21hbGwgdGV4dC1zZWNvbmRhcnlcIj5cbiAgICAgICAgICAgICAgQ2F0ZWdvcmllcyB0aGF0IHJlcG9ydHMgYWxyZWFkeSB1c2UgY2Fubm90IGJlIGRlbGV0ZWQuIEhpZGUgdGhlbSBpbnN0ZWFkOiB0aGV5XG4gICAgICAgICAgICAgIGRpc2FwcGVhciBmcm9tIHRoZSByZXBvcnQgZm9ybSBidXQgb2xkIHJlcG9ydHMga2VlcCB0aGVtLlxuICAgICAgICAgICAgPC9wPlxuICAgICAgICAgICAge3VzYWdlRXJyb3IgJiYgPFN0YXRlcyBlcnJvcj17dXNhZ2VFcnJvcn0gLz59XG4gICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInRhYmxlLXJlc3BvbnNpdmUgcnItc2V0dGluZ3MtY2F0ZWdvcmllc1wiPlxuICAgICAgICAgICAgICA8dGFibGUgY2xhc3NOYW1lPVwidGFibGUgYWxpZ24tbWlkZGxlXCI+XG4gICAgICAgICAgICAgICAgPHRoZWFkPlxuICAgICAgICAgICAgICAgICAgPHRyPlxuICAgICAgICAgICAgICAgICAgICA8dGg+Q2F0ZWdvcnk8L3RoPlxuICAgICAgICAgICAgICAgICAgICA8dGggY2xhc3NOYW1lPVwidGV4dC1lbmRcIj5SZXBvcnRzPC90aD5cbiAgICAgICAgICAgICAgICAgICAgPHRoPkZvcm08L3RoPlxuICAgICAgICAgICAgICAgICAgICA8dGggLz5cbiAgICAgICAgICAgICAgICAgIDwvdHI+XG4gICAgICAgICAgICAgICAgPC90aGVhZD5cbiAgICAgICAgICAgICAgICA8dGJvZHk+XG4gICAgICAgICAgICAgICAgICB7KHR5cGVzTG9hZGluZyB8fCB0eXBlc0Vycm9yIHx8IHR5cGVzLmxlbmd0aCA9PT0gMCkgJiYgKFxuICAgICAgICAgICAgICAgICAgICA8dHIgY2xhc3NOYW1lPVwicnItc2V0dGluZ3Mtc3RhdGUtcm93XCI+PHRkIGNvbFNwYW49ezR9PlxuICAgICAgICAgICAgICAgICAgICAgIDxTdGF0ZXMgbG9hZGluZz17dHlwZXNMb2FkaW5nfSBlcnJvcj17dHlwZXNFcnJvcn0gZW1wdHk9e3R5cGVzLmxlbmd0aCA9PT0gMH0gZW1wdHlUZXh0PVwiTm8gY2F0ZWdvcmllcyB5ZXQuXCIgLz5cbiAgICAgICAgICAgICAgICAgICAgPC90ZD48L3RyPlxuICAgICAgICAgICAgICAgICAgKX1cbiAgICAgICAgICAgICAgICAgIHt0eXBlcy5tYXAoKHQpID0+IChcbiAgICAgICAgICAgICAgICAgICAgPHRyIHJvbGU9XCJyb3dcIiBrZXk9e3QuaWR9IGNsYXNzTmFtZT17dC5hY3RpdmUgPT09IGZhbHNlID8gJ3JyLXNldHRpbmdzLWhpZGRlbicgOiAnJ30+XG4gICAgICAgICAgICAgICAgICAgICAgPHRkIHJvbGU9XCJjZWxsXCI+XG4gICAgICAgICAgICAgICAgICAgICAgICA8c3Ryb25nPnt0Lm5hbWV9PC9zdHJvbmc+XG4gICAgICAgICAgICAgICAgICAgICAgICB7dC5kZXNjcmlwdGlvbiA/IChcbiAgICAgICAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPVwic21hbGwgdGV4dC1zZWNvbmRhcnkgZC1ibG9ja1wiPnt0LmRlc2NyaXB0aW9ufTwvc3Bhbj5cbiAgICAgICAgICAgICAgICAgICAgICAgICkgOiBudWxsfVxuICAgICAgICAgICAgICAgICAgICAgIDwvdGQ+XG4gICAgICAgICAgICAgICAgICAgICAgPHRkIHJvbGU9XCJjZWxsXCIgY2xhc3NOYW1lPVwidGV4dC1lbmRcIj57dXNhZ2U/Llt0LmlkXSA/PyAwfTwvdGQ+XG4gICAgICAgICAgICAgICAgICAgICAgPHRkIHJvbGU9XCJjZWxsXCI+e3QuYWN0aXZlID09PSBmYWxzZSA/ICdIaWRkZW4nIDogJ1Nob3duIG9uIHRoZSBmb3JtJ308L3RkPlxuICAgICAgICAgICAgICAgICAgICAgIDx0ZCByb2xlPVwiY2VsbFwiIGNsYXNzTmFtZT1cInRleHQtZW5kIHRleHQtbm93cmFwXCI+XG4gICAgICAgICAgICAgICAgICAgICAgICA8YnV0dG9uXG4gICAgICAgICAgICAgICAgICAgICAgICAgIHR5cGU9XCJidXR0b25cIlxuICAgICAgICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9XCJidG4gYnRuLXNtIGJ0bi1vdXRsaW5lLXNlY29uZGFyeVwiXG4gICAgICAgICAgICAgICAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IGVkaXRUeXBlKHQpfVxuICAgICAgICAgICAgICAgICAgICAgICAgPlxuICAgICAgICAgICAgICAgICAgICAgICAgICBFZGl0XG4gICAgICAgICAgICAgICAgICAgICAgICA8L2J1dHRvbj5cbiAgICAgICAgICAgICAgICAgICAgICAgIDxidXR0b25cbiAgICAgICAgICAgICAgICAgICAgICAgICAgdHlwZT1cImJ1dHRvblwiXG4gICAgICAgICAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cImJ0biBidG4tc20gYnRuLW91dGxpbmUtc2Vjb25kYXJ5XCJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgb25DbGljaz17KCkgPT4gZmxpcFR5cGUodCl9XG4gICAgICAgICAgICAgICAgICAgICAgICA+XG4gICAgICAgICAgICAgICAgICAgICAgICAgIHt0LmFjdGl2ZSA9PT0gZmFsc2UgPyAnU2hvdycgOiAnSGlkZSd9XG4gICAgICAgICAgICAgICAgICAgICAgICA8L2J1dHRvbj5cbiAgICAgICAgICAgICAgICAgICAgICA8L3RkPlxuICAgICAgICAgICAgICAgICAgICA8L3RyPlxuICAgICAgICAgICAgICAgICAgKSl9XG4gICAgICAgICAgICAgICAgPC90Ym9keT5cbiAgICAgICAgICAgICAgPC90YWJsZT5cbiAgICAgICAgICAgIDwvZGl2PlxuXG4gICAgICAgICAgICA8Zm9ybSBjbGFzc05hbWU9XCJyb3cgZy0yIGFsaWduLWl0ZW1zLWVuZCByci1zZXR0aW5ncy1hZGRcIiBvblN1Ym1pdD17c3VibWl0VHlwZX0gbm9WYWxpZGF0ZT5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJjb2wtc20tNFwiPlxuICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzc05hbWU9XCJmb3JtLWxhYmVsIHNtYWxsXCIgaHRtbEZvcj1cInQtbmFtZVwiPlxuICAgICAgICAgICAgICAgICAgTmFtZVxuICAgICAgICAgICAgICAgIDwvbGFiZWw+XG4gICAgICAgICAgICAgICAgPGlucHV0XG4gICAgICAgICAgICAgICAgICBpZD1cInQtbmFtZVwiXG4gICAgICAgICAgICAgICAgICBuYW1lPVwibmFtZVwiXG4gICAgICAgICAgICAgICAgICBjbGFzc05hbWU9e2Bmb3JtLWNvbnRyb2wke3R5cGVFcnJvcnMubmFtZSA/ICcgaXMtaW52YWxpZCcgOiAnJ31gfVxuICAgICAgICAgICAgICAgICAgdmFsdWU9e3R5cGVGb3JtLm5hbWV9XG4gICAgICAgICAgICAgICAgICBvbkNoYW5nZT17KGUpID0+IHNldFR5cGVGb3JtKChmKSA9PiAoeyAuLi5mLCBuYW1lOiBlLnRhcmdldC52YWx1ZSB9KSl9XG4gICAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgICAgICB7dHlwZUVycm9ycy5uYW1lID8gKFxuICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJpbnZhbGlkLWZlZWRiYWNrIGQtYmxvY2tcIj57dHlwZUVycm9ycy5uYW1lfTwvZGl2PlxuICAgICAgICAgICAgICAgICkgOiBudWxsfVxuICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJjb2wtc20tNVwiPlxuICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzc05hbWU9XCJmb3JtLWxhYmVsIHNtYWxsXCIgaHRtbEZvcj1cInQtZGVzY1wiPlxuICAgICAgICAgICAgICAgICAgRGVzY3JpcHRpb25cbiAgICAgICAgICAgICAgICA8L2xhYmVsPlxuICAgICAgICAgICAgICAgIDxpbnB1dFxuICAgICAgICAgICAgICAgICAgaWQ9XCJ0LWRlc2NcIlxuICAgICAgICAgICAgICAgICAgbmFtZT1cImRlc2NyaXB0aW9uXCJcbiAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cImZvcm0tY29udHJvbFwiXG4gICAgICAgICAgICAgICAgICB2YWx1ZT17dHlwZUZvcm0uZGVzY3JpcHRpb259XG4gICAgICAgICAgICAgICAgICBvbkNoYW5nZT17KGUpID0+IHNldFR5cGVGb3JtKChmKSA9PiAoeyAuLi5mLCBkZXNjcmlwdGlvbjogZS50YXJnZXQudmFsdWUgfSkpfVxuICAgICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImNvbC1zbS0zIGQtZmxleCBnYXAtMVwiPlxuICAgICAgICAgICAgICAgIDxidXR0b24gY2xhc3NOYW1lPVwiYnRuIGJ0bi1ndWlkZSBmbGV4LWdyb3ctMVwiIHR5cGU9XCJzdWJtaXRcIiBkaXNhYmxlZD17dHlwZUJ1c3l9PlxuICAgICAgICAgICAgICAgICAge3R5cGVCdXN5ID8gJ1NhdmluZ+KApicgOiB0eXBlRm9ybS5pZCA/ICdTYXZlIGNhdGVnb3J5JyA6ICdBZGQgY2F0ZWdvcnknfVxuICAgICAgICAgICAgICAgIDwvYnV0dG9uPlxuICAgICAgICAgICAgICAgIHt0eXBlRm9ybS5pZCA/IChcbiAgICAgICAgICAgICAgICAgIDxidXR0b25cbiAgICAgICAgICAgICAgICAgICAgdHlwZT1cImJ1dHRvblwiXG4gICAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cImJ0biBidG4tbGluayBweC0xXCJcbiAgICAgICAgICAgICAgICAgICAgb25DbGljaz17cmVzZXRUeXBlRm9ybX1cbiAgICAgICAgICAgICAgICAgICAgYXJpYS1sYWJlbD1cIkNhbmNlbFwiXG4gICAgICAgICAgICAgICAgICA+XG4gICAgICAgICAgICAgICAgICAgIENhbmNlbFxuICAgICAgICAgICAgICAgICAgPC9idXR0b24+XG4gICAgICAgICAgICAgICAgKSA6IG51bGx9XG4gICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgPC9mb3JtPlxuICAgICAgICAgIDwvc2VjdGlvbj5cbiAgICAgICAgPC9kaXY+XG5cbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJjb2wteGwtNVwiPlxuICAgICAgICAgIDxmb3JtIGNsYXNzTmFtZT1cInBhbmVsIHJyLXNldHRpbmdzLWZvcm1cIiBvblN1Ym1pdD17c3VibWl0U2V0dGluZ3N9IG5vVmFsaWRhdGU+XG4gICAgICAgICAgICA8aDIgY2xhc3NOYW1lPVwiaDVcIj5TeXN0ZW0gc2V0dGluZ3M8L2gyPlxuICAgICAgICAgICAgeyhzZXR0aW5nc0xvYWRpbmcgfHwgc2V0dGluZ3NFcnJvcikgJiYgPGRpdiBjbGFzc05hbWU9XCJyci1zZXR0aW5ncy1mb3JtLXN0YXRlXCI+PFN0YXRlcyBsb2FkaW5nPXtzZXR0aW5nc0xvYWRpbmd9IGVycm9yPXtzZXR0aW5nc0Vycm9yfSAvPjwvZGl2Pn1cblxuICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJyci1zZXR0aW5ncy1ncm91cFwiPlxuICAgICAgICAgICAgICA8aDMgY2xhc3NOYW1lPVwicnItc2V0dGluZ3MtZ3JvdXAtdGl0bGVcIj5HZW5lcmFsPC9oMz5cbiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwibWItM1wiPlxuICAgICAgICAgICAgICA8bGFiZWwgY2xhc3NOYW1lPVwiZm9ybS1sYWJlbFwiIGh0bWxGb3I9XCJzLW5hbWVcIj5cbiAgICAgICAgICAgICAgICBTeXN0ZW0gbmFtZVxuICAgICAgICAgICAgICA8L2xhYmVsPlxuICAgICAgICAgICAgICA8aW5wdXRcbiAgICAgICAgICAgICAgICBpZD1cInMtbmFtZVwiXG4gICAgICAgICAgICAgICAgbmFtZT1cInN5c3RlbV9uYW1lXCJcbiAgICAgICAgICAgICAgICBjbGFzc05hbWU9e2Bmb3JtLWNvbnRyb2wke3NldHRpbmdzRXJyb3JzLnN5c3RlbV9uYW1lID8gJyBpcy1pbnZhbGlkJyA6ICcnfWB9XG4gICAgICAgICAgICAgICAgdmFsdWU9e3NldHRpbmdzRm9ybT8uc3lzdGVtX25hbWUgPz8gJyd9XG4gICAgICAgICAgICAgICAgb25DaGFuZ2U9eyhlKSA9PiBzZXRTZXR0aW5nc0Zvcm0oKGYpID0+ICh7IC4uLmYsIHN5c3RlbV9uYW1lOiBlLnRhcmdldC52YWx1ZSB9KSl9XG4gICAgICAgICAgICAgICAgZGlzYWJsZWQ9e3NldHRpbmdzTG9hZGluZ31cbiAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgICAge3NldHRpbmdzRXJyb3JzLnN5c3RlbV9uYW1lID8gKFxuICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiaW52YWxpZC1mZWVkYmFjayBkLWJsb2NrXCI+e3NldHRpbmdzRXJyb3JzLnN5c3RlbV9uYW1lfTwvZGl2PlxuICAgICAgICAgICAgICApIDogbnVsbH1cbiAgICAgICAgICAgIDwvZGl2PlxuXG4gICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cIm1iLTNcIj5cbiAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzTmFtZT1cImZvcm0tbGFiZWxcIiBodG1sRm9yPVwicy1waG90b3NcIj5cbiAgICAgICAgICAgICAgICBQaG90b3MgYWxsb3dlZCBwZXIgcmVwb3J0IChhbGwgc2VjdGlvbnMpXG4gICAgICAgICAgICAgIDwvbGFiZWw+XG4gICAgICAgICAgICAgIDxpbnB1dFxuICAgICAgICAgICAgICAgIGlkPVwicy1waG90b3NcIlxuICAgICAgICAgICAgICAgIG5hbWU9XCJtYXhfcGhvdG9zX3Blcl9yZXBvcnRcIlxuICAgICAgICAgICAgICAgIHR5cGU9XCJudW1iZXJcIlxuICAgICAgICAgICAgICAgIG1pbj1cIjNcIlxuICAgICAgICAgICAgICAgIG1heD1cIjE1XCJcbiAgICAgICAgICAgICAgICBjbGFzc05hbWU9e2Bmb3JtLWNvbnRyb2wke3NldHRpbmdzRXJyb3JzLm1heF9waG90b3NfcGVyX3JlcG9ydCA/ICcgaXMtaW52YWxpZCcgOiAnJ31gfVxuICAgICAgICAgICAgICAgIHZhbHVlPXtzZXR0aW5nc0Zvcm0/Lm1heF9waG90b3NfcGVyX3JlcG9ydCA/PyAnJ31cbiAgICAgICAgICAgICAgICBvbkNoYW5nZT17KGUpID0+XG4gICAgICAgICAgICAgICAgICBzZXRTZXR0aW5nc0Zvcm0oKGYpID0+ICh7IC4uLmYsIG1heF9waG90b3NfcGVyX3JlcG9ydDogZS50YXJnZXQudmFsdWUgfSkpXG4gICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgIGRpc2FibGVkPXtzZXR0aW5nc0xvYWRpbmd9XG4gICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICAgIHtzZXR0aW5nc0Vycm9ycy5tYXhfcGhvdG9zX3Blcl9yZXBvcnQgPyAoXG4gICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJpbnZhbGlkLWZlZWRiYWNrIGQtYmxvY2tcIj5cbiAgICAgICAgICAgICAgICAgIHtzZXR0aW5nc0Vycm9ycy5tYXhfcGhvdG9zX3Blcl9yZXBvcnR9XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgICkgOiBudWxsfVxuICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImZvcm0tdGV4dFwiPlxuICAgICAgICAgICAgICAgIFNlY3Rpb25zOiBzY2VuZSwgcGxhdGUgbnVtYmVyLCBkYW1hZ2UgKHJlcXVpcmVkKSwgcGVvcGxlIGFmZmVjdGVkLCBvdGhlci4gVXAgdG8gMyBwZXJcbiAgICAgICAgICAgICAgICBzZWN0aW9uLlxuICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgIDwvZGl2PlxuXG4gICAgICAgICAgICA8L2Rpdj5cblxuICAgICAgICAgICAgPGZpZWxkc2V0IGNsYXNzTmFtZT1cInJyLXNldHRpbmdzLWdyb3VwXCI+XG4gICAgICAgICAgICAgIDxsZWdlbmQgY2xhc3NOYW1lPVwiZm9ybS1sYWJlbFwiPkR1cGxpY2F0ZSBydWxlIChGUi0wOCk8L2xlZ2VuZD5cbiAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwic21hbGwgdGV4dC1zZWNvbmRhcnkgbWItMlwiPlxuICAgICAgICAgICAgICAgIE5lYXJieSByZXBvcnRzIHdpdGggdGhlIHNhbWUgYWNjaWRlbnQgdHlwZSBhbmQgY2xvc2UgaW5jaWRlbnQgdGltZXMgYXJlIGZsYWdnZWQgYXNcbiAgICAgICAgICAgICAgICBwb3NzaWJsZSBkdXBsaWNhdGVzLiBBbiBhZG1pbiByZXZpZXdzIGFuZCBjb25maXJtcyB0aGVtOyB0aGV5IGFyZSBub3QgYXV0b21hdGljYWxseVxuICAgICAgICAgICAgICAgIGNsb3NlZC5cbiAgICAgICAgICAgICAgPC9wPlxuICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cIm1iLTNcIj5cbiAgICAgICAgICAgICAgICA8bGFiZWwgY2xhc3NOYW1lPVwiZm9ybS1sYWJlbFwiIGh0bWxGb3I9XCJzLXdpbmRvd1wiPlxuICAgICAgICAgICAgICAgICAgSW5jaWRlbnQgdGltZSB3aW5kb3cgKG1pbnV0ZXMpXG4gICAgICAgICAgICAgICAgPC9sYWJlbD5cbiAgICAgICAgICAgICAgICA8aW5wdXRcbiAgICAgICAgICAgICAgICAgIGlkPVwicy13aW5kb3dcIlxuICAgICAgICAgICAgICAgICAgbmFtZT1cImR1cGxpY2F0ZV93aW5kb3dfbWludXRlc1wiXG4gICAgICAgICAgICAgICAgICB0eXBlPVwibnVtYmVyXCJcbiAgICAgICAgICAgICAgICAgIG1pbj1cIjFcIlxuICAgICAgICAgICAgICAgICAgbWF4PVwiMTQ0MFwiXG4gICAgICAgICAgICAgICAgICBjbGFzc05hbWU9e2Bmb3JtLWNvbnRyb2wke3NldHRpbmdzRXJyb3JzLmR1cGxpY2F0ZV93aW5kb3dfbWludXRlcyA/ICcgaXMtaW52YWxpZCcgOiAnJ31gfVxuICAgICAgICAgICAgICAgICAgdmFsdWU9e3NldHRpbmdzRm9ybT8uZHVwbGljYXRlX3dpbmRvd19taW51dGVzID8/ICcnfVxuICAgICAgICAgICAgICAgICAgb25DaGFuZ2U9eyhlKSA9PlxuICAgICAgICAgICAgICAgICAgICBzZXRTZXR0aW5nc0Zvcm0oKGYpID0+ICh7IC4uLmYsIGR1cGxpY2F0ZV93aW5kb3dfbWludXRlczogZS50YXJnZXQudmFsdWUgfSkpXG4gICAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgICBkaXNhYmxlZD17c2V0dGluZ3NMb2FkaW5nfVxuICAgICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICAgICAge3NldHRpbmdzRXJyb3JzLmR1cGxpY2F0ZV93aW5kb3dfbWludXRlcyA/IChcbiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiaW52YWxpZC1mZWVkYmFjayBkLWJsb2NrXCI+XG4gICAgICAgICAgICAgICAgICAgIHtzZXR0aW5nc0Vycm9ycy5kdXBsaWNhdGVfd2luZG93X21pbnV0ZXN9XG4gICAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgICApIDogbnVsbH1cbiAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwibWItM1wiPlxuICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzc05hbWU9XCJmb3JtLWxhYmVsIHNtYWxsXCIgaHRtbEZvcj1cInMtcmFkaXVzXCI+XG4gICAgICAgICAgICAgICAgICBEdXBsaWNhdGUgcmFkaXVzIChtZXRlcnMpXG4gICAgICAgICAgICAgICAgPC9sYWJlbD5cbiAgICAgICAgICAgICAgICA8aW5wdXRcbiAgICAgICAgICAgICAgICAgIGlkPVwicy1yYWRpdXNcIlxuICAgICAgICAgICAgICAgICAgbmFtZT1cImR1cGxpY2F0ZV9yYWRpdXNfbVwiXG4gICAgICAgICAgICAgICAgICB0eXBlPVwibnVtYmVyXCJcbiAgICAgICAgICAgICAgICAgIG1pbj1cIjFcIlxuICAgICAgICAgICAgICAgICAgbWF4PVwiNTAwXCJcbiAgICAgICAgICAgICAgICAgIHN0ZXA9XCIxXCJcbiAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT17YGZvcm0tY29udHJvbCR7c2V0dGluZ3NFcnJvcnMuZHVwbGljYXRlX3JhZGl1c19tID8gJyBpcy1pbnZhbGlkJyA6ICcnfWB9XG4gICAgICAgICAgICAgICAgICB2YWx1ZT17c2V0dGluZ3NGb3JtPy5kdXBsaWNhdGVfcmFkaXVzX20gPz8gJyd9XG4gICAgICAgICAgICAgICAgICBvbkNoYW5nZT17KGUpID0+XG4gICAgICAgICAgICAgICAgICAgIHNldFNldHRpbmdzRm9ybSgoZikgPT4gKHsgLi4uZiwgZHVwbGljYXRlX3JhZGl1c19tOiBlLnRhcmdldC52YWx1ZSB9KSlcbiAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAgIGRpc2FibGVkPXtzZXR0aW5nc0xvYWRpbmd9XG4gICAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgICAgICB7c2V0dGluZ3NFcnJvcnMuZHVwbGljYXRlX3JhZGl1c19tID8gKFxuICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJpbnZhbGlkLWZlZWRiYWNrIGQtYmxvY2tcIj57c2V0dGluZ3NFcnJvcnMuZHVwbGljYXRlX3JhZGl1c19tfTwvZGl2PlxuICAgICAgICAgICAgICAgICkgOiBudWxsfVxuICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZm9ybS10ZXh0XCI+XG4gICAgICAgICAgICAgICAgICBQaG9uZSBHUFMgaXMgb2Z0ZW4gNSB0byAyMCBtIG9mZiwgc28gc29tZSByZWFsIGR1cGxpY2F0ZXMgbWF5IGJlIGZhcnRoZXIgYXBhcnQuIFlvdVxuICAgICAgICAgICAgICAgICAgY2FuIHN0aWxsIGZsYWcgdGhvc2UgYnkgaGFuZC5cbiAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICA8L2ZpZWxkc2V0PlxuXG4gICAgICAgICAgICA8ZmllbGRzZXQgY2xhc3NOYW1lPVwicnItc2V0dGluZ3MtZ3JvdXBcIj5cbiAgICAgICAgICAgICAgPGxlZ2VuZCBjbGFzc05hbWU9XCJmb3JtLWxhYmVsXCI+T2ZmaWNlciBhcnJpdmFsIGNoZWNrPC9sZWdlbmQ+XG4gICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cInNtYWxsIHRleHQtc2Vjb25kYXJ5IG1iLTJcIj5cbiAgICAgICAgICAgICAgICBXaGVuIHRoZSBvZmZpY2VyIHRhcHMgJnF1b3Q7SSZhcG9zO3ZlIGFycml2ZWQmcXVvdDssIHRoZSBsb2NhdGlvbnMgbWF0Y2ggaWYgaGUgaXMgdGhpc1xuICAgICAgICAgICAgICAgIGNsb3NlIHRvIHRoZSByZXBvcnRlciZhcG9zO3MgcGluLiBHUFMgc3VwcG9ydHMgdGhlIHJldmlldy4gSWYgdGhlIHBpbnMgZGlmZmVyIG9yXG4gICAgICAgICAgICAgICAgYWNjdXJhY3kgaXMgdW5jZXJ0YWluLCByZWNvcmQgc3VwcG9ydGluZyBldmlkZW5jZSB0byBhcHByb3ZlIG9yIGFzayBmb3IgYW5vdGhlclxuICAgICAgICAgICAgICAgIGFycml2YWwuXG4gICAgICAgICAgICAgIDwvcD5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtYi0zXCI+XG4gICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzTmFtZT1cImZvcm0tbGFiZWwgc21hbGxcIiBodG1sRm9yPVwicy1tYXRjaFwiPlxuICAgICAgICAgICAgICAgICAgTWF0Y2ggZGlzdGFuY2UgKG1ldGVycylcbiAgICAgICAgICAgICAgICA8L2xhYmVsPlxuICAgICAgICAgICAgICAgIDxpbnB1dFxuICAgICAgICAgICAgICAgICAgaWQ9XCJzLW1hdGNoXCJcbiAgICAgICAgICAgICAgICAgIG5hbWU9XCJhcnJpdmFsX21hdGNoX3JhZGl1c19tXCJcbiAgICAgICAgICAgICAgICAgIHR5cGU9XCJudW1iZXJcIlxuICAgICAgICAgICAgICAgICAgbWluPVwiNVwiXG4gICAgICAgICAgICAgICAgICBtYXg9XCI1MDBcIlxuICAgICAgICAgICAgICAgICAgc3RlcD1cIjFcIlxuICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPXtgZm9ybS1jb250cm9sJHtzZXR0aW5nc0Vycm9ycy5hcnJpdmFsX21hdGNoX3JhZGl1c19tID8gJyBpcy1pbnZhbGlkJyA6ICcnfWB9XG4gICAgICAgICAgICAgICAgICB2YWx1ZT17c2V0dGluZ3NGb3JtPy5hcnJpdmFsX21hdGNoX3JhZGl1c19tID8/ICcnfVxuICAgICAgICAgICAgICAgICAgb25DaGFuZ2U9eyhlKSA9PlxuICAgICAgICAgICAgICAgICAgICBzZXRTZXR0aW5nc0Zvcm0oKGYpID0+ICh7IC4uLmYsIGFycml2YWxfbWF0Y2hfcmFkaXVzX206IGUudGFyZ2V0LnZhbHVlIH0pKVxuICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgICAgZGlzYWJsZWQ9e3NldHRpbmdzTG9hZGluZ31cbiAgICAgICAgICAgICAgICAvPlxuICAgICAgICAgICAgICAgIHtzZXR0aW5nc0Vycm9ycy5hcnJpdmFsX21hdGNoX3JhZGl1c19tID8gKFxuICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJpbnZhbGlkLWZlZWRiYWNrIGQtYmxvY2tcIj5cbiAgICAgICAgICAgICAgICAgICAge3NldHRpbmdzRXJyb3JzLmFycml2YWxfbWF0Y2hfcmFkaXVzX219XG4gICAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgICApIDogbnVsbH1cbiAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICA8L2ZpZWxkc2V0PlxuXG4gICAgICAgICAgICA8YnV0dG9uIGNsYXNzTmFtZT1cImJ0biBidG4tZ3VpZGVcIiB0eXBlPVwic3VibWl0XCIgZGlzYWJsZWQ9e3NldHRpbmdzQnVzeSB8fCBzZXR0aW5nc0xvYWRpbmd9PlxuICAgICAgICAgICAgICB7c2V0dGluZ3NCdXN5ID8gJ1NhdmluZ+KApicgOiAnU2F2ZSBzZXR0aW5ncyd9XG4gICAgICAgICAgICA8L2J1dHRvbj5cbiAgICAgICAgICA8L2Zvcm0+XG4gICAgICAgIDwvZGl2PlxuXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiY29sLTEyXCI+XG4gICAgICAgICAgPHNlY3Rpb24gY2xhc3NOYW1lPVwicGFuZWxcIj5cbiAgICAgICAgICAgIDxoMiBjbGFzc05hbWU9XCJoNVwiPkVtZXJnZW5jeSBjb250YWN0czwvaDI+XG4gICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJzbWFsbCB0ZXh0LXNlY29uZGFyeVwiPlxuICAgICAgICAgICAgICBTaG93biBvbiB0aGUgaG9tZSBzY3JlZW4gb2YgdGhlIG1vYmlsZSBhcHAuIEFkZCB5b3VyIGxvY2FsIE1EUlJNTywgUE5QIHN0YXRpb24gYW5kXG4gICAgICAgICAgICAgIGhvc3BpdGFscy5cbiAgICAgICAgICAgIDwvcD5cbiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwidGFibGUtcmVzcG9uc2l2ZSByci1zZXR0aW5ncy1jb250YWN0c1wiPlxuICAgICAgICAgICAgICA8dGFibGUgY2xhc3NOYW1lPVwidGFibGUgYWxpZ24tbWlkZGxlXCI+XG4gICAgICAgICAgICAgICAgPHRoZWFkPlxuICAgICAgICAgICAgICAgICAgPHRyPlxuICAgICAgICAgICAgICAgICAgICA8dGg+T3JkZXI8L3RoPlxuICAgICAgICAgICAgICAgICAgICA8dGg+TmFtZTwvdGg+XG4gICAgICAgICAgICAgICAgICAgIDx0aD5QaG9uZTwvdGg+XG4gICAgICAgICAgICAgICAgICAgIDx0aD5TaG93bjwvdGg+XG4gICAgICAgICAgICAgICAgICAgIDx0aCAvPlxuICAgICAgICAgICAgICAgICAgPC90cj5cbiAgICAgICAgICAgICAgICA8L3RoZWFkPlxuICAgICAgICAgICAgICAgIDx0Ym9keT5cbiAgICAgICAgICAgICAgICAgIHsoY29udGFjdHNMb2FkaW5nIHx8IGNvbnRhY3RzRXJyb3IgfHwgY29udGFjdHMubGVuZ3RoID09PSAwKSAmJiAoXG4gICAgICAgICAgICAgICAgICAgIDx0ciBjbGFzc05hbWU9XCJyci1zZXR0aW5ncy1zdGF0ZS1yb3dcIj48dGQgY29sU3Bhbj17NX0+XG4gICAgICAgICAgICAgICAgICAgICAgPFN0YXRlcyBsb2FkaW5nPXtjb250YWN0c0xvYWRpbmd9IGVycm9yPXtjb250YWN0c0Vycm9yfSBlbXB0eT17Y29udGFjdHMubGVuZ3RoID09PSAwfSBlbXB0eVRleHQ9XCJObyBjb250YWN0cyB5ZXQuXCIgLz5cbiAgICAgICAgICAgICAgICAgICAgPC90ZD48L3RyPlxuICAgICAgICAgICAgICAgICAgKX1cbiAgICAgICAgICAgICAgICAgIHtjb250YWN0cy5tYXAoKGMpID0+IChcbiAgICAgICAgICAgICAgICAgICAgPHRyIHJvbGU9XCJyb3dcIiBrZXk9e2MuaWR9IGNsYXNzTmFtZT17Yy5pc19hY3RpdmUgPT09IGZhbHNlID8gJ3JyLXNldHRpbmdzLWhpZGRlbicgOiAnJ30+XG4gICAgICAgICAgICAgICAgICAgICAgPHRkIHJvbGU9XCJjZWxsXCI+e2Muc29ydF9vcmRlcn08L3RkPlxuICAgICAgICAgICAgICAgICAgICAgIDx0ZCByb2xlPVwiY2VsbFwiPlxuICAgICAgICAgICAgICAgICAgICAgICAgPHN0cm9uZz57Yy5uYW1lfTwvc3Ryb25nPlxuICAgICAgICAgICAgICAgICAgICAgICAge2MuY2F0ZWdvcnkgPyAoXG4gICAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT1cInNtYWxsIHRleHQtc2Vjb25kYXJ5IGQtYmxvY2tcIj57Yy5jYXRlZ29yeX08L3NwYW4+XG4gICAgICAgICAgICAgICAgICAgICAgICApIDogbnVsbH1cbiAgICAgICAgICAgICAgICAgICAgICA8L3RkPlxuICAgICAgICAgICAgICAgICAgICAgIDx0ZCByb2xlPVwiY2VsbFwiPntjLnBob25lfTwvdGQ+XG4gICAgICAgICAgICAgICAgICAgICAgPHRkIHJvbGU9XCJjZWxsXCI+e2MuaXNfYWN0aXZlID09PSBmYWxzZSA/ICdIaWRkZW4nIDogJ1Nob3duJ308L3RkPlxuICAgICAgICAgICAgICAgICAgICAgIDx0ZCByb2xlPVwiY2VsbFwiIGNsYXNzTmFtZT1cInRleHQtZW5kIHRleHQtbm93cmFwXCI+XG4gICAgICAgICAgICAgICAgICAgICAgICA8YnV0dG9uXG4gICAgICAgICAgICAgICAgICAgICAgICAgIHR5cGU9XCJidXR0b25cIlxuICAgICAgICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9XCJidG4gYnRuLXNtIGJ0bi1vdXRsaW5lLXNlY29uZGFyeVwiXG4gICAgICAgICAgICAgICAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IGVkaXRDb250YWN0KGMpfVxuICAgICAgICAgICAgICAgICAgICAgICAgPlxuICAgICAgICAgICAgICAgICAgICAgICAgICBFZGl0XG4gICAgICAgICAgICAgICAgICAgICAgICA8L2J1dHRvbj5cbiAgICAgICAgICAgICAgICAgICAgICAgIDxidXR0b25cbiAgICAgICAgICAgICAgICAgICAgICAgICAgdHlwZT1cImJ1dHRvblwiXG4gICAgICAgICAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cImJ0biBidG4tc20gYnRuLW91dGxpbmUtZGFuZ2VyXCJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgb25DbGljaz17KCkgPT4gc2V0UmVtb3ZpbmcoYyl9XG4gICAgICAgICAgICAgICAgICAgICAgICAgIGFyaWEtbGFiZWw9e2BSZW1vdmUgJHtjLm5hbWV9YH1cbiAgICAgICAgICAgICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgUmVtb3ZlXG4gICAgICAgICAgICAgICAgICAgICAgICA8L2J1dHRvbj5cbiAgICAgICAgICAgICAgICAgICAgICA8L3RkPlxuICAgICAgICAgICAgICAgICAgICA8L3RyPlxuICAgICAgICAgICAgICAgICAgKSl9XG4gICAgICAgICAgICAgICAgPC90Ym9keT5cbiAgICAgICAgICAgICAgPC90YWJsZT5cbiAgICAgICAgICAgIDwvZGl2PlxuXG4gICAgICAgICAgICA8Zm9ybSBjbGFzc05hbWU9XCJyb3cgZy0yIGFsaWduLWl0ZW1zLWVuZCByci1zZXR0aW5ncy1hZGRcIiBvblN1Ym1pdD17c3VibWl0Q29udGFjdH0gbm9WYWxpZGF0ZT5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJjb2wtbWQtM1wiPlxuICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzc05hbWU9XCJmb3JtLWxhYmVsIHNtYWxsXCIgaHRtbEZvcj1cImMtbmFtZVwiPlxuICAgICAgICAgICAgICAgICAgTmFtZVxuICAgICAgICAgICAgICAgIDwvbGFiZWw+XG4gICAgICAgICAgICAgICAgPGlucHV0XG4gICAgICAgICAgICAgICAgICBpZD1cImMtbmFtZVwiXG4gICAgICAgICAgICAgICAgICBuYW1lPVwibmFtZVwiXG4gICAgICAgICAgICAgICAgICBjbGFzc05hbWU9e2Bmb3JtLWNvbnRyb2wke2NvbnRhY3RFcnJvcnMubmFtZSA/ICcgaXMtaW52YWxpZCcgOiAnJ31gfVxuICAgICAgICAgICAgICAgICAgdmFsdWU9e2NvbnRhY3RGb3JtLm5hbWV9XG4gICAgICAgICAgICAgICAgICBvbkNoYW5nZT17KGUpID0+IHNldENvbnRhY3RGb3JtKChmKSA9PiAoeyAuLi5mLCBuYW1lOiBlLnRhcmdldC52YWx1ZSB9KSl9XG4gICAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgICAgICB7Y29udGFjdEVycm9ycy5uYW1lID8gKFxuICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJpbnZhbGlkLWZlZWRiYWNrIGQtYmxvY2tcIj57Y29udGFjdEVycm9ycy5uYW1lfTwvZGl2PlxuICAgICAgICAgICAgICAgICkgOiBudWxsfVxuICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJjb2wtbWQtMlwiPlxuICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzc05hbWU9XCJmb3JtLWxhYmVsIHNtYWxsXCIgaHRtbEZvcj1cImMtcGhvbmVcIj5cbiAgICAgICAgICAgICAgICAgIFBob25lXG4gICAgICAgICAgICAgICAgPC9sYWJlbD5cbiAgICAgICAgICAgICAgICA8aW5wdXRcbiAgICAgICAgICAgICAgICAgIGlkPVwiYy1waG9uZVwiXG4gICAgICAgICAgICAgICAgICBuYW1lPVwicGhvbmVcIlxuICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPXtgZm9ybS1jb250cm9sJHtjb250YWN0RXJyb3JzLnBob25lID8gJyBpcy1pbnZhbGlkJyA6ICcnfWB9XG4gICAgICAgICAgICAgICAgICB2YWx1ZT17Y29udGFjdEZvcm0ucGhvbmV9XG4gICAgICAgICAgICAgICAgICBvbkNoYW5nZT17KGUpID0+IHNldENvbnRhY3RGb3JtKChmKSA9PiAoeyAuLi5mLCBwaG9uZTogZS50YXJnZXQudmFsdWUgfSkpfVxuICAgICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICAgICAge2NvbnRhY3RFcnJvcnMucGhvbmUgPyAoXG4gICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImludmFsaWQtZmVlZGJhY2sgZC1ibG9ja1wiPntjb250YWN0RXJyb3JzLnBob25lfTwvZGl2PlxuICAgICAgICAgICAgICAgICkgOiBudWxsfVxuICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJjb2wtbWQtMlwiPlxuICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzc05hbWU9XCJmb3JtLWxhYmVsIHNtYWxsXCIgaHRtbEZvcj1cImMtY2F0XCI+XG4gICAgICAgICAgICAgICAgICBDYXRlZ29yeVxuICAgICAgICAgICAgICAgIDwvbGFiZWw+XG4gICAgICAgICAgICAgICAgPGlucHV0XG4gICAgICAgICAgICAgICAgICBpZD1cImMtY2F0XCJcbiAgICAgICAgICAgICAgICAgIG5hbWU9XCJjYXRlZ29yeVwiXG4gICAgICAgICAgICAgICAgICBjbGFzc05hbWU9XCJmb3JtLWNvbnRyb2xcIlxuICAgICAgICAgICAgICAgICAgbGlzdD1cImMtY2F0c1wiXG4gICAgICAgICAgICAgICAgICB2YWx1ZT17Y29udGFjdEZvcm0uY2F0ZWdvcnl9XG4gICAgICAgICAgICAgICAgICBvbkNoYW5nZT17KGUpID0+IHNldENvbnRhY3RGb3JtKChmKSA9PiAoeyAuLi5mLCBjYXRlZ29yeTogZS50YXJnZXQudmFsdWUgfSkpfVxuICAgICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICAgICAgPGRhdGFsaXN0IGlkPVwiYy1jYXRzXCI+XG4gICAgICAgICAgICAgICAgICB7Q09OVEFDVF9DQVRFR09SSUVTLm1hcCgoYykgPT4gKFxuICAgICAgICAgICAgICAgICAgICA8b3B0aW9uIGtleT17Y30gdmFsdWU9e2N9IC8+XG4gICAgICAgICAgICAgICAgICApKX1cbiAgICAgICAgICAgICAgICA8L2RhdGFsaXN0PlxuICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJjb2wtbWQtMVwiPlxuICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzc05hbWU9XCJmb3JtLWxhYmVsIHNtYWxsXCIgaHRtbEZvcj1cImMtb3JkZXJcIj5cbiAgICAgICAgICAgICAgICAgIE9yZGVyXG4gICAgICAgICAgICAgICAgPC9sYWJlbD5cbiAgICAgICAgICAgICAgICA8aW5wdXRcbiAgICAgICAgICAgICAgICAgIGlkPVwiYy1vcmRlclwiXG4gICAgICAgICAgICAgICAgICBuYW1lPVwic29ydF9vcmRlclwiXG4gICAgICAgICAgICAgICAgICB0eXBlPVwibnVtYmVyXCJcbiAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cImZvcm0tY29udHJvbFwiXG4gICAgICAgICAgICAgICAgICB2YWx1ZT17Y29udGFjdEZvcm0uc29ydF9vcmRlcn1cbiAgICAgICAgICAgICAgICAgIG9uQ2hhbmdlPXsoZSkgPT5cbiAgICAgICAgICAgICAgICAgICAgc2V0Q29udGFjdEZvcm0oKGYpID0+ICh7IC4uLmYsIHNvcnRfb3JkZXI6IGUudGFyZ2V0LnZhbHVlIH0pKVxuICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImNvbC1tZC0xXCI+XG4gICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmb3JtLWNoZWNrXCI+XG4gICAgICAgICAgICAgICAgICA8aW5wdXRcbiAgICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPVwiZm9ybS1jaGVjay1pbnB1dFwiXG4gICAgICAgICAgICAgICAgICAgIHR5cGU9XCJjaGVja2JveFwiXG4gICAgICAgICAgICAgICAgICAgIGlkPVwiYy1hY3RpdmVcIlxuICAgICAgICAgICAgICAgICAgICBuYW1lPVwiaXNfYWN0aXZlXCJcbiAgICAgICAgICAgICAgICAgICAgY2hlY2tlZD17Y29udGFjdEZvcm0uaXNfYWN0aXZlfVxuICAgICAgICAgICAgICAgICAgICBvbkNoYW5nZT17KGUpID0+XG4gICAgICAgICAgICAgICAgICAgICAgc2V0Q29udGFjdEZvcm0oKGYpID0+ICh7IC4uLmYsIGlzX2FjdGl2ZTogZS50YXJnZXQuY2hlY2tlZCB9KSlcbiAgICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzc05hbWU9XCJmb3JtLWNoZWNrLWxhYmVsIHNtYWxsXCIgaHRtbEZvcj1cImMtYWN0aXZlXCI+XG4gICAgICAgICAgICAgICAgICAgIFNob3duXG4gICAgICAgICAgICAgICAgICA8L2xhYmVsPlxuICAgICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJjb2wtbWQtMyBkLWZsZXggZ2FwLTFcIj5cbiAgICAgICAgICAgICAgICA8YnV0dG9uIGNsYXNzTmFtZT1cImJ0biBidG4tZ3VpZGUgZmxleC1ncm93LTFcIiB0eXBlPVwic3VibWl0XCIgZGlzYWJsZWQ9e2NvbnRhY3RCdXN5fT5cbiAgICAgICAgICAgICAgICAgIHtjb250YWN0QnVzeSA/ICdTYXZpbmfigKYnIDogY29udGFjdEZvcm0uaWQgPyAnU2F2ZSBjb250YWN0JyA6ICdBZGQgY29udGFjdCd9XG4gICAgICAgICAgICAgICAgPC9idXR0b24+XG4gICAgICAgICAgICAgICAge2NvbnRhY3RGb3JtLmlkID8gKFxuICAgICAgICAgICAgICAgICAgPGJ1dHRvblxuICAgICAgICAgICAgICAgICAgICB0eXBlPVwiYnV0dG9uXCJcbiAgICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPVwiYnRuIGJ0bi1saW5rIHB4LTFcIlxuICAgICAgICAgICAgICAgICAgICBvbkNsaWNrPXtyZXNldENvbnRhY3RGb3JtfVxuICAgICAgICAgICAgICAgICAgICBhcmlhLWxhYmVsPVwiQ2FuY2VsXCJcbiAgICAgICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICAgICAgQ2FuY2VsXG4gICAgICAgICAgICAgICAgICA8L2J1dHRvbj5cbiAgICAgICAgICAgICAgICApIDogbnVsbH1cbiAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICA8L2Zvcm0+XG4gICAgICAgICAgPC9zZWN0aW9uPlxuICAgICAgICA8L2Rpdj5cbiAgICAgIDwvZGl2PlxuXG4gICAgICA8TW9kYWxcbiAgICAgICAgb3Blbj17Qm9vbGVhbihyZW1vdmluZyl9XG4gICAgICAgIHRpdGxlPVwiUmVtb3ZlIHRoaXMgY29udGFjdD9cIlxuICAgICAgICBvbkNsb3NlPXsoKSA9PiBzZXRSZW1vdmluZyhudWxsKX1cbiAgICAgICAgZm9vdGVyPXtcbiAgICAgICAgICA8PlxuICAgICAgICAgICAgPGJ1dHRvbiB0eXBlPVwiYnV0dG9uXCIgY2xhc3NOYW1lPVwiYnRuIGJ0bi1vdXRsaW5lLXNlY29uZGFyeVwiIG9uQ2xpY2s9eygpID0+IHNldFJlbW92aW5nKG51bGwpfT5cbiAgICAgICAgICAgICAgQ2FuY2VsXG4gICAgICAgICAgICA8L2J1dHRvbj5cbiAgICAgICAgICAgIDxidXR0b24gdHlwZT1cImJ1dHRvblwiIGNsYXNzTmFtZT1cImJ0biBidG4tb3V0bGluZS1kYW5nZXJcIiBvbkNsaWNrPXtjb25maXJtUmVtb3ZlfT5cbiAgICAgICAgICAgICAgUmVtb3ZlXG4gICAgICAgICAgICA8L2J1dHRvbj5cbiAgICAgICAgICA8Lz5cbiAgICAgICAgfVxuICAgICAgPlxuICAgICAgICA8cCBjbGFzc05hbWU9XCJtYi0wXCI+XG4gICAgICAgICAgPHN0cm9uZz57cmVtb3Zpbmc/Lm5hbWV9PC9zdHJvbmc+IHdpbGwgbm8gbG9uZ2VyIGJlIHNob3duIG9uIHRoZSBob21lIHNjcmVlbiBvZiB0aGVcbiAgICAgICAgICBtb2JpbGUgYXBwLlxuICAgICAgICA8L3A+XG4gICAgICA8L01vZGFsPlxuICAgIDwvZGl2PlxuICApXG59XG4iXSwiZmlsZSI6Ii9Vc2Vycy9wb2xtYWNib29rL3JvYWRyZXBvcnQtbGF0ZXN0LWhvc3Rpbmdlci9zcmMvcGFnZXMvU2V0dGluZ3MuanN4In0=ka5˜4÷      jÁ,ÒjÁ,ÒJÅ       S    O^partitionKey=%28http%2C127.0.0.1%29,:http://127.0.0.1:5183/src/pages/Settings.jsx strongly-framed 1 request-method GET response-head HTTP/1.1 200 OK
+Content-Type: text/javascript
+Cache-Control: no-cache
+Etag: W/"dc43-9iD8+oez0o6bvGq5dTyQSwiy39E"
+Content-Length: 117082
+Date: Sun, 01 Nov 2026 12:13:37 GMT
+Vary: Origin
+ original-response-headers Vary: Origin
+Content-Type: text/javascript
+Cache-Control: no-cache
+Etag: W/"dc43-9iD8+oez0o6bvGq5dTyQSwiy39E"
+Date: Sun, 01 Nov 2026 12:08:18 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Content-Length: 117082
+ ctid 2 net-response-time-onstart 139 net-response-time-onstop 140     …Z

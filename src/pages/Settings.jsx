@@ -28,6 +28,7 @@ import {
   deleteEmergencyContact,
 } from '../services/settings.service.js'
 import Modal from '../components/Modal.jsx'
+import States from '../components/States.jsx'
 import { errorMessage, ValidationError } from '../lib/errors.js'
 
 const EMPTY_TYPE = { id: '', name: '', description: '' }
@@ -41,18 +42,18 @@ export default function Settings() {
   const toast = useToast()
 
   /* ---------- accident categories ---------- */
-  const { data: types, loading: typesLoading, reload: reloadTypes } = useAsync(
+  const { data: types, loading: typesLoading, error: typesError, reload: reloadTypes } = useAsync(
     () => listAccidentTypes(),
     [],
     [],
   )
-  const { data: usage, reload: reloadUsage } = useAsync(() => accidentTypeUsage(), [], {})
+  const { data: usage, error: usageError, reload: reloadUsage } = useAsync(() => accidentTypeUsage(), [], {})
   const [typeForm, setTypeForm] = useState(EMPTY_TYPE)
   const [typeErrors, setTypeErrors] = useState({})
   const [typeBusy, setTypeBusy] = useState(false)
 
   /* ---------- system settings ---------- */
-  const { data: settings, loading: settingsLoading, reload: reloadSettings } = useAsync(
+  const { data: settings, loading: settingsLoading, error: settingsError, reload: reloadSettings } = useAsync(
     () => getSystemSettings(),
     [],
     DEFAULT_SETTINGS,
@@ -69,7 +70,7 @@ export default function Settings() {
   }, [settingsLoading, settings])
 
   /* ---------- emergency contacts ---------- */
-  const { data: contacts, loading: contactsLoading, reload: reloadContacts } = useAsync(
+  const { data: contacts, loading: contactsLoading, error: contactsError, reload: reloadContacts } = useAsync(
     () => listEmergencyContacts(),
     [],
     [],
@@ -184,10 +185,15 @@ export default function Settings() {
   }
 
   return (
-    <>
-      <h1 className="h3 mb-3">Categories and settings</h1>
+    <div className="rr-settings-page">
+      <header className="rr-head rr-settings-head"><div>
+        <span className="rr-eyebrow">Bulacan admin portal</span>
+        <h1>Categories and settings</h1>
+        <p className="rr-sub">Accident categories, duplicate and arrival rules, and the emergency contacts shown in the mobile app.</p>
+      </div></header>
+      <div className="rr-tape" aria-hidden="true" />
 
-      <div className="row g-4">
+      <div className="row g-4 rr-settings-grid">
         <div className="col-xl-7">
           <section className="panel">
             <h2 className="h5">Accident categories</h2>
@@ -195,7 +201,8 @@ export default function Settings() {
               Categories that reports already use cannot be deleted. Hide them instead: they
               disappear from the report form but old reports keep them.
             </p>
-            <div className="table-responsive">
+            {usageError && <States error={usageError} />}
+            <div className="table-responsive rr-settings-categories">
               <table className="table align-middle">
                 <thead>
                   <tr>
@@ -206,31 +213,22 @@ export default function Settings() {
                   </tr>
                 </thead>
                 <tbody>
-                  {typesLoading && (
-                    <tr>
-                      <td colSpan={4} className="text-secondary">
-                        Loading…
-                      </td>
-                    </tr>
-                  )}
-                  {!typesLoading && types.length === 0 && (
-                    <tr>
-                      <td colSpan={4} className="text-secondary">
-                        No categories yet.
-                      </td>
-                    </tr>
+                  {(typesLoading || typesError || types.length === 0) && (
+                    <tr className="rr-settings-state-row"><td colSpan={4}>
+                      <States loading={typesLoading} error={typesError} empty={types.length === 0} emptyText="No categories yet." />
+                    </td></tr>
                   )}
                   {types.map((t) => (
-                    <tr key={t.id} className={t.active === false ? 'text-secondary' : ''}>
-                      <td>
+                    <tr role="row" key={t.id} className={t.active === false ? 'rr-settings-hidden' : ''}>
+                      <td role="cell">
                         <strong>{t.name}</strong>
                         {t.description ? (
                           <span className="small text-secondary d-block">{t.description}</span>
                         ) : null}
                       </td>
-                      <td className="text-end">{usage?.[t.id] ?? 0}</td>
-                      <td>{t.active === false ? 'Hidden' : 'Shown on the form'}</td>
-                      <td className="text-end text-nowrap">
+                      <td role="cell" className="text-end">{usage?.[t.id] ?? 0}</td>
+                      <td role="cell">{t.active === false ? 'Hidden' : 'Shown on the form'}</td>
+                      <td role="cell" className="text-end text-nowrap">
                         <button
                           type="button"
                           className="btn btn-sm btn-outline-secondary"
@@ -252,9 +250,9 @@ export default function Settings() {
               </table>
             </div>
 
-            <form className="row g-2 align-items-end" onSubmit={submitType} noValidate>
+            <form className="row g-2 align-items-end rr-settings-add" onSubmit={submitType} noValidate>
               <div className="col-sm-4">
-                <label className="form-label small mb-1" htmlFor="t-name">
+                <label className="form-label small" htmlFor="t-name">
                   Name
                 </label>
                 <input
@@ -269,7 +267,7 @@ export default function Settings() {
                 ) : null}
               </div>
               <div className="col-sm-5">
-                <label className="form-label small mb-1" htmlFor="t-desc">
+                <label className="form-label small" htmlFor="t-desc">
                   Description
                 </label>
                 <input
@@ -300,9 +298,12 @@ export default function Settings() {
         </div>
 
         <div className="col-xl-5">
-          <form className="panel" onSubmit={submitSettings} noValidate>
+          <form className="panel rr-settings-form" onSubmit={submitSettings} noValidate>
             <h2 className="h5">System settings</h2>
+            {(settingsLoading || settingsError) && <div className="rr-settings-form-state"><States loading={settingsLoading} error={settingsError} /></div>}
 
+            <div className="rr-settings-group">
+              <h3 className="rr-settings-group-title">General</h3>
             <div className="mb-3">
               <label className="form-label" htmlFor="s-name">
                 System name
@@ -348,8 +349,10 @@ export default function Settings() {
               </div>
             </div>
 
-            <fieldset>
-              <legend className="form-label fs-6 mb-1">Duplicate rule (FR-08)</legend>
+            </div>
+
+            <fieldset className="rr-settings-group">
+              <legend className="form-label">Duplicate rule (FR-08)</legend>
               <p className="small text-secondary mb-2">
                 Nearby reports with the same accident type and close incident times are flagged as
                 possible duplicates. An admin reviews and confirms them; they are not automatically
@@ -379,7 +382,7 @@ export default function Settings() {
                 ) : null}
               </div>
               <div className="mb-3">
-                <label className="form-label small mb-1" htmlFor="s-radius">
+                <label className="form-label small" htmlFor="s-radius">
                   Duplicate radius (meters)
                 </label>
                 <input
@@ -406,8 +409,8 @@ export default function Settings() {
               </div>
             </fieldset>
 
-            <fieldset>
-              <legend className="form-label fs-6 mb-1">Officer arrival check</legend>
+            <fieldset className="rr-settings-group">
+              <legend className="form-label">Officer arrival check</legend>
               <p className="small text-secondary mb-2">
                 When the officer taps &quot;I&apos;ve arrived&quot;, the locations match if he is this
                 close to the reporter&apos;s pin. GPS supports the review. If the pins differ or
@@ -415,7 +418,7 @@ export default function Settings() {
                 arrival.
               </p>
               <div className="mb-3">
-                <label className="form-label small mb-1" htmlFor="s-match">
+                <label className="form-label small" htmlFor="s-match">
                   Match distance (meters)
                 </label>
                 <input
@@ -453,7 +456,7 @@ export default function Settings() {
               Shown on the home screen of the mobile app. Add your local MDRRMO, PNP station and
               hospitals.
             </p>
-            <div className="table-responsive">
+            <div className="table-responsive rr-settings-contacts">
               <table className="table align-middle">
                 <thead>
                   <tr>
@@ -465,32 +468,23 @@ export default function Settings() {
                   </tr>
                 </thead>
                 <tbody>
-                  {contactsLoading && (
-                    <tr>
-                      <td colSpan={5} className="text-secondary">
-                        Loading…
-                      </td>
-                    </tr>
-                  )}
-                  {!contactsLoading && contacts.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="text-secondary">
-                        No contacts yet.
-                      </td>
-                    </tr>
+                  {(contactsLoading || contactsError || contacts.length === 0) && (
+                    <tr className="rr-settings-state-row"><td colSpan={5}>
+                      <States loading={contactsLoading} error={contactsError} empty={contacts.length === 0} emptyText="No contacts yet." />
+                    </td></tr>
                   )}
                   {contacts.map((c) => (
-                    <tr key={c.id} className={c.is_active === false ? 'text-secondary' : ''}>
-                      <td>{c.sort_order}</td>
-                      <td>
+                    <tr role="row" key={c.id} className={c.is_active === false ? 'rr-settings-hidden' : ''}>
+                      <td role="cell">{c.sort_order}</td>
+                      <td role="cell">
                         <strong>{c.name}</strong>
                         {c.category ? (
                           <span className="small text-secondary d-block">{c.category}</span>
                         ) : null}
                       </td>
-                      <td>{c.phone}</td>
-                      <td>{c.is_active === false ? 'Hidden' : 'Shown'}</td>
-                      <td className="text-end text-nowrap">
+                      <td role="cell">{c.phone}</td>
+                      <td role="cell">{c.is_active === false ? 'Hidden' : 'Shown'}</td>
+                      <td role="cell" className="text-end text-nowrap">
                         <button
                           type="button"
                           className="btn btn-sm btn-outline-secondary"
@@ -513,9 +507,9 @@ export default function Settings() {
               </table>
             </div>
 
-            <form className="row g-2 align-items-end" onSubmit={submitContact} noValidate>
+            <form className="row g-2 align-items-end rr-settings-add" onSubmit={submitContact} noValidate>
               <div className="col-md-3">
-                <label className="form-label small mb-1" htmlFor="c-name">
+                <label className="form-label small" htmlFor="c-name">
                   Name
                 </label>
                 <input
@@ -530,7 +524,7 @@ export default function Settings() {
                 ) : null}
               </div>
               <div className="col-md-2">
-                <label className="form-label small mb-1" htmlFor="c-phone">
+                <label className="form-label small" htmlFor="c-phone">
                   Phone
                 </label>
                 <input
@@ -545,7 +539,7 @@ export default function Settings() {
                 ) : null}
               </div>
               <div className="col-md-2">
-                <label className="form-label small mb-1" htmlFor="c-cat">
+                <label className="form-label small" htmlFor="c-cat">
                   Category
                 </label>
                 <input
@@ -563,7 +557,7 @@ export default function Settings() {
                 </datalist>
               </div>
               <div className="col-md-1">
-                <label className="form-label small mb-1" htmlFor="c-order">
+                <label className="form-label small" htmlFor="c-order">
                   Order
                 </label>
                 <input
@@ -578,7 +572,7 @@ export default function Settings() {
                 />
               </div>
               <div className="col-md-1">
-                <div className="form-check mb-2">
+                <div className="form-check">
                   <input
                     className="form-check-input"
                     type="checkbox"
@@ -634,6 +628,6 @@ export default function Settings() {
           mobile app.
         </p>
       </Modal>
-    </>
+    </div>
   )
 }

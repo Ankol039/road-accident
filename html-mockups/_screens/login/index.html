@@ -30,8 +30,11 @@
   Links point at the sibling mockups; data-rr-href remembers the real SPA route.
 -->
     <div id="mock-root">
-      <div class="auth-page">
-        <form class="auth-card" id="login-form" novalidate="">
+      <div class="auth-page rr-login-page">
+        <div class="rr-login-tape" aria-hidden="true"></div>
+        <div class="rr-login-road" aria-hidden="true"></div>
+        <form class="auth-card rr-login-card" id="login-form" novalidate="">
+          <div class="rr-login-lamps" aria-hidden="true"><span></span><span></span><span></span></div>
           <a
             class="text-decoration-none d-inline-block mb-3"
             href="../landing/index.html"
@@ -54,10 +57,10 @@
               ><span>RoadReport</span></span
             ></a
           >
-          <h1 class="h4" data-rr-region="page/title">Administrator log in</h1>
+          <span class="rr-login-eyebrow">Bulacan admin portal</span>
+          <h1 class="h4" data-rr-region="page/title">Staff log in</h1>
           <p class="small text-secondary">
-            This portal is for Bulacan traffic administrators. Officers and reporters use the
-            RoadReport mobile app.
+            This portal is for authorized administrators and traffic officers. Reporters use the RoadReport mobile app.
           </p>
           <div class="mb-3">
             <label class="form-label" for="email">Email</label
@@ -73,7 +76,8 @@
           </div>
           <div class="mb-3">
             <label class="form-label" for="password">Password</label
-            ><input
+            ><div class="rr-login-field">
+            <input
               id="password"
               name="password"
               type="password"
@@ -82,6 +86,18 @@
               required=""
               value=""
             />
+            <button
+              type="button"
+              class="rr-login-toggle"
+              id="password-toggle"
+              aria-controls="password"
+              aria-pressed="false"
+              aria-label="Show password"
+            >
+              <svg class="rr-login-eye" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="rr-login-eye-off" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 3l18 18"/><path d="M10.6 5.7A10.6 10.6 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a17 17 0 0 1-3.2 4"/><path d="M6.5 6.9C3.7 8.7 2 12 2 12s3.6 6.5 10 6.5c1.6 0 3-.4 4.3-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+            </button>
+            </div>
           </div>
           <button type="submit" class="btn btn-guide w-100">Log in</button>
           <div class="d-flex justify-content-between align-items-center mt-3">
@@ -91,8 +107,27 @@
             >
           </div>
         </form>
+        <p class="rr-login-foot">© RoadReport · Bulacan, Philippines · For authorized administrators and traffic officers</p>
       </div>
       <div class="toast-box" aria-live="polite" aria-atomic="true"></div>
     </div>
+    <script>
+      /*
+       * Show / hide password (mockup behaviour).
+       * The button flips the input between type="password" and type="text" and keeps
+       * aria-pressed and the accessible name in sync. In the app, do the same with state.
+       */
+      (function () {
+        var input = document.getElementById("password");
+        var btn = document.getElementById("password-toggle");
+        if (!input || !btn) return;
+        btn.addEventListener("click", function () {
+          var show = input.type === "password";
+          input.type = show ? "text" : "password";
+          btn.setAttribute("aria-pressed", show ? "true" : "false");
+          btn.setAttribute("aria-label", show ? "Hide password" : "Show password");
+        });
+      })();
+    </script>
   </body>
 </html>

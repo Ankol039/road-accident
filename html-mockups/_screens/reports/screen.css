@@ -7,3 +7,929 @@
  */
 
 /* Add screen overrides below this line. */
+
+/* ==========================================================================
+   0. Tokens — lifted from the public landing page so both screens read as
+      one product: ink-black ground, cream text, signal orange, hazard amber.
+   ========================================================================== */
+.staff-shell {
+  --rr-reports-bg: #0e1214;
+  --rr-reports-surface: #151a1d;
+  --rr-reports-raised: #1b2226;
+  --rr-reports-line: rgba(236, 232, 223, 0.09);
+  --rr-reports-line-strong: rgba(236, 232, 223, 0.18);
+  --rr-reports-text: #ece8df;
+  --rr-reports-muted: #8d979b;
+  --rr-reports-orange: #e4572e;
+  --rr-reports-amber: #f5c518;
+  --rr-reports-teal: #5fb7a5;
+  --rr-reports-display: "Jost", "Inter", system-ui, sans-serif;
+  background:
+    radial-gradient(56rem 26rem at 78% -8%, rgba(228, 87, 46, 0.13), transparent 62%),
+    var(--rr-reports-bg);
+  color: var(--rr-reports-text);
+}
+
+.staff-main {
+  /* Lets the table scroll inside its panel instead of widening the page. */
+  min-width: 0;
+  color: var(--rr-reports-text);
+}
+
+.staff-main .text-secondary {
+  color: var(--rr-reports-muted) !important;
+}
+
+/* ==========================================================================
+   1. Sidebar — keeps the shared layout and divider, restyles the contents.
+   ========================================================================== */
+.staff-shell .sidebar {
+  background: linear-gradient(180deg, #12181b 0%, #0e1214 100%);
+}
+
+.staff-shell .sidebar .brand {
+  font-family: var(--rr-reports-display);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.rr-reports-nav-label {
+  margin: 0 1.25rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rr-reports-orange);
+}
+
+.staff-shell .side-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  color: #aab3b7;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.staff-shell .side-nav a:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.staff-shell .side-nav a.active,
+.staff-shell .side-nav a[aria-current="page"] {
+  background: linear-gradient(90deg, rgba(228, 87, 46, 0.28), rgba(228, 87, 46, 0.06));
+  box-shadow: inset 3px 0 0 var(--rr-reports-orange);
+  color: #fff;
+}
+
+.staff-shell .side-nav a:focus-visible,
+.staff-shell .sidebar-foot .btn:focus-visible,
+.staff-main a:focus-visible,
+.staff-main .btn:focus-visible,
+.staff-main .form-control:focus-visible {
+  outline: 2px solid var(--rr-reports-amber);
+  outline-offset: 2px;
+}
+
+.rr-reports-ico {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--rr-reports-orange);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.staff-shell .side-nav .count-pill {
+  margin-left: auto;
+  background: var(--rr-reports-amber);
+  color: #15191b;
+  font-weight: 700;
+}
+
+.staff-shell .sidebar-foot .btn {
+  border-radius: 999px;
+  border-color: var(--rr-reports-line-strong);
+  color: var(--rr-reports-text);
+  font-weight: 500;
+}
+
+.staff-shell .sidebar-foot .btn:hover {
+  background: var(--rr-reports-orange);
+  border-color: var(--rr-reports-orange);
+  color: #fff;
+}
+
+/* ==========================================================================
+   2. Page header, actions + hazard tape
+   ========================================================================== */
+.rr-reports-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-bottom: 1.25rem;
+}
+
+.rr-reports-eyebrow {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rr-reports-orange);
+}
+
+.rr-reports-head h1 {
+  margin: 0.45rem 0 0.35rem;
+  font-family: var(--rr-reports-display);
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--rr-reports-text);
+}
+
+.rr-reports-sub {
+  margin: 0;
+  max-width: 34rem;
+  font-size: 0.95rem;
+  color: var(--rr-reports-muted);
+}
+
+.rr-reports-tape {
+  height: 8px;
+  margin-bottom: 1.5rem;
+  border-radius: 3px;
+  background: repeating-linear-gradient(-45deg, var(--rr-reports-amber) 0 12px, #14191b 12px 24px);
+  opacity: 0.85;
+}
+
+.staff-main .btn-outline-guide {
+  min-height: 40px;
+  padding: 0 1rem;
+  border: 1px solid rgba(228, 87, 46, 0.55);
+  border-radius: 10px;
+  background: transparent;
+  color: #ff9b7a;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.staff-main .btn-outline-guide:hover {
+  border-color: var(--rr-reports-orange);
+  background: var(--rr-reports-orange);
+  color: #fff;
+}
+
+/* ==========================================================================
+   3. Filter bar — one raised panel, two rows (search/status/type, then
+      place/dates/toggles/actions).
+   ========================================================================== */
+.staff-main .filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 1.25rem;
+  padding: 14px;
+  border: 1px solid var(--rr-reports-line);
+  border-radius: 20px;
+  background: linear-gradient(180deg, #171d20 0%, #12171a 100%);
+  box-shadow: 0 22px 44px -28px rgba(0, 0, 0, 0.8);
+}
+
+.rr-reports-break {
+  flex: 0 0 100%;
+  height: 0;
+}
+
+.staff-main .filter-bar .form-control,
+.staff-main .filter-bar .form-select {
+  min-height: 42px;
+  border: 1px solid var(--rr-reports-line);
+  border-radius: 12px;
+  background-color: var(--rr-reports-raised);
+  color: var(--rr-reports-text);
+  color-scheme: dark;
+  font-size: 0.9rem;
+}
+
+.staff-main .filter-bar .form-control::placeholder {
+  color: var(--rr-reports-muted);
+}
+
+.staff-main .filter-bar .form-control:focus,
+.staff-main .filter-bar .form-select:focus {
+  border-color: var(--rr-reports-orange);
+  box-shadow: 0 0 0 3px rgba(228, 87, 46, 0.25);
+  outline: 0;
+}
+
+.staff-main .filter-bar input[type="search"] {
+  flex: 1 1 340px;
+  width: auto;
+  padding-left: 2.4rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238d979b' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cpath d='m16 16 4 4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0.8rem center;
+  background-size: 1.1rem;
+}
+
+.staff-main .filter-bar .form-select {
+  flex: 0 1 200px;
+  width: auto;
+}
+
+.staff-main .filter-bar input[name="municipality"] {
+  flex: 1 1 180px;
+  width: auto;
+  min-width: 150px;
+}
+
+.staff-main .filter-bar input[type="date"] {
+  flex: 0 1 160px;
+  width: auto;
+}
+
+/* Toggles read as pills; the whole pill lights up when checked. */
+.staff-main .filter-bar .form-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 42px;
+  margin: 0;
+  padding: 0 0.9rem;
+  border: 1px solid var(--rr-reports-line);
+  border-radius: 999px;
+  background: var(--rr-reports-raised);
+  color: var(--rr-reports-text);
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.staff-main .filter-bar .form-check .form-check-input {
+  float: none;
+  margin: 0;
+  accent-color: var(--rr-reports-orange);
+}
+
+.staff-main .filter-bar .form-check:has(input:checked) {
+  border-color: var(--rr-reports-orange);
+  background: rgba(228, 87, 46, 0.14);
+}
+
+.staff-main .filter-bar .form-check:has(input:focus-visible) {
+  outline: 2px solid var(--rr-reports-amber);
+  outline-offset: 2px;
+}
+
+.staff-main .filter-bar .btn-guide {
+  min-height: 42px;
+  padding: 0 1.3rem;
+  border: 0;
+  border-radius: 12px;
+  background: var(--rr-reports-orange);
+  color: #fff;
+  font-weight: 600;
+}
+
+.staff-main .filter-bar .btn-guide:hover {
+  background: #f06a41;
+}
+
+.staff-main .filter-bar .btn-outline-secondary {
+  min-height: 42px;
+  padding: 0 1.1rem;
+  border: 1px solid var(--rr-reports-line-strong);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--rr-reports-text);
+}
+
+.staff-main .filter-bar .btn-outline-secondary:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ==========================================================================
+   4. Reports table
+   ========================================================================== */
+.staff-main .panel {
+  position: relative;
+  border: 1px solid var(--rr-reports-line);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #171d20 0%, #12171a 100%);
+  box-shadow: 0 22px 44px -28px rgba(0, 0, 0, 0.8);
+  color: var(--rr-reports-text);
+}
+
+.staff-main .panel.p-0 {
+  padding: 0;
+}
+
+.staff-main .rr-reports-table::before {
+  content: "";
+  position: sticky;
+  top: 0;
+  left: 0;
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, var(--rr-reports-orange), transparent 60%);
+}
+
+.staff-main .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--rr-reports-text);
+  --bs-table-border-color: var(--rr-reports-line);
+  --bs-table-hover-bg: rgba(228, 87, 46, 0.07);
+  --bs-table-hover-color: var(--rr-reports-text);
+  color: var(--rr-reports-text);
+}
+
+.staff-main .table > :not(caption) > * > * {
+  background-color: transparent;
+  border-color: var(--rr-reports-line);
+  box-shadow: none;
+}
+
+.staff-main .table thead th {
+  padding: 0.95rem 1.2rem;
+  border-bottom: 1px solid var(--rr-reports-line-strong);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--rr-reports-muted);
+}
+
+.staff-main .table tbody td {
+  padding: 0.9rem 1.2rem;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.staff-main .table tbody tr.clickable {
+  cursor: pointer;
+}
+
+.staff-main .table tbody tr:hover > * {
+  background-color: rgba(228, 87, 46, 0.07);
+}
+
+.staff-main .table tbody td:nth-child(2) {
+  white-space: nowrap;
+  color: #c4c9c6;
+}
+
+.staff-main .table tbody td:nth-child(5) {
+  white-space: nowrap;
+  color: #c4c9c6;
+}
+
+.staff-main .table .code-cell {
+  white-space: nowrap;
+}
+
+/* Give the place column the room: it is the longest text in each row. */
+.staff-main .table thead th:nth-child(3),
+.staff-main .table tbody td:nth-child(3) {
+  width: 36%;
+  min-width: 300px;
+}
+
+.staff-main .table tbody td:nth-child(4) {
+  min-width: 8.5rem;
+}
+
+.staff-main .table tbody td:nth-child(6) {
+  min-width: 9.5rem;
+}
+
+/* Only the long status label is allowed to wrap. */
+.staff-main .table .status-info_required {
+  white-space: normal;
+  max-width: 11rem;
+  line-height: 1.25;
+}
+
+.staff-main .table .code-cell a {
+  font-family: var(--rr-reports-display);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--rr-reports-orange);
+  text-decoration: none;
+}
+
+.staff-main .table .code-cell a:hover {
+  color: #ff7a52;
+  text-decoration: underline;
+}
+
+.staff-main .table .flag-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: 0.55rem;
+  padding: 0.12rem 0.55rem 0.12rem 0.45rem;
+  border: 1px solid rgba(229, 72, 58, 0.5);
+  border-radius: 999px;
+  background: rgba(229, 72, 58, 0.14);
+  color: #ff8b80;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: 2px;
+}
+
+.staff-main .table .flag-dot::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e5483a;
+  box-shadow: 0 0 8px #e5483a;
+}
+
+.staff-main .status-badge {
+  display: inline-block;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   5. Pager
+   ========================================================================== */
+.staff-main .text-secondary {
+  color: var(--rr-reports-muted) !important;
+}
+
+.staff-main [data-rr-region="pager"] .btn {
+  min-height: 38px;
+  padding: 0 1rem;
+  border: 1px solid var(--rr-reports-line-strong);
+  background: transparent;
+  color: var(--rr-reports-text);
+  font-weight: 500;
+}
+
+.staff-main [data-rr-region="pager"] .btn:first-child {
+  border-radius: 10px 0 0 10px;
+}
+
+.staff-main [data-rr-region="pager"] .btn:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+.staff-main [data-rr-region="pager"] .btn:hover:not(:disabled) {
+  background: var(--rr-reports-orange);
+  border-color: var(--rr-reports-orange);
+}
+
+.staff-main [data-rr-region="pager"] .btn:disabled {
+  opacity: 0.45;
+}
+
+/* ==========================================================================
+   6. Responsive
+   ========================================================================== */
+@media (max-width: 767.98px) {
+  .rr-reports-head {
+    align-items: stretch;
+  }
+
+  .rr-reports-actions {
+    justify-content: flex-start !important;
+  }
+
+  /* Rows become cards: ID + status, place, then date · type · officer. */
+  .staff-main .rr-reports-table {
+    overflow: hidden;
+  }
+
+  .staff-main .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .staff-main .table,
+  .staff-main .table tbody {
+    display: block;
+  }
+
+  .staff-main .table tbody tr {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: start;
+    gap: 0.35rem 0.5rem;
+    padding: 14px 18px;
+    border-top: 1px solid var(--rr-reports-line);
+  }
+
+  .staff-main .table tbody tr:first-child {
+    border-top: 0;
+  }
+
+  .staff-main .table tbody td {
+    display: block;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    font-size: 0.86rem;
+  }
+
+  .staff-main .table thead th:nth-child(3),
+  .staff-main .table tbody td:nth-child(3),
+  .staff-main .table tbody td:nth-child(4) {
+    width: auto;
+    min-width: 0;
+  }
+
+  .staff-main .table tbody td:nth-child(6) {
+    min-width: 0;
+  }
+
+  .staff-main .table .status-info_required {
+    max-width: 12rem;
+    text-align: center;
+  }
+
+  .staff-main .table tbody td:nth-child(1) {
+    grid-column: 1 / 8;
+    grid-row: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+    white-space: normal;
+  }
+  .staff-main .table tbody td:nth-child(6) {
+    grid-column: 8 / 13;
+    grid-row: 1;
+    justify-self: end;
+    min-width: 0;
+  }
+  .staff-main .table tbody td:nth-child(3) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-size: 0.9rem;
+  }
+  .staff-main .table tbody td:nth-child(2) {
+    grid-column: 1 / 5;
+    grid-row: 3;
+    font-size: 0.78rem;
+    color: var(--rr-reports-muted);
+  }
+  .staff-main .table tbody td:nth-child(4) {
+    grid-column: 5 / 9;
+    grid-row: 3;
+    font-size: 0.78rem;
+    color: var(--rr-reports-muted);
+  }
+  .staff-main .table tbody td:nth-child(5) {
+    grid-column: 9 / 13;
+    grid-row: 3;
+    font-size: 0.78rem;
+    color: var(--rr-reports-muted);
+  }
+  .staff-main .table tbody td:nth-child(2),
+  .staff-main .table tbody td:nth-child(5) {
+    white-space: normal;
+  }
+  .staff-main .table tbody td:nth-child(5)::before {
+    content: "Officer: ";
+  }
+  .staff-main .table .flag-dot {
+    margin-left: 0;
+  }
+
+  .staff-main .table .code-cell a {
+    font-size: 0.9rem;
+  }
+
+  .staff-main .table .status-badge {
+    font-size: 0.7rem;
+    padding: 0.24rem 0.6rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .staff-main .filter-bar {
+    padding: 12px;
+    border-radius: 18px;
+  }
+
+  .staff-main .filter-bar input[type="search"],
+  .staff-main .filter-bar input[name="municipality"] {
+    flex: 1 1 100%;
+  }
+
+  .staff-main .filter-bar .form-select,
+  .staff-main .filter-bar input[type="date"],
+  .staff-main .filter-bar .form-check,
+  .staff-main .filter-bar .btn {
+    flex: 1 1 calc(50% - 5px);
+    justify-content: center;
+    min-width: 0;
+    width: auto;
+  }
+
+  .rr-reports-break {
+    display: none;
+  }
+
+  .staff-main .rr-reports-table {
+    border-radius: 18px;
+  }
+}
+
+/* ==========================================================================
+   7. Print — the table prints as a plain light document.
+   ========================================================================== */
+@media print {
+  .staff-shell,
+  .staff-main,
+  .staff-main .panel,
+  .staff-main .table,
+  .staff-main .table > :not(caption) > * > * {
+    background: #fff !important;
+    color: #000 !important;
+    box-shadow: none !important;
+  }
+
+  .staff-main .table thead th {
+    color: #333 !important;
+  }
+
+  .staff-main .table .code-cell a {
+    color: #000 !important;
+  }
+
+  .staff-main .rr-reports-table {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .staff-main .rr-reports-table::before {
+    display: none;
+  }
+
+  .staff-main .table thead th,
+  .staff-main .table tbody td {
+    min-width: 0 !important;
+    width: auto !important;
+    white-space: normal !important;
+  }
+}
+
+/* ==========================================================================
+   8. Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .staff-shell *,
+  .staff-shell *::before,
+  .staff-shell *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   Burger menu — under 992px the sidebar becomes a sticky top bar with a menu
+   button; the navigation and the user / log out block open from it.
+   ========================================================================== */
+.rr-reports-burger {
+  display: none;
+}
+
+@media (max-width: 991.98px) {
+  .staff-shell {
+    display: block;
+  }
+
+  .staff-shell .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: block;
+    width: auto;
+    max-width: none;
+    height: auto;
+    min-height: 0;
+    max-height: 100vh;
+    max-height: 100dvh;
+    padding: env(safe-area-inset-top, 0px) 0 0;
+    overflow-y: auto;
+    box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.9);
+  }
+
+  .staff-shell .sidebar > div:first-of-type {
+    padding: 0.75rem 4.6rem 0.75rem 1rem !important;
+  }
+
+  .staff-shell .sidebar > div:first-of-type .small {
+    display: none;
+  }
+
+  .staff-shell .sidebar.rr-reports-menu-open > div:first-of-type .small {
+    display: block;
+  }
+
+  .rr-reports-burger {
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 1px solid var(--rr-reports-line-strong);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--rr-reports-text);
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+  }
+
+  .rr-reports-burger:hover {
+    background: rgba(255, 255, 255, 0.09);
+  }
+
+  .rr-reports-burger:focus-visible {
+    outline: 2px solid var(--rr-reports-amber);
+    outline-offset: 2px;
+  }
+
+  .rr-reports-burger[aria-expanded="true"] {
+    border-color: var(--rr-reports-orange);
+    background: rgba(228, 87, 46, 0.16);
+  }
+
+  .rr-reports-burger-bars,
+  .rr-reports-burger-bars::before,
+  .rr-reports-burger-bars::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .rr-reports-burger-bars {
+    position: relative;
+  }
+
+  .rr-reports-burger-bars::before,
+  .rr-reports-burger-bars::after {
+    content: "";
+    position: absolute;
+    left: 0;
+  }
+
+  .rr-reports-burger-bars::before {
+    top: -6px;
+  }
+
+  .rr-reports-burger-bars::after {
+    top: 6px;
+  }
+
+  .rr-reports-burger[aria-expanded="true"] .rr-reports-burger-bars {
+    background: transparent;
+  }
+
+  .rr-reports-burger[aria-expanded="true"] .rr-reports-burger-bars::before {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .rr-reports-burger[aria-expanded="true"] .rr-reports-burger-bars::after {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* Closed: only the top bar shows. */
+  .staff-shell .sidebar:not(.rr-reports-menu-open) .rr-reports-nav-label,
+  .staff-shell .sidebar:not(.rr-reports-menu-open) .side-nav,
+  .staff-shell .sidebar:not(.rr-reports-menu-open) .sidebar-foot {
+    display: none;
+  }
+
+  /* Open: a vertical list, then the user block. */
+  .staff-shell .sidebar.rr-reports-menu-open .side-nav {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 2px;
+    padding: 0.25rem 0.75rem 0.5rem;
+  }
+
+  .staff-shell .sidebar.rr-reports-menu-open .side-nav a {
+    min-height: 46px;
+  }
+
+  .staff-shell .sidebar.rr-reports-menu-open .sidebar-foot {
+    display: block;
+    margin: 0;
+    padding: 0.85rem 1rem 1.1rem;
+    border-top: 1px solid var(--rr-reports-line);
+  }
+}
+
+/* ==========================================================================
+   Small-screen safety — nothing may push the page wider than the screen.
+   ========================================================================== */
+.staff-main img,
+.staff-main svg,
+.staff-main canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 991.98px) {
+  /* Safety net: clip anything that still spills sideways (inner scrollers such as tables keep scrolling). */
+  .staff-main {
+    min-width: 0;
+    overflow-x: clip;
+  }
+
+  .staff-main td,
+  .staff-main .panel p,
+  .staff-main .form-text {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 575.98px) {
+  /* Filter bars: every control may shrink, whatever min-width the shared styles give it. */
+  .staff-main .filter-bar,
+  .staff-main .filter-bar > * {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .staff-main .filter-bar .form-control,
+  .staff-main .filter-bar .form-select,
+  .staff-main .filter-bar .btn {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .staff-main .filter-bar input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+/* Header buttons wrap instead of running off the screen. */
+.rr-reports-head > * {
+  min-width: 0;
+}
+
+.rr-reports-actions {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 419.98px) {
+  /* Narrow phones: one control per row, so dates and dropdown labels are never cut off. */
+  .staff-main .filter-bar > *,
+  .staff-main .filter-bar .form-control,
+  .staff-main .filter-bar .form-select,
+  .staff-main .filter-bar .form-check,
+  .staff-main .filter-bar .btn,
+  .staff-main .filter-bar input[type="date"] {
+    flex: 1 1 100% !important;
+    width: 100%;
+  }
+
+  .staff-main .filter-bar .form-check {
+    justify-content: flex-start;
+  }
+}

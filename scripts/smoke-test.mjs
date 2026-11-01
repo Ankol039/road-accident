@@ -52,8 +52,15 @@ const config = {
 const email = arg('email', process.env.ADMIN_EMAIL || 'admin@roadreport.dev')
 const password = arg('password', process.env.ADMIN_PASSWORD || 'RoadReport!Admin2026')
 
-if (!config.apiKey || !config.projectId) {
-  console.error('Missing Firebase config in .env')
+if (
+  !config.apiKey ||
+  config.apiKey === 'your-api-key' ||
+  !config.projectId ||
+  !config.authDomain ||
+  !config.appId ||
+  config.appId === 'your-app-id'
+) {
+  console.error('Missing Firebase Web SDK config in .env')
   process.exit(1)
 }
 

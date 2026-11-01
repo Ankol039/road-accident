@@ -3,16 +3,37 @@ rules_version = '2';
 // =============================================================================
 // RoadReport Bulacan Admin Portal - Cloud Firestore security rules
 //
-// These replace api/core/auth.php's server-side checks. Because the React app
-// talks to Firestore directly, the rules are now the only line of defence, so
-// they are deliberately strict:
+// The React app talks to Firestore directly, so these rules are the only
+// server-side defence. They are deliberately strict.
 //
-//   * only signed-in users may read/write anything
-//   * only admins (users/{uid}.role == 'admin') may mutate reports and settings
-//   * the audit trail is append-only: nobody may edit or delete an entry
-//   * a user may never change their own role or status
+//   * Nobody gets access without an ACTIVE profile in users/{uid}.
+//   * Admin accounts are created only by an admin (or by the Admin SDK script
+//     `npm run create-user`). Nobody can make themselves an admin.
+//   * Admins create staff accounts (admin, officer) but never public users:
+//     public users ("reporter" role) register themselves in the mobile app.
+//   * Reports and photos are readable by admins, by the officer they are
+//     assigned to, and (reports only) by the public user who filed them.
+//   * The audit trail is append-only and cannot be forged.
+//   * A user may edit only their own name and phone.
 //
-// Deploy with:  firebase deploy --only firestore:rules
+// Who can do what            anon  inactive  reporter  officer     admin
+//   users (own profile)       -     read      r/w*      r/w*        r/w*
+//   users (others)            -     -         -         -           r/w
+//   reports                   -     -         own: r    assigned: r r/w/del
+//   report_photos             -     -         -         assigned: r r/w/del
+//   audit_logs                -     -         -         -           r + append
+//   notifications             -     -         own       own         own r/mark, create/delete
+//   settings, accident_types,
+//     emergency_contacts      -     -         r         r           r/w
+//   counters                  -     -         -         -           r/w
+//   * name and phone only; role, status and email are admin-controlled
+//
+// "reporter_id" on a report is the uid of the public user who filed it. It is
+// the owner field the mobile app must write. Confirm the name with the mobile
+// developer before deploying.
+//
+// Deploy with:
+//   firebase deploy --only firestore:rules --project roadreport-402a6
 // =============================================================================
 
 service cloud.firestore {
@@ -24,42 +45,88 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    // The caller's profile document. Cached per request by the rules engine.
-    function profile() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    function profilePath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
     }
 
-    function isAdmin() {
+    // The caller's profile document. Cached per request by the rules engine.
+    function profile() {
+      return get(profilePath()).data;
+    }
+
+    // A signed-in user with a profile whose status is 'active'.
+    function isActive() {
       return signedIn()
-        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
-        && profile().role == 'admin'
+        && exists(profilePath())
         && profile().status == 'active';
     }
 
-    // Fields a write is not allowed to change on a user document.
-    function roleUntouched() {
-      return !request.resource.data.diff(resource.data).affectedKeys()
-        .hasAny(['role', 'status', 'email']);
+    function isAdmin() {
+      return isActive() && profile().role == 'admin';
+    }
+
+    function isOfficer() {
+      return isActive() && profile().role == 'officer';
+    }
+
+    // Fields a users/{uid} document may contain.
+    function profileKeys() {
+      return ['email', 'full_name', 'phone', 'role', 'status', 'badge_no',
+              'created_at', 'updated_at'];
+    }
+
+    // Keep in sync with REPORT_STATUSES in src/lib/constants.js.
+    function validStatuses() {
+      return ['submitted', 'under_review', 'info_required', 'assigned',
+              'on_scene', 'verified', 'in_progress', 'resolved',
+              'rejected', 'duplicate'];
     }
 
     /* ---------- users ---------- */
 
+    // A public user creating their own profile from the mobile app. Always the
+    // 'reporter' role, always active, email must match the sign-in email.
+    // (Delete this function and its use below to stop self-registration.)
+    function isSelfRegistration(uid) {
+      return signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.role == 'reporter'
+        && request.resource.data.status == 'active'
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.keys().hasOnly(profileKeys())
+        && request.resource.data.keys().hasAll(['email', 'full_name', 'role', 'status']);
+    }
+
+    // An admin editing a profile: email is fixed, status is active/inactive,
+    // and nobody can be turned INTO a public user (only left as one).
+    function adminMayChangeUser() {
+      return request.resource.data.email == resource.data.email
+        && request.resource.data.status in ['active', 'inactive']
+        && request.resource.data.role in ['admin', 'officer', 'reporter']
+        && (request.resource.data.role != 'reporter'
+            || resource.data.role == 'reporter');
+    }
+
     match /users/{uid} {
-      // Anyone signed in may read their own profile; admins may read all.
+      // Everyone may read their own profile (even when inactive, so the app can
+      // say so); admins may read all.
       allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
 
-      // An administrator may open the profile for a staff member they have
-      // just created (the Users screen does exactly that). Anybody else may
-      // only backfill their own profile, and only as the first (admin) user.
-      allow create: if isAdmin()
-        || (signedIn()
-          && request.auth.uid == uid
-          && request.resource.data.role == 'admin'    // first user bootstraps as admin
-          && request.resource.data.email == request.auth.token.email);
+      allow create: if
+        // an admin adds a staff member (never a public user, never a stranger's admin)
+        (isAdmin()
+          && request.resource.data.role in ['admin', 'officer']
+          && request.resource.data.status in ['active', 'inactive']
+          && request.resource.data.keys().hasOnly(profileKeys()))
+        || isSelfRegistration(uid);
 
-      // You may edit your own name/phone; only admins may change roles.
-      allow update: if isAdmin()
-        || (signedIn() && request.auth.uid == uid && roleUntouched());
+      allow update: if
+        (isAdmin() && adminMayChangeUser())
+        // you may edit only your own name and phone
+        || (isActive()
+            && request.auth.uid == uid
+            && request.resource.data.diff(resource.data).affectedKeys()
+                 .hasOnly(['full_name', 'phone', 'updated_at']));
 
       // Deleting accounts happens in the Firebase console (Admin SDK).
       allow delete: if false;
@@ -68,15 +135,23 @@ service cloud.firestore {
     /* ---------- reports ---------- */
 
     match /reports/{reportId} {
-      allow read: if signedIn();
+      allow read: if isAdmin()
+        || (isOfficer() && resource.data.get('officer_id', null) == request.auth.uid)
+        || (isActive() && resource.data.get('reporter_id', null) == request.auth.uid);
 
       // Creating needs the core fields present, so an empty report can't slip in.
       allow create: if isAdmin()
         && request.resource.data.keys().hasAll(
              ['accident_date', 'accident_time', 'accident_type_id', 'injury_status',
-              'location_text', 'latitude', 'longitude', 'status']);
+              'location_text', 'latitude', 'longitude', 'status'])
+        && request.resource.data.status in validStatuses()
+        && request.resource.data.report_code is string;
 
-      allow update: if isAdmin();
+      // The report code and creation time never change; status stays valid.
+      allow update: if isAdmin()
+        && request.resource.data.get('report_code', null) == resource.data.get('report_code', null)
+        && request.resource.data.get('created_at', null) == resource.data.get('created_at', null)
+        && request.resource.data.status in validStatuses();
 
       allow delete: if isAdmin();
     }
@@ -84,50 +159,64 @@ service cloud.firestore {
     /* ---------- report photos (base64 bytes inside the document) ---------- */
 
     match /report_photos/{photoId} {
-      allow read: if signedIn();
-      allow write: if isAdmin();
+      // Admins, or the officer the parent report is assigned to.
+      allow read: if isAdmin()
+        || (isOfficer()
+            && get(/databases/$(database)/documents/reports/$(resource.data.report_id))
+                 .data.get('officer_id', null) == request.auth.uid);
+
+      allow create, update: if isAdmin() && request.resource.data.report_id is string;
+      allow delete: if isAdmin();
     }
 
-    /* ---------- audit trail: append-only ---------- */
+    /* ---------- audit trail: append-only, cannot be forged ---------- */
 
     match /audit_logs/{entryId} {
       allow read: if isAdmin();
       allow create: if isAdmin()
-        && request.resource.data.keys().hasAll(['action', 'created_at']);
+        && request.resource.data.keys().hasAll(['action', 'created_at'])
+        && request.resource.data.actor_id == request.auth.uid
+        && request.resource.data.created_at == request.time;
       allow update, delete: if false;   // never rewrite history
     }
 
     /* ---------- notifications: each user owns their own rows ---------- */
 
     match /notifications/{notificationId} {
-      allow read: if signedIn() && resource.data.user_id == request.auth.uid;
-      // Only the flag may be flipped by the recipient; admins may create rows.
-      allow update: if signedIn() && resource.data.user_id == request.auth.uid
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
-      allow create: if isAdmin();
+      allow read: if isActive() && resource.data.user_id == request.auth.uid;
+
+      // The recipient may only mark a row as read.
+      allow update: if isActive() && resource.data.user_id == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read'])
+        && request.resource.data.read == true;
+
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasAll(['user_id', 'title', 'read'])
+        && request.resource.data.read == false;
+
       allow delete: if isAdmin();
     }
 
-    /* ---------- settings + reference data: admins write, staff read ---------- */
+    /* ---------- settings + reference data: admins write, active users read ---------- */
 
     match /settings/{settingId} {
-      allow read: if signedIn();
+      allow read: if isActive();
       allow write: if isAdmin();
     }
 
     match /accident_types/{typeId} {
-      allow read: if signedIn();
+      allow read: if isActive();
       allow write: if isAdmin();
     }
 
     match /emergency_contacts/{contactId} {
-      allow read: if signedIn();
+      allow read: if isActive();
       allow write: if isAdmin();
     }
 
+    // Report-code counters: internal, admins only.
     match /counters/{counterId} {
-      allow read: if signedIn();
-      allow write: if isAdmin();
+      allow read, write: if isAdmin();
     }
 
     /* ---------- everything else is closed ---------- */

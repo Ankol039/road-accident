@@ -117,6 +117,9 @@ function fs_service_account(): array
         if (!is_array($sa) || empty($sa['client_email']) || empty($sa['private_key'])) {
             throw new FirestoreException('The Firebase key file is not a valid service account JSON file');
         }
+        if (($sa['project_id'] ?? '') !== config('firebase.project_id')) {
+            throw new FirestoreException('The service account must belong to the configured Firebase project');
+        }
     }
     return $sa;
 }
