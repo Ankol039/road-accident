@@ -400,6 +400,11 @@
       "type": "image/png"
     },
     {
+      "path": "/favicon.ico",
+      "status": 200,
+      "type": "image/x-icon"
+    },
+    {
       "path": "/brand/logo-horizontal-on-dark.png",
       "status": 200,
       "type": "image/png"
