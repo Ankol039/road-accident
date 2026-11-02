@@ -22,8 +22,3 @@ export function vehicleSummary(vehicles) {
 /** Short "N of M" helper for pagers. */
 export const pageSummary = (total, page, totalPages) =>
   `${total} total, page ${page} of ${totalPages}`
-
-export const truncate = (value, len = 80) => {
-  const s = String(value ?? '')
-  return s.length > len ? `${s.slice(0, len)}…` : s
-}
