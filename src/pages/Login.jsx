@@ -82,7 +82,7 @@ export default function Login() {
         <span className="rr-login-eyebrow">Bulacan admin portal</span>
         <h1>Staff log in</h1>
         <p className="small text-secondary">
-          This portal is for authorized administrators and traffic officers. Reporters use the RoadReport mobile app.
+          This portal is for authorized administrators only. Traffic officers and reporters use the RoadReport mobile app.
         </p>
 
 
@@ -151,7 +151,7 @@ export default function Login() {
           </Link>
         </div>
       </form>
-      <p className="rr-login-foot" aria-hidden="true">© RoadReport · Bulacan, Philippines · For authorized administrators and traffic officers</p>
+      <p className="rr-login-foot" aria-hidden="true">© RoadReport · Bulacan, Philippines · For authorized administrators</p>
     </div>
   )
 }
