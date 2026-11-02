@@ -142,16 +142,6 @@ const setChecked = async (selector, checked) => {
     checked,
   )
 }
-const clickByText = async (label, tag = 'button') =>
-  page.evaluate(
-    (l, t) => {
-      const el = [...document.querySelectorAll(t)].find((b) => b.innerText.trim() === l)
-      if (!el) throw new Error(`no ${t} says "${l}"`)
-      el.click()
-    },
-    label,
-    tag,
-  )
 
 /** Click a button inside the row that contains the given text. */
 const clickInRow = async (rowText, buttonText) =>
