@@ -47,7 +47,7 @@ import { ValidationError } from '../lib/errors.js'
 import { logAudit } from './audit.service.js'
 import { notifyOfficer } from './notifications.service.js'
 
-/** Is this report counted in the verified accident records? */
+/** Is this report counted in the official records? */
 export const isOfficial = (report) => OFFICIAL_STATUSES.includes(report?.status)
 
 /** Is this report still open? */
@@ -294,7 +294,7 @@ export async function updateStatus(id, status, { note, reason, actor, siteCleare
       const originalSnap = current.duplicate_of && current.duplicate_of !== id
         ? await tx.get(docRef(COLLECTIONS.reports, current.duplicate_of)) : null
       const original = originalSnap?.exists() ? originalSnap.data() : null
-      if (!original || ['duplicate', 'rejected'].includes(original.status)) errors.duplicate_of = 'Link a valid original report using Flag first'
+      if (!original || statusDefinition(original.status)?.stage === 'Excluded') errors.duplicate_of = 'Link a valid original report using Flag first'
       if (!note) errors.note = 'Explain why both reports describe the same incident'
     }
     if (Object.keys(errors).length) throw new ValidationError(errors)

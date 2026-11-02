@@ -5,7 +5,7 @@
  */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
-import Brand from './Brand.jsx'
+import Logo from './Brand.jsx'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { useUnread } from '../hooks/useUnread.js'
 
@@ -22,6 +22,8 @@ export const NAV_ITEMS = [
 ]
 
 const NARROW_MENU = '(max-width: 991.98px)'
+// Change only this constant to 'left' to move the drawer to the other edge.
+const DRAWER_SIDE = 'right'
 
 /** Decorative icons from the finished shared-shell design, in navigation order. */
 const NAV_ICONS = [
@@ -45,9 +47,107 @@ export default function Layout() {
   const [menuOpen, setMenuOpen] = useState(false)
   const burgerRef = useRef(null)
   const mainRef = useRef(null)
+  const drawerRef = useRef(null)
+  const closeRef = useRef(null)
+  const brandRef = useRef(null)
+  const skipRef = useRef(null)
+  const openedLocationRef = useRef(null)
+  const locationRef = useRef(location)
+  locationRef.current = location
+  const restoreFocusRef = useRef(true)
+  const [drawerPresent, setDrawerPresent] = useState(false)
   const previousPathRef = useRef(pathname)
-  const menuVisible = narrow && menuOpen
-  const closeMenu = useCallback(() => setMenuOpen(false), [])
+  const menuVisible = narrow && menuOpen && openedLocationRef.current === location
+  const closeMenu = useCallback((reason = 'dismiss') => {
+    restoreFocusRef.current = reason === 'dismiss'
+    setMenuOpen(false)
+  }, [])
+  const toggleMenu = () => {
+    openedLocationRef.current = location
+    restoreFocusRef.current = true
+    setMenuOpen((value) => !value)
+  }
+
+  useLayoutEffect(() => {
+    if (menuVisible) {
+      setDrawerPresent(true)
+      return undefined
+    }
+    const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 250
+    const timer = window.setTimeout(() => setDrawerPresent(false), delay)
+    return () => window.clearTimeout(timer)
+  }, [menuVisible])
+
+  useLayoutEffect(() => {
+    if (!menuVisible) return undefined
+    const openedLocation = location
+    const drawer = drawerRef.current
+    const savedStyles = []
+    const setStyle = (element, property, value) => {
+      savedStyles.push([element, property, element.style.getPropertyValue(property), element.style.getPropertyPriority(property)])
+      element.style.setProperty(property, value)
+    }
+    const root = document.documentElement
+    const body = document.body
+    const scrollbar = window.innerWidth - root.clientWidth
+    if (scrollbar > 0 && CSS.supports('scrollbar-gutter: stable')) {
+      setStyle(root, 'scrollbar-gutter', 'stable')
+    } else if (scrollbar > 0) {
+      setStyle(body, 'padding-right', `${parseFloat(getComputedStyle(body).paddingRight) + scrollbar}px`)
+    }
+    // Lock the viewport only: making body a scroll container breaks the sticky bar.
+    setStyle(root, 'overflow-x', 'hidden')
+    setStyle(root, 'overflow-y', 'hidden')
+
+    closeRef.current?.focus({ preventScroll: true })
+    const background = [mainRef.current, burgerRef.current, brandRef.current, skipRef.current].filter(Boolean)
+    const savedAttributes = background.map((element) => [element, element.getAttribute('inert'), element.getAttribute('aria-hidden')])
+    background.forEach((element) => {
+      element.setAttribute('inert', '')
+      element.setAttribute('aria-hidden', 'true')
+    })
+    const focusable = () => [...drawer.querySelectorAll('a[href], button:not(:disabled), [tabindex="0"]')]
+      .filter((element) => element.getClientRects().length > 0)
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        closeMenu()
+      } else if (event.key === 'Tab') {
+        const elements = focusable()
+        const first = elements[0]
+        const last = elements[elements.length - 1]
+        if (event.shiftKey && (document.activeElement === first || !drawer.contains(document.activeElement))) {
+          event.preventDefault()
+          last?.focus()
+        } else if (!event.shiftKey && (document.activeElement === last || !drawer.contains(document.activeElement))) {
+          event.preventDefault()
+          first?.focus()
+        }
+      }
+    }
+    const onFocus = (event) => {
+      if (!drawer.contains(event.target)) closeRef.current?.focus({ preventScroll: true })
+    }
+    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('focusin', onFocus)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('focusin', onFocus)
+      savedAttributes.forEach(([element, inert, hidden]) => {
+        for (const [name, value] of [['inert', inert], ['aria-hidden', hidden]]) {
+          if (value === null) element.removeAttribute(name)
+          else element.setAttribute(name, value)
+        }
+      })
+      savedStyles.reverse().forEach(([element, property, value, priority]) => {
+        if (value) element.style.setProperty(property, value, priority)
+        else element.style.removeProperty(property)
+      })
+      if (restoreFocusRef.current && locationRef.current === openedLocation && window.matchMedia(NARROW_MENU).matches) {
+        burgerRef.current?.focus({ preventScroll: true })
+      }
+    }
+  }, [menuVisible, closeMenu])
 
   useLayoutEffect(() => {
     // Browser history restoration must not override the admin route's scroll reset.
@@ -74,37 +174,24 @@ export default function Layout() {
     const media = window.matchMedia(NARROW_MENU)
     const update = () => {
       setNarrow(media.matches)
-      if (!media.matches) closeMenu()
+      if (!media.matches) closeMenu('resize')
     }
     update()
     media.addEventListener('change', update)
     return () => media.removeEventListener('change', update)
   }, [closeMenu])
 
-  useEffect(() => closeMenu(), [location, closeMenu])
-
-  useEffect(() => {
-    if (!menuVisible) return undefined
-    const onKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        event.preventDefault()
-        closeMenu()
-        burgerRef.current?.focus({ preventScroll: true })
-      }
-    }
-    document.addEventListener('keydown', onKeyDown)
-    return () => document.removeEventListener('keydown', onKeyDown)
-  }, [menuVisible, closeMenu])
+  useEffect(() => closeMenu('navigation'), [location, closeMenu])
 
   const onLogout = async () => {
-    closeMenu()
+    closeMenu('navigation')
     await signOut()
     navigate('/login', { replace: true })
   }
 
   return (
     <div className="staff-shell">
-      <a className="skip-link" href="#page">
+      <a ref={skipRef} className="skip-link" href="#page">
         Skip to content
       </a>
       <aside className={`sidebar${menuVisible ? ' rr-menu-open' : ''}`} aria-label="Administrator menu">
@@ -114,42 +201,62 @@ export default function Layout() {
           className="rr-burger"
           aria-label={menuVisible ? 'Close menu' : 'Open menu'}
           aria-expanded={menuVisible}
-          aria-controls="site-nav"
-          onClick={() => setMenuOpen((value) => !value)}
+          aria-controls="admin-menu-drawer"
+          onClick={toggleMenu}
         >
           <span className="rr-burger-bars" aria-hidden="true" />
         </button>
-        <div className="rr-sidebar-brand">
-          <Link to="/admin" className="text-decoration-none" onClick={closeMenu}>
-            <Brand light />
+        <div ref={brandRef} className="rr-sidebar-brand">
+          <Link to="/admin" className="text-decoration-none rr-logo-link" aria-label="RoadReport, go to dashboard" onClick={() => closeMenu(pathname === '/admin' ? 'dismiss' : 'navigation')}>
+            <Logo height={narrow ? 28 : 30} />
           </Link>
           <div className="small rr-sidebar-role mt-2">Administrator</div>
         </div>
 
-        <div className="rr-nav-label" aria-hidden="true">Main menu</div>
-        <nav id="site-nav" className="side-nav" aria-label="Main">
-          {NAV_ITEMS.map((item, index) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
-              className={({ isActive }) => (isActive ? 'active' : undefined)}
-              onClick={closeMenu}
-            >
-              <svg className="rr-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">{NAV_ICONS[index]}</svg>
-              {item.label}
-              {item.badge && count > 0 && <span className="count-pill">{count >= 99 ? '99+' : count}</span>}
-            </NavLink>
-          ))}
-        </nav>
-
-        <div className="sidebar-foot">
-          <div className="small text-white mb-2 text-truncate" data-user-name>
-            {profile?.full_name || profile?.email || 'Administrator'}
+        <div className="rr-menu-backdrop" data-visible={menuVisible || drawerPresent} aria-hidden="true" onClick={() => closeMenu()} />
+        <div
+          ref={drawerRef}
+          id="admin-menu-drawer"
+          className="rr-menu-drawer"
+          data-side={DRAWER_SIDE}
+          data-visible={menuVisible || drawerPresent}
+          role={narrow ? 'dialog' : undefined}
+          aria-modal={menuVisible ? 'true' : undefined}
+          aria-label={narrow ? 'Main menu' : undefined}
+          aria-hidden={narrow && !menuVisible ? 'true' : undefined}
+          inert={narrow && !menuVisible ? '' : undefined}
+        >
+          <div className="rr-menu-header">
+            <span className="rr-menu-title">Menu</span>
+            <button ref={closeRef} type="button" className="rr-menu-close" aria-label="Close menu" onClick={() => closeMenu()}>
+              <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+            </button>
           </div>
-          <button type="button" className="btn btn-sm btn-outline-light w-100" onClick={onLogout}>
-            Log out
-          </button>
+          <div className="rr-nav-label" aria-hidden="true">Main menu</div>
+          <nav id="site-nav" className="side-nav" aria-label="Main">
+            {NAV_ITEMS.map((item, index) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                className={({ isActive }) => (isActive ? 'active' : undefined)}
+                onClick={() => closeMenu(item.to === pathname ? 'dismiss' : 'navigation')}
+              >
+                <svg className="rr-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">{NAV_ICONS[index]}</svg>
+                {item.label}
+                {item.badge && count > 0 && <span className="count-pill">{count >= 99 ? '99+' : count}</span>}
+              </NavLink>
+            ))}
+          </nav>
+
+          <div className="sidebar-foot">
+            <div className="small text-white mb-2 text-truncate" data-user-name>
+              {profile?.full_name || profile?.email || 'Administrator'}
+            </div>
+            <button type="button" className="btn btn-sm btn-outline-light w-100" onClick={onLogout}>
+              Log out
+            </button>
+          </div>
         </div>
       </aside>
 

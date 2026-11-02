@@ -1,3 +1,4 @@
+import { REPORT_STATUSES } from '../src/lib/reportStatuses.js'
 /** Offline visual and interaction check for Reports and Summaries. All Firebase traffic and writes are blocked. */
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
@@ -25,7 +26,7 @@ const results = { widths: [], runtimeErrors: [], consoleErrors: [], contrast: []
 try {
   const page = await browser.newPage()
   await page.emulateTimezone('Asia/Manila')
-  await page.evaluateOnNewDocument(() => {
+  await page.evaluateOnNewDocument((codes) => {
     window.__profile = { id:'offline-admin', full_name:'Portal Administrator', role:'admin', status:'active' }
     window.__fixtures = Array.from({length: 30}, (_, i) => ({
       id:'fixture-'+i, report_code:'RA-2026-'+String(i+1).padStart(6,'0'),
@@ -33,11 +34,11 @@ try {
       municipality:['Malolos','Baliwag','Meycauayan','Marilao','Bulakan','Bocaue'][i%6], barangay:'Centro',
       location_text:'Provincial road near the public market', accident_type_name:i%2 ? 'Collision' : 'Single vehicle',
       accident_type_id:'collision', injury_status:i%3 ? 'none':'slight', vehicles:[{type:'Car',quantity:1}],
-      status:['verified','resolved','in_progress','info_required','under_review','on_scene','submitted','assigned','rejected','duplicate'][i%10],
+      status:codes[i%codes.length],
       flagged:i%3===0, officer_name: 'Test Officer', status_history:[], description:'Offline fixture',
     }))
     window.__queryLog=[]; window.__mode='normal'; window.__queryDelay=80
-  })
+  }, REPORT_STATUSES)
   await page.setRequestInterception(true)
   page.on('request', req => {
     const url=new URL(req.url())

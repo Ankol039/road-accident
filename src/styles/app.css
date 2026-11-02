@@ -117,7 +117,10 @@ h4, h5, h6, .h4, .h5, .h6 { font-weight: 600; }
   font-size: 1.2rem;
   color: var(--ink);
 }
-.brand-light { color: #fff; }
+.rr-logo { display: block; object-fit: contain; }
+.rr-logo-link { display: inline-block; max-width: 100%; }
+.rr-logo-link:focus-visible { outline: 2px solid #f5c518; outline-offset: 2px; }
+.rr-login-card > .rr-logo-link { max-width: calc(100% - 56px); }
 
 /* Dashed center-line marking under the header */
 .lane-line {
@@ -194,7 +197,11 @@ h4, h5, h6, .h4, .h5, .h6 { font-weight: 600; }
 .side-nav a.active { color: #fff; background: var(--guide); }
 .sidebar-foot { margin-top: auto; padding: 1rem; }
 .staff-main { flex: 1; min-width: 0; padding: 1.75rem 2rem; }
-/* Under 992px the sidebar is a sticky bar with an inline menu. */
+/* Desktop keeps the original sidebar flex items and geometry. */
+.rr-menu-drawer { display: contents; }
+.rr-menu-header, .rr-menu-backdrop { display: none; }
+
+/* Under 992px the sticky bar opens a viewport drawer. */
 .rr-burger {
   display: none;
 }
@@ -228,10 +235,8 @@ h4, h5, h6, .h4, .h5, .h6 { font-weight: 600; }
     max-width: none;
     height: auto;
     min-height: 0;
-    max-height: 100vh;
-    max-height: 100dvh;
     padding: env(safe-area-inset-top, 0px) 0 0;
-    overflow-y: auto;
+    overflow: visible;
     box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.9);
   }
 
@@ -242,10 +247,6 @@ h4, h5, h6, .h4, .h5, .h6 { font-weight: 600; }
 
   .staff-shell .sidebar > div:first-of-type .small {
     display: none;
-  }
-
-  .staff-shell .sidebar.rr-menu-open > div:first-of-type .small {
-    display: block;
   }
 
   .rr-burger {
@@ -324,31 +325,82 @@ h4, h5, h6, .h4, .h5, .h6 { font-weight: 600; }
     transform: translateY(-6px) rotate(-45deg);
   }
 
-  /* Closed: only the top bar shows. */
-  .staff-shell .sidebar:not(.rr-menu-open) .rr-nav-label,
-  .staff-shell .sidebar:not(.rr-menu-open) .side-nav,
-  .staff-shell .sidebar:not(.rr-menu-open) .sidebar-foot {
-    display: none;
+  /* Keep all page layers (including Leaflet controls) below the sticky bar. */
+  .staff-main { position: relative; z-index: 0; }
+
+  .rr-menu-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 110;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 250ms ease-out;
   }
 
-  /* Open: a vertical list, then the user block. */
-  .staff-shell .sidebar.rr-menu-open .side-nav {
+  .staff-shell .rr-menu-drawer {
+    --rr-drawer-offset: 100%;
     display: flex;
     flex-direction: column;
-    flex-wrap: nowrap;
-    gap: 2px;
-    padding: 0.25rem 0.75rem 0.5rem;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 120;
+    width: min(85vw, 20rem);
+    height: 100vh;
+    height: 100dvh;
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+    background: linear-gradient(180deg, #12171a, #0e1214);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    visibility: hidden;
+    transform: translateX(var(--rr-drawer-offset));
+    transition: transform 250ms ease-out;
   }
 
-  .staff-shell .sidebar.rr-menu-open .side-nav a {
-    min-height: 46px;
+  .staff-shell .rr-menu-drawer[data-side="left"] {
+    --rr-drawer-offset: -100%;
+    right: auto;
+    left: 0;
   }
 
-  .staff-shell .sidebar.rr-menu-open .sidebar-foot {
-    display: block;
-    margin: 0;
-    padding: 0.85rem 1rem 1.1rem;
-    border-top: 1px solid rgba(236, 232, 223, 0.09);
+  .rr-menu-backdrop[data-visible="true"],
+  .staff-shell .rr-menu-drawer[data-visible="true"] { visibility: visible; }
+  .rr-menu-open .rr-menu-backdrop { opacity: 1; pointer-events: auto; }
+  .staff-shell .rr-menu-open .rr-menu-drawer { transform: translateX(0); }
+
+  .rr-menu-header {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    padding: .75rem 1rem;
+  }
+  .rr-menu-title { font-family: "Jost", sans-serif; font-size: 1.25rem; font-weight: 600; }
+  .rr-menu-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 1px solid rgba(236, 232, 223, .18);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .04);
+    color: #ece8df;
+  }
+  .rr-menu-close:hover { background: rgba(255, 255, 255, .09); }
+  .rr-menu-close:focus-visible { outline: 2px solid #f5c518; outline-offset: 2px; }
+  .rr-menu-drawer > * { flex-shrink: 0; }
+  .staff-shell .rr-menu-drawer .side-nav { padding: .25rem .75rem .5rem; }
+  .staff-shell .rr-menu-drawer .side-nav a { min-height: 46px; }
+  .staff-shell .rr-menu-drawer .sidebar-foot {
+    margin-top: auto;
+    padding: .85rem 1rem 1.1rem;
+    border-top: 1px solid rgba(236, 232, 223, .09);
   }
 }
 
@@ -1559,7 +1611,7 @@ details > summary { cursor: pointer; color: var(--acc); }
 .rr-sidebar-brand { padding: 1rem 1rem 1.5rem; }
 .rr-sidebar-role { color: var(--rr-muted); }
 .staff-shell .rr-nav-label { display: block; }
-.staff-shell .sidebar { overflow-y: auto; }
+@media (min-width: 992px) { .staff-shell .sidebar { overflow-y: auto; } }
 .staff-shell .side-nav a { font-size: 1rem; }
 .staff-shell .btn {
   padding: .5rem 1rem; border-radius: 10px; font-size: .88rem;

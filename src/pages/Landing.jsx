@@ -8,12 +8,21 @@
  *
  * Styles live in src/styles/landing.css (loaded by main.jsx).
  */
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import Logo from '../components/Brand.jsx'
 import LandingMap from './LandingMap.jsx'
 import { LANDING_HTML } from '../styles/landing-markup.js'
 
 export default function Landing() {
   const root = useRef(null)
+  const [logoSlots, setLogoSlots] = useState([])
+
+  // Portals preserve the existing static markup and animation DOM. Reserved
+  // slots have their final dimensions before these shared components mount.
+  useLayoutEffect(() => {
+    setLogoSlots([...root.current.querySelectorAll('[data-logo-slot]')])
+  }, [])
 
   useEffect(() => {
     const cleanups = []
@@ -392,6 +401,14 @@ export default function Landing() {
       <div dangerouslySetInnerHTML={{ __html: LANDING_HTML_BEFORE }} />
       <LandingMap />
       <div dangerouslySetInnerHTML={{ __html: LANDING_HTML_AFTER }} />
+      {logoSlots.map((slot) => {
+        const name = slot.dataset.logoSlot
+        return createPortal(
+          <Logo variant={name === 'closing' ? 'stacked' : 'horizontal'} height={name === 'nav' ? 34 : name === 'footer' ? 28 : 160} alt={name === 'nav' ? 'RoadReport' : ''} />,
+          slot,
+          name,
+        )
+      })}
     </div>
   )
 }

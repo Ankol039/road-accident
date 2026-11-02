@@ -194,7 +194,7 @@ export default function Reports() {
           />
           <span title={FLAGGED_HELP}>Flagged</span>
         </label>
-        <label className="form-check">
+        <label className="form-check" title={OFFICIAL_RECORDS_HELP}>
           <input
             type="checkbox"
             className="form-check-input"

@@ -1,3 +1,4 @@
+import StatusHelp from '../components/StatusHelp.jsx'
 /**
  * Summaries and export. Replaces admin-summaries.php +
  * js-release-20261020b/pages/admin-summaries.js.
@@ -229,6 +230,7 @@ export default function Summaries() {
         </div>
       </header>
       <div className="rr-tape no-print" aria-hidden="true" />
+      <StatusHelp />
       <header className="summary-print-heading print-only">
         <h1>Summaries and export</h1>
         <p>
@@ -267,7 +269,7 @@ export default function Summaries() {
             value={scope}
             onChange={(e) => setScope(e.target.value)}
           >
-            <option value="official">Verified accident records</option>
+            <option value="official">{OFFICIAL_RECORDS_LABEL}</option>
             <option value="all">All public reports</option>
           </select>
         </div>

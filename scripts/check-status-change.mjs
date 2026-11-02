@@ -1,3 +1,4 @@
+import { STATUS_TRANSITIONS as TRANSITIONS, STATUS_FORM_HIDDEN as FORM_HIDDEN, statusAction } from '../src/lib/reportStatuses.js'
 /**
  * Drives one real status change through the browser and proves it landed.
  *
@@ -70,19 +71,7 @@ const KEEP = has('keep')
 
 /* Transitions the screen can actually drive, and the ones it hides behind a
    dedicated panel (SPECIAL_ENDPOINT_STATUSES / STATUS_FORM_HIDDEN). */
-const TRANSITIONS = {
-  submitted: ['under_review', 'assigned', 'rejected', 'duplicate'],
-  under_review: ['info_required', 'assigned', 'rejected', 'duplicate'],
-  info_required: ['under_review', 'rejected'],
-  assigned: ['on_scene', 'rejected'],
-  on_scene: ['verified', 'assigned', 'rejected'],
-  verified: ['in_progress', 'resolved'],
-  in_progress: ['resolved'],
-  resolved: [],
-  rejected: [],
-  duplicate: ['submitted'],
-}
-const FORM_HIDDEN = ['assigned', 'on_scene', 'verified']
+
 
 const here = dirname(fileURLToPath(import.meta.url))
 const keyCandidates = [
@@ -255,13 +244,13 @@ try {
     // The arrival panel approves with a note in #approve-note.
     await page.waitForSelector('#approve-note', { timeout: 10000 })
     await page.type('#approve-note', NOTE)
-    await page.evaluate(() => {
+    await page.evaluate((label) => {
       const button = [...document.querySelectorAll('button')].find((b) =>
-        b.innerText.includes('Approve: officer may clear the site'),
+        b.innerText.includes(label),
       )
       if (!button) throw new Error('the approve button is not on the page')
       button.click()
-    })
+    }, statusAction('verified', FROM))
   } else {
     /* A missing select means the screen is not offering the move. Say why,
        rather than timing out on the toast 20 seconds later. */
@@ -272,13 +261,14 @@ try {
     })
     await page.select('#next-status', TO)
     await page.type('#status-note', NOTE)
-    await page.evaluate(() => {
+    if (TO === 'resolved') await page.click('input[name=siteCleared]')
+    await page.evaluate((label) => {
       const button = [...document.querySelectorAll('button')].find(
-        (b) => b.innerText.trim() === 'Save status',
+        (b) => b.innerText.trim() === label,
       )
       if (!button) throw new Error('the save button is not on the page')
       button.click()
-    })
+    }, statusAction(TO, FROM))
   }
 
   // The toast confirms the write; the page then reloads the report.

@@ -1,0 +1,174 @@
+{
+  "results": [
+    {
+      "label": "login-1440",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "logos": [],
+      "burger": null,
+      "lamps": {
+        "x": 859.8125,
+        "y": 253.84375,
+        "width": 44,
+        "height": 10,
+        "right": 903.8125,
+        "bottom": 263.84375
+      },
+      "heading": "Staff log in",
+      "main": null
+    },
+    {
+      "label": "landing-1440",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "logos": [],
+      "burger": null,
+      "lamps": null,
+      "heading": "Where   Road   Safety   and   Local   Response   Meet",
+      "main": null
+    },
+    {
+      "label": "dashboard-1440",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "logos": [],
+      "burger": null,
+      "lamps": null,
+      "heading": "Dashboard",
+      "main": {
+        "x": 248,
+        "y": 0,
+        "width": 1192,
+        "height": 2459.09375,
+        "right": 1440,
+        "bottom": 2459.09375
+      }
+    },
+    {
+      "label": "reports-1440",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "logos": [],
+      "burger": null,
+      "lamps": null,
+      "heading": "Accident reports",
+      "main": {
+        "x": 248,
+        "y": 0,
+        "width": 1192,
+        "height": 1000,
+        "right": 1440,
+        "bottom": 1000
+      }
+    },
+    {
+      "label": "login-390",
+      "width": 390,
+      "scrollWidth": 390,
+      "logos": [],
+      "burger": null,
+      "lamps": {
+        "x": 308.21875,
+        "y": 237.328125,
+        "width": 44,
+        "height": 10,
+        "right": 352.21875,
+        "bottom": 247.328125
+      },
+      "heading": "Staff log in",
+      "main": null
+    },
+    {
+      "label": "landing-390",
+      "width": 390,
+      "scrollWidth": 390,
+      "logos": [],
+      "burger": null,
+      "lamps": null,
+      "heading": "Where   Road   Safety   and   Local   Response   Meet",
+      "main": null
+    },
+    {
+      "label": "dashboard-390",
+      "width": 390,
+      "scrollWidth": 390,
+      "logos": [],
+      "burger": {
+        "x": 332,
+        "y": 10,
+        "width": 46,
+        "height": 46,
+        "right": 378,
+        "bottom": 56
+      },
+      "lamps": null,
+      "heading": "Dashboard",
+      "main": {
+        "x": 0,
+        "y": 72,
+        "width": 390,
+        "height": 4176.109375,
+        "right": 390,
+        "bottom": 4248.109375
+      }
+    },
+    {
+      "label": "drawer-390",
+      "width": 390,
+      "scrollWidth": 390,
+      "logos": [],
+      "burger": {
+        "x": 332,
+        "y": 10,
+        "width": 46,
+        "height": 46,
+        "right": 378,
+        "bottom": 56
+      },
+      "lamps": null,
+      "heading": "Dashboard",
+      "main": {
+        "x": 0,
+        "y": 72,
+        "width": 390,
+        "height": 4176.109375,
+        "right": 390,
+        "bottom": 4248.109375
+      }
+    },
+    {
+      "label": "reports-390",
+      "width": 390,
+      "scrollWidth": 390,
+      "logos": [],
+      "burger": {
+        "x": 332,
+        "y": 10,
+        "width": 46,
+        "height": 46,
+        "right": 378,
+        "bottom": 56
+      },
+      "lamps": null,
+      "heading": "Accident reports",
+      "main": {
+        "x": 0,
+        "y": 72,
+        "width": 390,
+        "height": 1069.375,
+        "right": 390,
+        "bottom": 1141.375
+      }
+    }
+  ],
+  "errors": [],
+  "missing": [],
+  "assetResponses": [
+    {
+      "path": "/favicon.svg",
+      "status": 200,
+      "type": "image/svg+xml"
+    }
+  ],
+  "firebase": "blocked; offline fixtures only"
+}

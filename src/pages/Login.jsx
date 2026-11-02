@@ -6,7 +6,7 @@
  */
 import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import Brand from '../components/Brand.jsx'
+import Logo from '../components/Brand.jsx'
 import States from '../components/States.jsx'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { errorMessage } from '../lib/errors.js'
@@ -76,8 +76,8 @@ export default function Login() {
       </div>
       <form className="auth-card rr-login-card" id="login-form" onSubmit={onSubmit} noValidate>
         <div className="rr-login-lamps" aria-hidden="true"><span /><span /><span /></div>
-        <Link to="/" className="text-decoration-none d-inline-block mb-3">
-          <Brand />
+        <Link to="/" className="text-decoration-none d-inline-block mb-3 rr-logo-link" aria-label="RoadReport, go to home page">
+          <Logo height={34} />
         </Link>
         <span className="rr-login-eyebrow">Bulacan admin portal</span>
         <h1>Staff log in</h1>

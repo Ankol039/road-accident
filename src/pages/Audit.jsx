@@ -1,3 +1,4 @@
+import StatusHelp from '../components/StatusHelp.jsx'
 /**
  * Audit trail. Replaces admin-audit.php +
  * js-release-20261020b/pages/admin-audit.js.
@@ -46,7 +47,7 @@ function detailsText(details, isReport) {
       ...Object.entries(d.changed).map(([k, v]) =>
         v && typeof v === 'object' && 'to' in v
           ? `${k}: ${isReport && k === 'status' ? statusLabel(v.from) : short(v.from)} → ${isReport && k === 'status' ? statusLabel(v.to) : short(v.to)}`
-          : `${k}: ${short(v)}`,
+          : `${k}: ${isReport && k === 'status' && typeof v === 'string' ? statusLabel(v) : short(v)}`,
       ),
     )
   }
@@ -111,6 +112,7 @@ export default function Audit() {
         </div>
       </header>
       <div className="rr-tape" aria-hidden="true" />
+      <StatusHelp />
 
       <form
         className="filter-bar rr-audit-filters"

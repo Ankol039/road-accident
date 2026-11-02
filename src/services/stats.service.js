@@ -14,7 +14,7 @@ const MAX_REPORTS = 2000
 /**
  * Load reports for a date range (inclusive "YYYY-MM-DD" strings).
  *
- * The verified-only filter is applied here and not in Firestore: a status
+ * The official-record filter is applied here and not in Firestore: a status
  * filter together with a date range needs a composite index, and the single
  * field index on accident_date is enough to read the range.
  */
@@ -26,7 +26,7 @@ export async function loadRange({ from, to, officialOnly = false, includeMetadat
   const snap = await getDocs(query(ref(COLLECTIONS.reports), ...parts))
   const rows = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
   const filtered = officialOnly ? rows.filter((r) => OFFICIAL_STATUSES.includes(r.status)) : rows
-  // Check the unfiltered snapshot: verified-only results can hide that the cap was reached.
+  // Check the unfiltered snapshot: official-record results can hide that the cap was reached.
   return includeMetadata
     ? { rows: filtered, mayBeTruncated: snap.size >= MAX_REPORTS }
     : filtered

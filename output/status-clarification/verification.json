@@ -1,0 +1,246 @@
+{
+  "viewports": [
+    {
+      "name": "dashboard",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "reports",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "detail-submitted",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "detail-under_review",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "detail-info_required",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "detail-assigned",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "detail-on_scene",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "detail-verified",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "detail-in_progress",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "detail-resolved",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "detail-rejected",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "detail-duplicate",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "summaries",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "notifications",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "audit",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "users",
+      "width": 1440,
+      "viewport": 1440,
+      "html": 1440,
+      "body": 1440
+    },
+    {
+      "name": "dashboard",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "reports",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "detail-submitted",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "detail-under_review",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "detail-info_required",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "detail-assigned",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "detail-on_scene",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "detail-verified",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "detail-in_progress",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "detail-resolved",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "detail-rejected",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "detail-duplicate",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "summaries",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "notifications",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "audit",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "users",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    },
+    {
+      "name": "landing",
+      "width": 390,
+      "viewport": 390,
+      "html": 390,
+      "body": 390
+    }
+  ],
+  "checks": [
+    "Empty dashboard retains nine gray data-level=none cards",
+    {
+      "checked": 100,
+      "errors": [],
+      "txReads": 126
+    },
+    "All ten old codes, preserved colors, cards/filters/donut/legend, account overrides, workload groups, history text, actions, closure and transaction retries passed"
+  ],
+  "errors": [],
+  "externalRequestsBlocked": 232
+}

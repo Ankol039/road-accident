@@ -1,3 +1,4 @@
+import StatusHelp from '../components/StatusHelp.jsx'
 /**
  * Notifications inbox. Replaces legacy/notifications.php.
  *
@@ -125,6 +126,7 @@ export default function Notifications() {
         )}
       </header>
       <div className="rr-tape" aria-hidden="true" />
+      <StatusHelp />
 
       <States loading={loading} error={error} empty={items.length === 0} emptyText="No notifications yet.">
         <ul className="list-plain rr-notifications-list">

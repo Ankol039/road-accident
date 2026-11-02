@@ -10,8 +10,8 @@ const mode = process.argv[2] || 'verify'
 assert.ok(['baseline', 'verify'].includes(mode))
 const base = process.env.APP_BASE || 'http://127.0.0.1:5173'
 const origin = new URL(base).origin
-const output = path.resolve('tmp/summaries-print')
-const deliverables = path.resolve('output/pdf/summaries-print')
+const output = path.resolve(process.env.STATUS_CHECK_OUTPUT ? `${process.env.STATUS_CHECK_OUTPUT}/scratch` : 'tmp/summaries-print')
+const deliverables = path.resolve(process.env.STATUS_CHECK_OUTPUT ? `${process.env.STATUS_CHECK_OUTPUT}/pdf` : 'output/pdf/summaries-print')
 fs.mkdirSync(output, { recursive: true })
 fs.mkdirSync(deliverables, { recursive: true })
 const mockSource = fs.readFileSync('tests/summaries-downloads.mjs', 'utf8')
@@ -108,7 +108,7 @@ try {
     assert.equal(await page.$eval('.summaries-page .print-only', (el) => getComputedStyle(el).display), 'block')
     const heading = await page.$eval('.summary-print-heading', (el) => el.innerText)
     assert.ok(heading.includes('Grouped by Month'))
-    assert.ok(heading.includes('Counting: Verified accident records'))
+    assert.ok(heading.includes('Counting: Official records'))
     assert.ok(heading.includes('2024-12-01 to 2026-11-01'))
     assert.ok(!heading.includes('2030'))
     assert.ok(heading.includes('Generated'))

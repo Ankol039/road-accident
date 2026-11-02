@@ -1,3 +1,4 @@
+import { OFFICIAL_STATUSES, STATUS_LABELS } from '../src/lib/reportStatuses.js'
 /** Offline browser regression: run Vite, then `node tests/summaries-downloads.mjs`.
  * All Firebase/auth modules are intercepted and every external request is blocked.
  * Downloads and a browser profile stay under tmp/summaries-downloads/.
@@ -10,7 +11,7 @@ import puppeteer from 'puppeteer-core'
 
 const base = process.env.APP_BASE || 'http://127.0.0.1:5173'
 const origin = new URL(base).origin
-const output = path.resolve('tmp/summaries-downloads')
+const output = path.resolve(process.env.STATUS_CHECK_OUTPUT || 'tmp/summaries-downloads')
 const chrome = [
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
   '/usr/bin/google-chrome', '/usr/bin/chromium',
@@ -24,7 +25,7 @@ const fixtures = Array.from({ length: 130 }, (_, i) => ({
   location_text: `Road ${i}, near "Market"\nNorth entrance`, barangay: 'Centro', municipality: 'Malolos',
   accident_type_id: 'collision', accident_type_name: 'Collision, "rear-end"', injury_status: 'none',
   officer_name: 'José "Pepe", Cruz', reporter_name: 'Reporter, "Test"',
-  status: ['verified', 'in_progress', 'resolved'][i % 3],
+  status: OFFICIAL_STATUSES[i % OFFICIAL_STATUSES.length],
 }))
 fixtures.push(
   { ...fixtures[0], id: 'first', report_code: 'RA-FIRST', accident_date: '2026-10-01' },
@@ -182,6 +183,7 @@ try {
   const regular = records.find((row) => row[0] === 'RA-TEST-0000')
   assert.equal(regular[3], 'Road 0, near "Market"\nNorth entrance, Centro, Malolos')
   assert.equal(regular[4], 'Collision, "rear-end"')
+  assert.equal(regular[8], STATUS_LABELS.verified)
   assert.equal(regular[6], 'José "Pepe", Cruz')
   const formula = records.find((row) => row[0] === "'=1+1")
   assert.ok(formula)
@@ -193,6 +195,7 @@ try {
   assert.ok(summary.name.includes('month-official-2026-10-01_to_2026-10-31'))
   const summaryRows = openCsv(summary.file)
   assert.equal(summaryRows[0][0], 'Period')
+  assert.equal(summaryRows[0][7], STATUS_LABELS.resolved)
   assert.ok(summaryRows.every((row) => row.length === 10))
   assert.equal(summaryRows.at(-1)[0], 'Total')
   assert.equal(summaryRows.at(-1)[1], '133')

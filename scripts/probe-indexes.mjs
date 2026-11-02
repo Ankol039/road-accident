@@ -1,3 +1,4 @@
+import { OFFICIAL_STATUSES as OFFICIAL, OPEN_STATUSES as OPEN, REPORT_STATUSES as STATUSES } from '../src/lib/reportStatuses.js'
 /**
  * Works out which Firestore composite indexes the portal actually needs.
  *
@@ -46,10 +47,7 @@ const USERS = 'users'
 const NOTIFICATIONS = 'notifications'
 const PHOTOS = 'report_photos'
 
-const OFFICIAL = ['verified', 'in_progress', 'resolved']
-const OPEN = ['submitted', 'under_review', 'info_required', 'assigned', 'on_scene', 'verified', 'in_progress']
 const ROLES = ['admin', 'officer', 'reporter']
-const STATUSES = ['submitted', 'under_review', 'info_required', 'assigned', 'on_scene', 'verified', 'in_progress', 'resolved', 'rejected', 'duplicate']
 const ACTIONS = ['report.status', 'report.create', 'report.flag', 'report.unflag', 'report.update', 'report.assign', 'report.remark', 'report.delete', 'settings.update', 'type.update', 'type.create', 'type.toggle', 'contact.update', 'contact.create', 'contact.delete']
 
 /**
@@ -107,7 +105,7 @@ for (const combo of [[], ['status'], ['accident_type_id'], ['municipality'], ['f
   shape(`reports range [${combo.join('+') || 'no filter'}]`, REPORTS, filters, [['accident_date', 'desc']])
 }
 
-// official-only filter (the dashboard's "verified accident records")
+// official-only filter (the dashboard's "official records")
 shape('reports official', REPORTS, [inList('status', OFFICIAL)], [['accident_date', 'desc']])
 shape('reports official range', REPORTS, [
   inList('status', OFFICIAL),

@@ -1,3 +1,4 @@
+import { STATUS_LABELS } from '../lib/constants.js'
 /**
  * The "live map" section of the landing page: the Bulacan municipality SVG
  * with pins that appear as you scroll, filterable by severity.
@@ -16,16 +17,16 @@ const Y = (a) => (G.y1 - a) * G.S
 const SEVERITY = { Fatal: '#e4572e', Serious: '#f2a93b', Slight: '#5fb7a5' }
 
 const SAMPLE = [
-  ['Meycauayan', 'MacArthur Hwy', 14.7366, 120.9606, 'Tricycle vs. jeepney', 'Fatal', 'Assigned', '07:42'],
-  ['DRT', 'DRT Highway', 15.066, 121.1673, 'Truck rollover', 'Serious', 'New', '08:10'],
-  ['Hagonoy', 'Hagonoy–Malolos Rd', 14.8314, 120.7427, 'Tricycle rollover', 'Slight', 'New', '09:05'],
-  ['Norzagaray', 'Norzagaray–Angat Rd', 14.8892, 121.1458, 'Motorcycle collision', 'Fatal', 'Verified', '10:20'],
-  ['San Miguel', 'Maharlika Hwy', 15.1962, 121.0284, 'Bus sideswipe', 'Slight', 'Resolved', '11:30'],
-  ['San Jose del Monte', 'Quirino Hwy', 14.8166, 121.0824, 'Hit and run', 'Serious', 'Assigned', '12:45'],
-  ['Calumpit', 'MacArthur Hwy', 14.8966, 120.7798, 'Truck vs. motorcycle', 'Fatal', 'Verified', '14:02'],
-  ['Baliuag', 'Maharlika Hwy', 14.9509, 120.8895, 'Skid on wet road', 'Slight', 'Resolved', '15:18'],
-  ['Malolos', 'Paseo del Congreso', 14.8382, 120.8179, 'Pedestrian struck', 'Serious', 'New', '16:40'],
-  ['San Ildefonso', 'San Ildefonso–Baliuag Rd', 15.0725, 121.0078, 'Car vs. tricycle', 'Slight', 'Verified', '17:55'],
+  ['Meycauayan', 'MacArthur Hwy', 14.7366, 120.9606, 'Tricycle vs. jeepney', 'Fatal', 'assigned', '07:42'],
+  ['DRT', 'DRT Highway', 15.066, 121.1673, 'Truck rollover', 'Serious', 'submitted', '08:10'],
+  ['Hagonoy', 'Hagonoy–Malolos Rd', 14.8314, 120.7427, 'Tricycle rollover', 'Slight', 'submitted', '09:05'],
+  ['Norzagaray', 'Norzagaray–Angat Rd', 14.8892, 121.1458, 'Motorcycle collision', 'Fatal', 'verified', '10:20'],
+  ['San Miguel', 'Maharlika Hwy', 15.1962, 121.0284, 'Bus sideswipe', 'Slight', 'resolved', '11:30'],
+  ['San Jose del Monte', 'Quirino Hwy', 14.8166, 121.0824, 'Hit and run', 'Serious', 'assigned', '12:45'],
+  ['Calumpit', 'MacArthur Hwy', 14.8966, 120.7798, 'Truck vs. motorcycle', 'Fatal', 'verified', '14:02'],
+  ['Baliuag', 'Maharlika Hwy', 14.9509, 120.8895, 'Skid on wet road', 'Slight', 'resolved', '15:18'],
+  ['Malolos', 'Paseo del Congreso', 14.8382, 120.8179, 'Pedestrian struck', 'Serious', 'submitted', '16:40'],
+  ['San Ildefonso', 'San Ildefonso–Baliuag Rd', 15.0725, 121.0078, 'Car vs. tricycle', 'Slight', 'verified', '17:55'],
 ].map((r, i) => ({
   id: `RR-${2401 + i}`,
   town: r[0],
@@ -34,7 +35,7 @@ const SAMPLE = [
   lng: r[3],
   type: r[4],
   sv: r[5],
-  st: r[6],
+  st: STATUS_LABELS[r[6]],
   t: r[7],
 }))
 

@@ -1,3 +1,4 @@
+import { STATUS_LABELS } from '../src/lib/reportStatuses.js'
 /**
  * Drives the Audit trail screen: writes a known entry, checks that it shows
  * up, that the action filter, the date range and the search all narrow it
@@ -166,7 +167,7 @@ try {
     if (!probeRow.includes('Changed report status')) {
       fail.push('the action label is missing')
     }
-    if (!probeRow.includes('status: submitted → under_review')) {
+    if (!probeRow.includes(`status: ${STATUS_LABELS.submitted} → ${STATUS_LABELS.under_review}`)) {
       fail.push('the details are not drawn as "from → to"')
     }
     if (!probeRow.includes('report-0001')) {

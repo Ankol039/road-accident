@@ -1,0 +1,534 @@
+{
+  "results": [
+    {
+      "label": "login-1440",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "logos": [
+        {
+          "x": 536.1875,
+          "y": 251.171875,
+          "width": 167.390625,
+          "height": 34,
+          "right": 703.578125,
+          "bottom": 285.171875,
+          "alt": "RoadReport",
+          "src": "/brand/logo-horizontal-on-dark.png",
+          "naturalWidth": 901,
+          "naturalHeight": 183,
+          "widthAttribute": "901",
+          "heightAttribute": "183",
+          "filter": "none",
+          "shadow": "none",
+          "animation": "none"
+        }
+      ],
+      "burger": null,
+      "lamps": {
+        "x": 859.8125,
+        "y": 247.171875,
+        "width": 44,
+        "height": 10,
+        "right": 903.8125,
+        "bottom": 257.171875
+      },
+      "heading": "Staff log in",
+      "main": null
+    },
+    {
+      "label": "landing-1440",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "logos": [
+        {
+          "x": 175,
+          "y": 24.5,
+          "width": 167.390625,
+          "height": 34,
+          "right": 342.390625,
+          "bottom": 58.5,
+          "alt": "RoadReport",
+          "src": "/brand/logo-horizontal-on-dark.png",
+          "naturalWidth": 901,
+          "naturalHeight": 183,
+          "widthAttribute": "901",
+          "heightAttribute": "183",
+          "filter": "none",
+          "shadow": "none",
+          "animation": "none"
+        },
+        {
+          "x": 646.8125,
+          "y": 11357.34375,
+          "width": 146.359375,
+          "height": 160,
+          "right": 793.171875,
+          "bottom": 11517.34375,
+          "alt": "",
+          "src": "/brand/logo-stacked-on-dark.png",
+          "naturalWidth": 290,
+          "naturalHeight": 317,
+          "widthAttribute": "290",
+          "heightAttribute": "317",
+          "filter": "none",
+          "shadow": "none",
+          "animation": "none"
+        },
+        {
+          "x": 154,
+          "y": 11981.90625,
+          "width": 137.84375,
+          "height": 28,
+          "right": 291.84375,
+          "bottom": 12009.90625,
+          "alt": "",
+          "src": "/brand/logo-horizontal-on-dark.png",
+          "naturalWidth": 901,
+          "naturalHeight": 183,
+          "widthAttribute": "901",
+          "heightAttribute": "183",
+          "filter": "none",
+          "shadow": "none",
+          "animation": "none"
+        }
+      ],
+      "burger": null,
+      "lamps": null,
+      "heading": "Where   Road   Safety   and   Local   Response   Meet",
+      "main": null
+    },
+    {
+      "label": "dashboard-1440",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "logos": [
+        {
+          "x": 16,
+          "y": 16,
+          "width": 147.703125,
+          "height": 30,
+          "right": 163.703125,
+          "bottom": 46,
+          "alt": "RoadReport",
+          "src": "/brand/logo-horizontal-on-dark.png",
+          "naturalWidth": 901,
+          "naturalHeight": 183,
+          "widthAttribute": "901",
+          "heightAttribute": "183",
+          "filter": "none",
+          "shadow": "none",
+          "animation": "none"
+        }
+      ],
+      "burger": null,
+      "lamps": null,
+      "heading": "Dashboard",
+      "main": {
+        "x": 248,
+        "y": 0,
+        "width": 1192,
+        "height": 2459.09375,
+        "right": 1440,
+        "bottom": 2459.09375
+      }
+    },
+    {
+      "label": "reports-1440",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "logos": [
+        {
+          "x": 16,
+          "y": 16,
+          "width": 147.703125,
+          "height": 30,
+          "right": 163.703125,
+          "bottom": 46,
+          "alt": "RoadReport",
+          "src": "/brand/logo-horizontal-on-dark.png",
+          "naturalWidth": 901,
+          "naturalHeight": 183,
+          "widthAttribute": "901",
+          "heightAttribute": "183",
+          "filter": "none",
+          "shadow": "none",
+          "animation": "none"
+        }
+      ],
+      "burger": null,
+      "lamps": null,
+      "heading": "Accident reports",
+      "main": {
+        "x": 248,
+        "y": 0,
+        "width": 1192,
+        "height": 1000,
+        "right": 1440,
+        "bottom": 1000
+      }
+    },
+    {
+      "label": "login-390",
+      "width": 390,
+      "scrollWidth": 390,
+      "logos": [
+        {
+          "x": 37.78125,
+          "y": 234.65625,
+          "width": 167.390625,
+          "height": 34,
+          "right": 205.171875,
+          "bottom": 268.65625,
+          "alt": "RoadReport",
+          "src": "/brand/logo-horizontal-on-dark.png",
+          "naturalWidth": 901,
+          "naturalHeight": 183,
+          "widthAttribute": "901",
+          "heightAttribute": "183",
+          "filter": "none",
+          "shadow": "none",
+          "animation": "none"
+        }
+      ],
+      "burger": null,
+      "lamps": {
+        "x": 308.21875,
+        "y": 230.65625,
+        "width": 44,
+        "height": 10,
+        "right": 352.21875,
+        "bottom": 240.65625
+      },
+      "heading": "Staff log in",
+      "main": null
+    },
+    {
+      "label": "landing-390",
+      "width": 390,
+      "scrollWidth": 390,
+      "logos": [
+        {
+          "x": 33,
+          "y": 24.5,
+          "width": 167.390625,
+          "height": 34,
+          "right": 200.390625,
+          "bottom": 58.5,
+          "alt": "RoadReport",
+          "src": "/brand/logo-horizontal-on-dark.png",
+          "naturalWidth": 901,
+          "naturalHeight": 183,
+          "widthAttribute": "901",
+          "heightAttribute": "183",
+          "filter": "none",
+          "shadow": "none",
+          "animation": "none"
+        },
+        {
+          "x": 121.8125,
+          "y": 12376.59375,
+          "width": 146.359375,
+          "height": 160,
+          "right": 268.171875,
+          "bottom": 12536.59375,
+          "alt": "",
+          "src": "/brand/logo-stacked-on-dark.png",
+          "naturalWidth": 290,
+          "naturalHeight": 317,
+          "widthAttribute": "290",
+          "heightAttribute": "317",
+          "filter": "none",
+          "shadow": "none",
+          "animation": "none"
+        },
+        {
+          "x": 24,
+          "y": 12905.96875,
+          "width": 137.84375,
+          "height": 28,
+          "right": 161.84375,
+          "bottom": 12933.96875,
+          "alt": "",
+          "src": "/brand/logo-horizontal-on-dark.png",
+          "naturalWidth": 901,
+          "naturalHeight": 183,
+          "widthAttribute": "901",
+          "heightAttribute": "183",
+          "filter": "none",
+          "shadow": "none",
+          "animation": "none"
+        }
+      ],
+      "burger": null,
+      "lamps": null,
+      "heading": "Where   Road   Safety   and   Local   Response   Meet",
+      "main": null
+    },
+    {
+      "label": "dashboard-390",
+      "width": 390,
+      "scrollWidth": 390,
+      "logos": [
+        {
+          "x": 16,
+          "y": 12,
+          "width": 137.84375,
+          "height": 28,
+          "right": 153.84375,
+          "bottom": 40,
+          "alt": "RoadReport",
+          "src": "/brand/logo-horizontal-on-dark.png",
+          "naturalWidth": 901,
+          "naturalHeight": 183,
+          "widthAttribute": "901",
+          "heightAttribute": "183",
+          "filter": "none",
+          "shadow": "none",
+          "animation": "none"
+        }
+      ],
+      "burger": {
+        "x": 332,
+        "y": 10,
+        "width": 46,
+        "height": 46,
+        "right": 378,
+        "bottom": 56
+      },
+      "lamps": null,
+      "heading": "Dashboard",
+      "main": {
+        "x": 0,
+        "y": 72,
+        "width": 390,
+        "height": 4176.109375,
+        "right": 390,
+        "bottom": 4248.109375
+      }
+    },
+    {
+      "label": "drawer-390",
+      "width": 390,
+      "scrollWidth": 390,
+      "logos": [
+        {
+          "x": 16,
+          "y": 12,
+          "width": 137.84375,
+          "height": 28,
+          "right": 153.84375,
+          "bottom": 40,
+          "alt": "RoadReport",
+          "src": "/brand/logo-horizontal-on-dark.png",
+          "naturalWidth": 901,
+          "naturalHeight": 183,
+          "widthAttribute": "901",
+          "heightAttribute": "183",
+          "filter": "none",
+          "shadow": "none",
+          "animation": "none"
+        }
+      ],
+      "burger": {
+        "x": 332,
+        "y": 10,
+        "width": 46,
+        "height": 46,
+        "right": 378,
+        "bottom": 56
+      },
+      "lamps": null,
+      "heading": "Dashboard",
+      "main": {
+        "x": 0,
+        "y": 72,
+        "width": 390,
+        "height": 4176.109375,
+        "right": 390,
+        "bottom": 4248.109375
+      }
+    },
+    {
+      "label": "reports-390",
+      "width": 390,
+      "scrollWidth": 390,
+      "logos": [
+        {
+          "x": 16,
+          "y": 12,
+          "width": 137.84375,
+          "height": 28,
+          "right": 153.84375,
+          "bottom": 40,
+          "alt": "RoadReport",
+          "src": "/brand/logo-horizontal-on-dark.png",
+          "naturalWidth": 901,
+          "naturalHeight": 183,
+          "widthAttribute": "901",
+          "heightAttribute": "183",
+          "filter": "none",
+          "shadow": "none",
+          "animation": "none"
+        }
+      ],
+      "burger": {
+        "x": 332,
+        "y": 10,
+        "width": 46,
+        "height": 46,
+        "right": 378,
+        "bottom": 56
+      },
+      "lamps": null,
+      "heading": "Accident reports",
+      "main": {
+        "x": 0,
+        "y": 72,
+        "width": 390,
+        "height": 1069.375,
+        "right": 390,
+        "bottom": 1141.375
+      }
+    }
+  ],
+  "errors": [],
+  "missing": [],
+  "assetResponses": [
+    {
+      "path": "/brand/logo-horizontal-on-dark.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-horizontal-on-dark.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-stacked-on-dark.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-horizontal-on-dark.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-horizontal-on-dark.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-horizontal-on-dark.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-horizontal-on-dark.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-stacked-on-dark.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-horizontal-on-dark.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-horizontal-on-dark.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/favicon.ico",
+      "status": 200,
+      "type": "image/x-icon"
+    },
+    {
+      "path": "/favicon-16.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/favicon-32.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/apple-touch-icon.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/icon-192.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/icon-512.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/icon-maskable-512.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/og-image.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-horizontal-on-dark.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-horizontal-on-light.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-stacked-on-dark.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-stacked-on-light.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-mark-on-dark.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-mark-on-light.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-horizontal-on-dark.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-horizontal-on-light.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/brand/logo-horizontal-on-light.png",
+      "status": 200,
+      "type": "image/png"
+    }
+  ],
+  "firebase": "blocked; offline fixtures only"
+}

@@ -11,7 +11,7 @@
  * workflow rules from api/core/status.php, so the screen cannot step outside
  * the allowed status moves.
  */
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useAsync, useToggle } from '../hooks/useAsync.js'
 import { useActor } from '../hooks/useAuth.jsx'
@@ -37,24 +37,21 @@ import {
   REMARK_LABELS,
   STATUS_HELP,
   STATUS_LABELS,
+  STATUS_FORM_HIDDEN,
+  statusDefinition,
+  statusAction,
+  OFFICIAL_STATUSES,
+  OFFICIAL_RECORDS_HELP,
+  FLAGGED_HELP,
+  REASSIGNMENT_HELP,
 } from '../lib/constants.js'
 import { formatDate, formatDateTime, formatTime, isoDate } from '../utils/date.js'
 import { place, vehicleSummary } from '../utils/format.js'
 import StatusBadge, { RecordKind } from '../components/StatusBadge.jsx'
+import StatusHelp from '../components/StatusHelp.jsx'
 import { OnePinMap } from '../components/MapView.jsx'
 import States from '../components/States.jsx'
 import Modal from '../components/Modal.jsx'
-
-/** These moves have their own panel, so they are not offered in the status form. */
-const STATUS_FORM_HIDDEN = ['assigned', 'on_scene', 'verified']
-
-/** What the note field asks for, depending on the status being chosen. */
-const NOTE_LABELS = {
-  duplicate: 'Reason both reports describe the same accident (link the original using Flag first)',
-  rejected: 'Reason for rejecting (the reporter sees this)',
-  info_required: 'What information is missing? (the reporter sees this)',
-  resolved: 'Closing note (optional)',
-}
 
 const meters = (m) => (m == null ? 'unknown' : `${Math.round(m)} m`)
 
@@ -133,7 +130,7 @@ export default function ReportDetail() {
       <div className="invalid-feedback d-block">{action.errors[field]}</div>
     ) : null
 
-  const official = ['verified', 'in_progress', 'resolved'].includes(report?.status)
+  const official = OFFICIAL_STATUSES.includes(report?.status)
 
   return (
     <>
@@ -153,6 +150,8 @@ export default function ReportDetail() {
               Submitted {formatDateTime(report.created_at)}
             </p>
             <p className="status-help">{STATUS_HELP[report.status] || ''}</p>
+            <p className="small text-secondary">{OFFICIAL_RECORDS_HELP}</p>
+            <StatusHelp />
 
             {report.status === 'rejected' && report.rejection_reason ? (
               <div className="alert alert-danger">Rejected: {report.rejection_reason}</div>
@@ -160,7 +159,7 @@ export default function ReportDetail() {
 
             {report.status === 'duplicate' ? (
               <div className="alert alert-secondary">
-                <strong>Disregarded as a duplicate</strong> of{' '}
+                <strong>{STATUS_LABELS.duplicate}</strong> of{' '}
                 {report.duplicate_of ? (
                   <Link to={`/admin/reports/${report.duplicate_of}`}>
                     {report.duplicate_of_code || 'the earlier report'}
@@ -168,13 +167,13 @@ export default function ReportDetail() {
                 ) : (
                   'the earlier report'
                 )}
-                : that report was received first and is still open.
+                . {STATUS_HELP.duplicate}
               </div>
             ) : null}
 
             {report.flagged ? (
               <div className="alert alert-warning">
-                Flagged: {report.flag_reason}
+                Flagged: {report.flag_reason} — {FLAGGED_HELP}
                 {report.duplicate_of && report.status !== 'duplicate' ? (
                   <>
                     {' '}
@@ -260,7 +259,7 @@ export default function ReportDetail() {
                     ) : null}
                     {report.verified_by_name ? (
                       <>
-                        <dt>Verified by</dt>
+                        <dt>{STATUS_LABELS.verified} by</dt>
                         <dd>
                           {report.verified_by_name} · {formatDateTime(report.verified_at)}
                         </dd>
@@ -440,7 +439,7 @@ function ArrivalCheck({ report, arrival, actor, action, panelError, fieldError, 
                 note: note || null,
                 actor: actor,
               }),
-            'Approved. The officer was told to clear the site.',
+            `${STATUS_LABELS.verified}. The officer was notified.`,
           )
         }}
       >
@@ -463,7 +462,7 @@ function ArrivalCheck({ report, arrival, actor, action, panelError, fieldError, 
         />
         {fieldError('arrival', 'note')}
         <button className="btn btn-guide w-100" type="submit" disabled={busy}>
-          {busy ? 'Approving…' : 'Approve: officer may clear the site'}
+          {busy ? 'Approving…' : statusAction('verified', report.status)}
         </button>
       </form>
 
@@ -480,7 +479,7 @@ function ArrivalCheck({ report, arrival, actor, action, panelError, fieldError, 
         }}
       >
         <label className="form-label small" htmlFor="resend-note">
-          Ask the officer to resend his arrival
+          {statusAction('assigned', report.status)}
         </label>
         <textarea
           id="resend-note"
@@ -490,7 +489,7 @@ function ArrivalCheck({ report, arrival, actor, action, panelError, fieldError, 
           placeholder="Go to the pinned spot near the market entrance, then tap I've arrived again."
         />
         <button className="btn btn-outline-guide w-100" type="submit" disabled={busy}>
-          Ask officer to resend
+          {statusAction('assigned', report.status)}
         </button>
       </form>
 
@@ -521,7 +520,7 @@ function ArrivalCheck({ report, arrival, actor, action, panelError, fieldError, 
         />
         {fieldError('arrival', 'reason')}
         <button className="btn btn-outline-danger w-100" type="submit" disabled={busy}>
-          Reject as false report
+          {statusAction('rejected', report.status)}
         </button>
       </form>
     </section>
@@ -531,9 +530,10 @@ function ArrivalCheck({ report, arrival, actor, action, panelError, fieldError, 
 /* ---------- the status workflow ---------- */
 
 function StatusPanel({ report, statusChoice, setStatusChoice, actor, action, panelError, fieldError, run }) {
+  useEffect(() => { setStatusChoice('') }, [report.id, report.status, setStatusChoice])
   if (report.status === 'on_scene') return null
 
-  const busy = action.key === 'status' && action.busy
+  const busy = action.busy
 
   if (report.status === 'duplicate') {
     return (
@@ -561,7 +561,7 @@ function StatusPanel({ report, statusChoice, setStatusChoice, actor, action, pan
         <textarea id="restore-note" name="note" rows={2} className="form-control mb-3" />
         {fieldError('status', 'note')}
         <button className="btn btn-outline-guide" type="submit" disabled={busy}>
-          Restore as a new report
+          {statusAction('submitted', report.status)}
         </button>
       </form>
     )
@@ -569,11 +569,9 @@ function StatusPanel({ report, statusChoice, setStatusChoice, actor, action, pan
 
   const options = allowedNextStatuses(report).filter((s) => !STATUS_FORM_HIDDEN.includes(s))
   const waiting = report.status === 'assigned'
-    ? `Waiting for ${report.officer_name || 'the officer'} to reach the pin and tap "I've arrived" in the app. You will get a notification.`
-    : ''
-  const clearing = ['verified', 'in_progress'].includes(report.status)
-    ? `${report.officer_name || 'The officer'} clears the site and closes the report in the app. You can also close it here.`
-    : ''
+    ? 'Arrival submission is an officer step. Android support and deployed permissions have not been confirmed.' : ''
+  const clearing = statusDefinition(report.status)?.official && statusDefinition(report.status)?.open
+    ? 'Administrators can record site-clearing work and confirm completion here.' : ''
 
   if (!options.length) {
     return (
@@ -601,6 +599,7 @@ function StatusPanel({ report, statusChoice, setStatusChoice, actor, action, pan
               note: note || null,
               reason: statusChoice === 'rejected' ? note : null,
               actor: actor,
+              siteCleared: event.target.siteCleared?.checked === true,
             }),
           'Status updated',
         )
@@ -609,9 +608,9 @@ function StatusPanel({ report, statusChoice, setStatusChoice, actor, action, pan
       <h2 className="h5">Update status</h2>
       {waiting ? <p className="small">{waiting}</p> : null}
       {clearing ? <p className="small">{clearing}</p> : null}
-      {['submitted', 'under_review'].includes(report.status) ? (
+      {statusDefinition(report.status)?.dispatchable ? (
         <p className="small text-secondary">
-          Next step: send the pin to a traffic officer (Dispatch an officer, below).
+          To instruct an officer to attend, use {statusAction('assigned')} below.
         </p>
       ) : null}
       {panelError('status')}
@@ -623,24 +622,35 @@ function StatusPanel({ report, statusChoice, setStatusChoice, actor, action, pan
         name="status"
         className="form-select mb-2"
         required
-        value={statusChoice}
+        value={options.includes(statusChoice) ? statusChoice : ''}
         onChange={(event) => setStatusChoice(event.target.value)}
       >
         <option value="">Choose…</option>
         {options.map((s) => (
           <option key={s} value={s}>
-            {STATUS_LABELS[s]}
+            {STATUS_LABELS[s]} — {statusAction(s, report.status)}
           </option>
         ))}
       </select>
       {fieldError('status', 'status')}
       <label className="form-label" htmlFor="status-note">
-        {NOTE_LABELS[statusChoice] || 'Note (optional)'}
+        {statusDefinition(statusChoice)?.noteLabel || 'Note (optional)'}
       </label>
       <textarea id="status-note" name="note" rows={2} className="form-control mb-3" />
       {fieldError('status', 'note')}
-      <button className="btn btn-guide" type="submit" disabled={busy || !statusChoice}>
-        {busy ? 'Saving…' : 'Save status'}
+      {statusChoice && <p className="small text-secondary">{STATUS_HELP[statusChoice]}</p>}
+      {statusChoice === 'resolved' && (
+        <div className="mb-3">
+          <label className="form-check">
+            <input className="form-check-input" type="checkbox" name="siteCleared" required />
+            <span className="form-check-label">I confirm that the site has been cleared.</span>
+          </label>
+          {report.status === 'verified' && <p className="small text-secondary">{STATUS_LABELS.in_progress} will be skipped. This will be recorded in the status history.</p>}
+          {fieldError('status', 'siteCleared')}
+        </div>
+      )}
+      <button className="btn btn-guide" type="submit" disabled={busy || !options.includes(statusChoice)}>
+        {busy ? 'Saving…' : statusChoice ? statusAction(statusChoice, report.status) : 'Choose an action'}
       </button>
     </form>
   )
@@ -649,11 +659,19 @@ function StatusPanel({ report, statusChoice, setStatusChoice, actor, action, pan
 /* ---------- dispatch: send the pin to a traffic officer ---------- */
 
 function DispatchPanel({ report, officers, officersError, actor, action, panelError, fieldError, run }) {
-  const dispatch = ['submitted', 'under_review'].includes(report.status)
-  const reassign = ['assigned', 'verified', 'in_progress'].includes(report.status)
+  const definition = statusDefinition(report.status)
+  const dispatch = Boolean(definition?.dispatchable)
+  const reassign = Boolean(definition?.reassignable)
+  if (definition?.reassignmentLocked) return (
+    <section className="panel">
+      <h2 className="h5">Change officer</h2>
+      <p className="small">{REASSIGNMENT_HELP}</p>
+      <button className="btn btn-guide" disabled>Change officer</button>
+    </section>
+  )
   if (!dispatch && !reassign) return null
 
-  const busy = action.key === 'assign' && action.busy
+  const busy = action.busy
 
   return (
     <form
@@ -668,14 +686,14 @@ function DispatchPanel({ report, officers, officersError, actor, action, panelEr
               note: event.target.note.value.trim() || null,
               actor: actor,
             }),
-          dispatch ? 'Officer assigned' : 'Officer changed',
+          dispatch ? STATUS_LABELS.assigned : 'Officer changed',
         )
       }}
     >
-      <h2 className="h5">{dispatch ? 'Dispatch an officer' : 'Change the assigned officer'}</h2>
+      <h2 className="h5">{dispatch ? statusAction('assigned') : 'Change the assigned officer'}</h2>
       {dispatch ? (
         <p className="small text-secondary">
-          The officer gets the pin in the app, goes to the scene and taps &quot;I've arrived&quot;.
+          {STATUS_HELP.assigned}
         </p>
       ) : null}
       {panelError('assign')}
@@ -705,7 +723,7 @@ function DispatchPanel({ report, officers, officersError, actor, action, panelEr
       </label>
       <textarea id="assign-note" name="note" rows={2} className="form-control mb-3" />
       <button className="btn btn-guide" type="submit" disabled={busy || Boolean(officersError)}>
-        {busy ? 'Sending…' : dispatch ? 'Send the pin to this officer' : 'Change officer'}
+        {busy ? 'Sending…' : dispatch ? statusAction('assigned') : 'Change officer'}
       </button>
     </form>
   )
@@ -775,7 +793,7 @@ function RemarkPanel({ report, remarkType, setRemarkType, actor, action, panelEr
 /* ---------- flag incomplete or duplicate by hand ---------- */
 
 function FlagPanel({ report, actor, action, panelError, fieldError, run }) {
-  if (['duplicate', 'resolved', 'rejected'].includes(report.status) && !report.flagged) return null
+  if (!statusDefinition(report.status)?.open && !report.flagged) return null
 
   const busy = action.key === 'flag' && action.busy
 
@@ -789,6 +807,7 @@ function FlagPanel({ report, actor, action, panelError, fieldError, run }) {
         }}
       >
         <h2 className="h5">Flag</h2>
+        <p className="small">{FLAGGED_HELP}</p>
         {panelError('flag')}
         <p className="mb-2">This report is flagged: {report.flag_reason}</p>
         <button className="btn btn-outline-secondary" type="submit" disabled={busy}>
@@ -815,7 +834,8 @@ function FlagPanel({ report, actor, action, panelError, fieldError, run }) {
         )
       }}
     >
-      <h2 className="h5">Flag as incomplete or duplicate</h2>
+      <h2 className="h5">Flag for attention</h2>
+      <p className="small">{FLAGGED_HELP}</p>
       {panelError('flag')}
       <p className="small text-secondary">
         Flag a possible duplicate for review. Link the original report here, then use Update status

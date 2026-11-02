@@ -1,7 +1,7 @@
 # RoadReport Bulacan Admin Portal — Handoff
 
 **Status:** every screen is ported, verified and committed. See §5 and §11.
-**Last updated:** 2026-10-23
+**Last updated:** 2026-11-02
 **App location:** the **repo root** (the React app). The original PHP app now lives in
 `legacy/` as read-only reference — see §4.
 
@@ -87,7 +87,7 @@ The repo root **is** the React app. Everything below is relative to the repo roo
 │   ├── create-user.mjs        # create an admin (Auth user + profile)
 │   └── seed.mjs               # fresh sample data
 ├── src/
-│   ├── components/            # Layout, RequireAuth, StatusBadge, Charts, MapView, Pager, States, Brand
+│   ├── components/            # Layout, RequireAuth, StatusBadge, Charts, MapView, Pager, States, Logo (Brand.jsx)
 │   ├── hooks/                 # useAuth (AuthContext), useAsync, useUnread, useToast
 │   ├── lib/                   # firebase.js (init), firestore.js (query helpers), constants.js, errors.js, time.js
 │   ├── pages/                 # Landing, LandingMap, Login, Dashboard, Reports, ReportDetail,
@@ -101,6 +101,32 @@ The repo root **is** the React app. Everything below is relative to the repo roo
     ├── css/  js/              # original styles + page scripts
     └── js-release-20261020b/  # the release bundle (pages/*.js)
 ```
+
+### Brand assets (2026-11-02)
+
+The supplied transparent PNGs in `logo-source/` are preserved unchanged and copied
+byte-for-byte to `public/brand/`. The shared `Logo` component in
+`src/components/Brand.jsx` uses the aspect ratios and base-aware asset paths in
+`src/lib/brand.js`. Dark horizontal artwork is used in the login, sidebar/mobile
+top bar, landing nav and footer; the existing landing closing section uses the
+dark stacked artwork. The existing report-list PDF brand header uses the light
+horizontal artwork. Unbranded print headings, loading/error messages and the
+text-only drawer header are unchanged.
+
+`node scripts/generate-brand-assets.mjs` reproduces the favicon (16/32/48 ICO,
+16/32 PNG), touch/app icons and social image using existing browser canvas and
+PNG tooling. It does not access the network. Artwork is never enlarged: the
+512px app/maskable canvases retain the native 268×270 mark, so these have more
+padding than the smaller icons. The maskable mark stays inside the central 60%.
+There is no web app manifest or service worker, and no PWA behavior was added.
+
+Before social sharing, replace the relative `og:image` / `twitter:image` paths
+in `index.html` with the absolute URL on the actual deployed domain (see TODO).
+Hard-refresh or use a new private window when checking cached favicons.
+`node tests/brand-logo.mjs verify` checks offline fixtures at 1440px and 390px,
+including the drawer, image responses, layout, accessibility and a PDF sample.
+Screenshots, the inventory and the complete backup list are in
+`output/brand-logo/`. No deployment is part of this change.
 
 > **`legacy/` is read-only.** It is kept in-repo as the reference every screen was
 > ported from (§10, §11). Never edit, restructure or delete anything inside it.
@@ -123,7 +149,7 @@ the live Firestore project — no runtime or console errors on any route):
 - **Login page** (`/login`) — Firebase email/password, `?next=` redirect, password reset
 - **Storage shell** — sidebar with the original 8 items, active states, unread-count pill, logout
 - **Dashboard** (`/admin`) — date-range filter, 9 stat cards, 6 charts, points map + legend, accident-prone spots, recent-reports table
-- **Reports list** (`/admin/reports`) — filter bar (search/status/type/town/dates/flagged/verified-only), paged table, CSV export, print
+- **Reports list** (`/admin/reports`) — filter bar (search/status/type/town/dates/flagged/official-record), paged table, CSV export, print
 - **Report detail** (`/admin/reports/:id`) — see §11.1
 - **Users** (`/admin/users`) — see §11.2
 - **Settings** (`/admin/settings`) — see §11.3
@@ -229,9 +255,24 @@ mapping was removed; add another target only after creating a site in the new pr
 | `settings` | `system`, `duplicate_window_minutes`, `duplicate_radius_m`, `arrival_match_radius_m` | `value` (or fields for `system`) |
 | `counters` | `reports_{year}` | `value` (report-code sequence) |
 
-**Reports workflow statuses:** `submitted → under_review → info_required →
-assigned → on_scene → verified → in_progress → resolved`, plus `rejected` and
-`duplicate`. "Official accident record" = `verified` / `in_progress` / `resolved`.
+**Report statuses:** the shared definitions are in `src/lib/reportStatuses.js`; stored codes are unchanged.
+
+- `submitted` (Awaiting review) → `under_review` (In review), or dispatch/reject/confirm duplicate.
+- `under_review` → `info_required` (Awaiting reporter), dispatch/reject/confirm duplicate.
+- `info_required` → `under_review` before dispatch, or `rejected`.
+- `assigned` (Dispatched) → `on_scene` (Arrival reported), or `rejected`.
+- `on_scene` → `verified` (Clearance approved), `assigned` (Request arrival again), or `rejected`.
+- `verified` → `in_progress` (Clearing site) → `resolved` (Site cleared).
+  Direct `verified` → `resolved` also requires explicit site-cleared confirmation and records the skipped intermediate step.
+- `duplicate` → `submitted` with an explanation; `resolved` and `rejected` are terminal.
+
+Official records: includes Clearance approved, Clearing site and Site cleared.
+Flagged is separate: Marked for administrator attention; does not change report status.
+Reassignment is available only before arrival; approval and arrival evidence must not silently transfer to a replacement officer.
+The website supports administrator approval/clearing actions. Android support and deployed rules are unknown;
+local Firestore rules currently allow only administrators to create/update reports. No permissions were changed.
+Historical audit/notification prose is preserved; structured report status codes are translated for display.
+Summary CSV/print headers now say “Site cleared”; spreadsheet consumers matching “Resolved” must update.
 
 ---
 
@@ -306,8 +347,8 @@ and reveal; inline edit modal → `updateReport(...)`; arrival-distance check vi
 `distanceMeters()` + `settings.arrival_match_radius_m`.
 
 The "Update status" panel only renders its `#next-status` select when the
-report's current status has somewhere left to go — `STATUS_FORM_HIDDEN` pauses
-it for the officer-only steps.
+report's current status has somewhere left to go — the shared definition map routes dispatch and arrival approval to their dedicated panels.
+Arrival submission remains an officer step; Android support is unconfirmed. Site closure requires an explicit confirmation.
 
 ### 11.2 `Users.jsx` — `/admin/users`
 Port of `admin-users.php`. `listUsers` / `updateUser`. Editing is profile-only;

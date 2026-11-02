@@ -1,4 +1,5 @@
 import { REPORT_EXPORT_HEADERS, reportExportRows } from './csv.js'
+import { logoSource, LOGO_DIMENSIONS } from '../lib/brand.js'
 
 /** Load PDF dependencies only when an export is requested. Returns an actual PDF Blob. */
 export async function reportPdf(rows, rangeLabel, mayBeTruncated = false) {
@@ -6,6 +7,9 @@ export async function reportPdf(rows, rangeLabel, mayBeTruncated = false) {
     import('jspdf'),
     import('jspdf-autotable'),
   ])
+  const logo = new Image()
+  logo.src = logoSource('horizontal', 'light')
+  await logo.decode()
   const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true })
   pdf.setProperties({ title: 'RoadReport report list', subject: rangeLabel })
   const margin = 12
@@ -31,7 +35,10 @@ export async function reportPdf(rows, rangeLabel, mayBeTruncated = false) {
       pdf.setFont('helvetica', 'bold')
       pdf.setFontSize(16)
       pdf.setTextColor(30)
-      pdf.text('RoadReport report list', margin, 16)
+      const logoHeight = 7
+      const [logoWidth, logoSourceHeight] = LOGO_DIMENSIONS.horizontal
+      pdf.addImage(logo, 'PNG', margin, 9, logoHeight * logoWidth / logoSourceHeight, logoHeight, 'roadreport-brand')
+      pdf.text('report list', margin + logoHeight * logoWidth / logoSourceHeight + 4, 16)
       pdf.setFont('helvetica', 'normal')
       pdf.setFontSize(9)
       pdf.text(rangeLines, margin, 23)

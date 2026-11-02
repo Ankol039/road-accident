@@ -1,4 +1,4 @@
-/** Offline inline-menu browser check (replaces the earlier drawer checks). Start Vite; run `baseline` before edits, then `verify`.
+/** Offline drawer browser check. Start Vite; run `baseline` before edits, then `verify`.
  * All Firebase/Auth calls are fixtures and all external requests are blocked.
  */
 import assert from 'node:assert/strict'
@@ -10,7 +10,24 @@ import pixelmatch from 'pixelmatch'
 
 const mode = process.argv[2] || 'verify'
 assert.ok(['baseline', 'verify'].includes(mode))
-const base = process.env.APP_BASE || 'http://127.0.0.1:5173'
+// Optional backup directory allows stable baselines from original sources without
+// restoring or otherwise changing the live project files.
+let originalServer
+let base = process.env.APP_BASE || 'http://127.0.0.1:5173'
+if (mode === 'baseline' && process.argv[3]) {
+  const { createServer } = await import('vite')
+  const source = path.resolve(process.argv[3])
+  originalServer = await createServer({
+    server: { host: '127.0.0.1', port: 0, open: false },
+    plugins: [{ name: 'original-sidebar-baseline', enforce: 'pre', load(id) {
+      for (const file of ['src/components/Layout.jsx', 'src/styles/app.css']) {
+        if (id === path.resolve(file)) return fs.readFileSync(path.join(source, file), 'utf8')
+      }
+    } }],
+  })
+  await originalServer.listen()
+  base = 'http://127.0.0.1:' + originalServer.httpServer.address().port
+}
 const origin = new URL(base).origin
 const output = path.resolve('tmp/sidebar-drawer')
 const images = path.resolve('output/sidebar-drawer')
@@ -59,12 +76,17 @@ try {
     if (url.pathname === '/src/lib/firestore.js') return respond(firestoreMock)
     req.continue()
   })
-  const go = async (width, height = 900) => {
+  const go = async (width, height = 900, route = '/admin/notifications') => {
     await page.setViewport({ width, height })
-    await page.goto(`${base}/admin/notifications`)
-    await page.waitForSelector('.notif-row')
+    await page.goto(`${base}${route}`)
+    await page.waitForSelector('.staff-shell')
     await page.waitForFunction(() => document.querySelector('.side-nav .count-pill')?.textContent === '3')
-    await page.evaluate(() => { document.body.style.overflow = 'auto' })
+    await page.evaluate(async () => {
+      document.body.style.overflow = ''
+      await document.fonts.ready
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+      await Promise.all(document.getAnimations().filter((a) => Number.isFinite(a.effect.getComputedTiming().endTime)).map((a) => a.finished.catch(() => {})))
+    })
   }
   const visible = (selector) => page.$eval(selector, (el) => {
     const css = getComputedStyle(el)
@@ -77,7 +99,7 @@ try {
   const open = async () => {
     await page.click('.rr-burger')
     await page.waitForFunction(() => document.querySelector('.rr-burger')?.getAttribute('aria-expanded') === 'true')
-    await page.$eval('.rr-burger', async (el) => {
+    await page.$eval('.rr-menu-drawer', async (el) => {
       await Promise.all(el.getAnimations({ subtree: true }).map((animation) => animation.finished))
     })
     assert.equal(await visible('#site-nav'), true)
@@ -86,6 +108,7 @@ try {
   }
   const closed = async () => {
     await page.waitForFunction(() => document.querySelector('.rr-burger')?.getAttribute('aria-expanded') === 'false')
+    await page.waitForFunction(() => getComputedStyle(document.querySelector('.rr-menu-drawer')).visibility === 'hidden')
     assert.equal(await visible('#site-nav'), false)
     assert.equal(await visible('.rr-nav-label'), false)
     assert.equal(await visible('.sidebar-foot'), false)
@@ -118,119 +141,142 @@ try {
   if (mode === 'baseline') {
     console.log('PASS: captured desktop baselines at 1440, 1024 and 992px.')
   } else {
-    for (const width of [991, 768, 414, 390]) {
-      await go(width)
-      await closed()
-      assert.equal(await visible('.sidebar'), true)
-      assert.equal(await visible('.rr-burger'), true)
-      assert.equal(await page.$eval('.sidebar', (el) => getComputedStyle(el).position), 'sticky')
-      assert.equal(await page.$eval('.staff-shell', (el) => getComputedStyle(el).display), 'block')
-      assert.equal(await page.$eval('.sidebar', (el) => el.firstElementChild.matches('.rr-burger')), true)
-      assert.equal(await page.$eval('.rr-burger', (el) => el.getAttribute('aria-controls')), 'site-nav')
-      assert.equal(await page.$eval('.rr-burger', (el) => el.getAttribute('aria-label')), 'Open menu')
-      const tap = await page.$eval('.rr-burger', (el) => ({ width: el.getBoundingClientRect().width, height: el.getBoundingClientRect().height }))
-      assert.ok(tap.width >= 44 && tap.height >= 44)
-      assert.equal(await page.$eval('.rr-burger', (el) => {
-        const button = el.getBoundingClientRect()
-        const bar = el.parentElement.getBoundingClientRect()
-        return button.top >= bar.top && button.bottom <= bar.bottom
-      }), true, 'Closed bar contains the entire menu button')
-      await noOverflow()
-      await navIsHiddenFromAT()
-      // display:none must prevent both programmatic and sequential keyboard focus.
-      await page.focus('.rr-burger')
-      await page.$eval('#site-nav a', (el) => el.focus())
-      assert.equal(await page.evaluate(() => document.activeElement.matches('.rr-burger')), true)
-      await page.keyboard.press('Tab')
-      assert.equal(await page.evaluate(() => document.activeElement.closest('#site-nav, .sidebar-foot') !== null), false)
-      await page.focus('.rr-burger')
-      if ([768, 390].includes(width)) await page.screenshot({ path: path.join(images, width + '-closed.png') })
-      await page.evaluate(() => { document.body.style.overflow = 'auto' })
-      const beforeMain = await page.$eval('#page', (el) => el.getBoundingClientRect().top)
-      await open()
-      assert.equal(await page.$eval('.rr-burger', (el) => el.getAttribute('aria-label')), 'Close menu')
-      assert.equal(await page.$eval('.sidebar', (el) => el.classList.contains('rr-menu-open')), true)
-      assert.equal(await page.evaluate(() => document.body.style.overflow), 'auto')
-      assert.equal(await page.$eval('#page', (el) => el.hasAttribute('inert')), false)
-      assert.ok(await page.$eval('#page', (el) => el.getBoundingClientRect().top) > beforeMain + 300, 'Inline list pushes content down')
-      assert.equal(await page.$$eval('#site-nav a', (links) => links.length), 8)
-      assert.equal(await page.$eval('#site-nav .count-pill', (el) => el.textContent), '3')
-      await noOverflow()
-      if ([768, 390].includes(width)) await page.screenshot({ path: path.join(images, width + '-open.png') })
-      await page.focus('#site-nav a')
-      await page.keyboard.press('Escape')
-      await closed()
-      assert.equal(await page.evaluate(() => document.activeElement.matches('.rr-burger')), true)
-      assert.equal(await page.evaluate(() => document.body.style.overflow), 'auto')
-      await open()
-      await page.click('.rr-burger')
-      await closed()
-      await open()
-      await page.click('#site-nav a[href="/admin/notifications"]')
-      await closed() // Active link closes without changing the route.
-      await open()
-      await page.click('#site-nav a[href="/admin/reports"]')
-      await closed()
-      assert.equal(new URL(page.url()).pathname, '/admin/reports')
-      await noOverflow()
-      await open()
-      await page.evaluate(() => {
-        history.pushState({}, '', '/admin/users')
-        dispatchEvent(new PopStateEvent('popstate'))
-      })
-      await closed() // Route change without a sidebar click.
-      await noOverflow()
-      await open()
-      await page.setViewport({ width: 992, height: 900 })
-      await page.waitForFunction(() => !document.querySelector('.sidebar').classList.contains('rr-menu-open'))
-      assert.equal(await visible('#site-nav'), true)
-      assert.equal(await visible('.rr-burger'), false)
-      await page.setViewport({ width, height: 900 })
-      await closed()
-      await navIsHiddenFromAT()
-      await page.focus('.skip-link')
-      await page.keyboard.press('Enter')
-      assert.equal(await page.evaluate(() => document.activeElement.id), 'page')
-      console.log('PASS: ' + width + 'px inline menu, close actions, accessibility, resize and no overflow.')
+    const routes = ['/admin', '/admin/reports', '/admin/summaries', '/admin/users', '/admin/settings', '/admin/audit', '/admin/notifications', '/admin/account']
+    const focused = (selector) => page.evaluate((selector) => document.activeElement.matches(selector), selector)
+    const waitTransitions = () => page.$eval('.rr-menu-drawer', async (el) => {
+      await Promise.all(el.getAnimations().map((animation) => animation.finished))
+    })
+    for (const width of [390, 820]) {
+      for (const route of routes) {
+        await go(width, 900, route)
+        await closed()
+        await navIsHiddenFromAT()
+        assert.equal(await page.$eval('.rr-burger', (el) => el.getAttribute('aria-controls')), 'admin-menu-drawer')
+        assert.equal(await page.$eval('.rr-burger', (el) => el.getAttribute('aria-label')), 'Open menu')
+        await page.focus('.rr-burger')
+        await page.$eval('#site-nav a', (el) => el.focus())
+        assert.equal(await focused('.rr-burger'), true)
+        // Ensure every route has a scrollable background without changing app data.
+        await page.$eval('#page', (el) => { el.style.minHeight = '2000px' })
+        await page.evaluate(() => scrollTo({ top: 150, behavior: 'instant' }))
+        const before = await page.evaluate(() => ({ top: document.querySelector('#page').getBoundingClientRect().top, bar: document.querySelector('.sidebar').getBoundingClientRect().height, barTop: document.querySelector('.sidebar').getBoundingClientRect().top, scroll: scrollY, width: document.querySelector('#page').getBoundingClientRect().width }))
+        await open()
+        assert.equal(await focused('.rr-menu-close'), true)
+        const state = await page.evaluate(() => {
+          const drawer = document.querySelector('.rr-menu-drawer')
+          const rect = drawer.getBoundingClientRect()
+          return {
+            top: document.querySelector('#page').getBoundingClientRect().top,
+            bar: document.querySelector('.sidebar').getBoundingClientRect().height,
+            barTop: document.querySelector('.sidebar').getBoundingClientRect().top,
+            scroll: scrollY, width: document.querySelector('#page').getBoundingClientRect().width,
+            drawer: { top: rect.top, right: rect.right, height: rect.height, width: rect.width },
+            inert: ['#page', '.rr-burger', '.rr-sidebar-brand', '.skip-link'].every((s) => document.querySelector(s).hasAttribute('inert')),
+            locked: getComputedStyle(document.documentElement).overflowY === 'hidden',
+            role: drawer.getAttribute('role'), modal: drawer.getAttribute('aria-modal'),
+            hit: document.elementFromPoint(5, 120).className,
+          }
+        })
+        for (const key of ['top', 'bar', 'barTop', 'scroll', 'width']) assert.equal(state[key], before[key], route + ' page shifted: ' + key)
+        assert.equal(state.barTop, 0, 'Sticky bar stays at the top behind the backdrop')
+        assert.ok(state.inert && state.locked)
+        assert.equal(state.drawer.top, 0)
+        assert.equal(state.drawer.right, width)
+        assert.equal(state.drawer.height, 900)
+        assert.equal(state.drawer.width, Math.min(.85 * width, 320))
+        assert.equal(state.role, 'dialog'); assert.equal(state.modal, 'true')
+        assert.equal(state.hit, 'rr-menu-backdrop')
+        await page.mouse.move(10, 160)
+        await page.mouse.wheel({ deltaY: 400 })
+        assert.equal(await page.evaluate(() => scrollY), before.scroll)
+        for (const selector of ['.rr-burger', '.rr-menu-close']) {
+          const target = await page.$eval(selector, (el) => ({ w: el.getBoundingClientRect().width, h: el.getBoundingClientRect().height }))
+          assert.ok(target.w >= 44 && target.h >= 44)
+        }
+        await page.keyboard.down('ShiftLeft')
+        await page.keyboard.press('Tab')
+        await page.keyboard.up('ShiftLeft')
+        assert.equal(await focused('.sidebar-foot button'), true)
+        await page.keyboard.press('Tab')
+        assert.equal(await focused('.rr-menu-close'), true)
+        for (let i = 0; i < 20; i++) {
+          await page.keyboard.press('Tab')
+          assert.equal(await page.evaluate(() => !!document.activeElement.closest('.rr-menu-drawer')), true)
+        }
+        // No ancestor may create a fixed-position containing block.
+        assert.deepEqual(await page.$eval('.rr-menu-drawer', (el) => {
+          const bad = []
+          for (let node = el.parentElement; node; node = node.parentElement) {
+            const c = getComputedStyle(node)
+            if (c.transform !== 'none' || c.filter !== 'none' || c.perspective !== 'none' || c.backdropFilter !== 'none' || c.contain !== 'none' || c.willChange.includes('transform')) bad.push(node.className || node.tagName)
+          }
+          return bad
+        }), [])
+        await noOverflow()
+        if (route === '/admin') await page.screenshot({ path: path.join(images, width + '-open.png') })
+        await page.keyboard.press('Escape')
+        await closed()
+        assert.equal(await focused('.rr-burger'), true)
+        assert.equal(await page.evaluate(() => document.body.style.overflow), '')
+        assert.equal(await page.evaluate(() => document.documentElement.style.overflow), '')
+        await open(); await page.click('.rr-menu-close'); await closed()
+        assert.equal(await focused('.rr-burger'), true)
+        await open(); await page.mouse.click(5, 120); await closed()
+        assert.equal(await focused('.rr-burger'), true)
+        await open(); await page.click('#site-nav a[aria-current="page"]'); await closed()
+        assert.equal(await focused('.rr-burger'), true)
+        const next = route === '/admin/reports' ? '/admin/users' : '/admin/reports'
+        await open(); await page.click('#site-nav a[href="' + next + '"]'); await closed()
+        assert.equal(new URL(page.url()).pathname, next)
+        assert.equal(await focused('#page'), true, 'Navigation focus must win')
+        await open()
+        await page.evaluate(() => { history.pushState({}, '', '/admin/account'); dispatchEvent(new PopStateEvent('popstate')) })
+        await closed()
+        assert.equal(await focused('#page'), true, 'External route focus must win')
+        console.log('PASS: ' + width + 'px ' + route + ': geometry, scroll lock, focus trap, close/X/backdrop/Escape/links/routes and accessibility.')
+      }
     }
     await go(390, 300)
     await open()
-    assert.ok(await page.$eval('.sidebar', (el) => el.scrollHeight > el.clientHeight))
+    assert.ok(await page.$eval('.rr-menu-drawer', (el) => el.scrollHeight > el.clientHeight))
     await page.focus('.sidebar-foot button')
     const bounds = await page.$eval('.sidebar-foot button', (el) => ({ top: el.getBoundingClientRect().top, bottom: el.getBoundingClientRect().bottom }))
     assert.ok(bounds.top >= -1 && bounds.bottom <= 301, 'Short viewport scrolls logout into view')
-    await page.keyboard.press('Escape')
-    await closed()
+    await page.keyboard.press('Escape'); await closed()
     await go(390)
+    // Assert that both transitions really run, and only animate transform/opacity.
+    await page.click('.rr-burger')
+    const animations = await page.$$eval('.rr-menu-drawer, .rr-menu-backdrop', (els) => els.flatMap((el) => el.getAnimations().map((a) => ({ property: a.transitionProperty, duration: a.effect.getTiming().duration }))))
+    assert.deepEqual(animations.map((a) => a.property).sort(), ['opacity', 'transform'])
+    assert.ok(animations.every((a) => a.duration === 250))
+    await waitTransitions()
+    await page.setViewport({ width: 1440, height: 900 })
+    await page.waitForFunction(() => document.querySelector('.rr-burger').getAttribute('aria-expanded') === 'false')
+    assert.equal(await visible('#site-nav'), true)
+    assert.equal(await visible('.rr-burger'), false)
+    assert.equal(await page.evaluate(() => document.body.style.overflow), '')
+    await page.setViewport({ width: 390, height: 900 }); await closed()
     await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }])
-    assert.equal(await page.$eval('.rr-burger-bars', (el) => getComputedStyle(el).transitionDuration), '0s')
-    await page.emulateMediaFeatures([])
     await open()
-    await page.emulateMediaType('print')
+    for (const selector of ['.rr-menu-drawer', '.rr-menu-backdrop']) assert.equal(await page.$eval(selector, (el) => getComputedStyle(el).transitionDuration), '0s')
+    await page.click('.rr-menu-close'); await closed()
+    assert.equal(await page.$eval('.rr-menu-drawer', (el) => el.getAnimations().length), 0)
+    await page.emulateMediaFeatures([])
+    await open(); await page.emulateMediaType('print')
     for (const selector of ['.sidebar', '.rr-burger']) assert.equal(await page.$eval(selector, (el) => getComputedStyle(el).display), 'none')
     await page.emulateMediaType(null)
-    await page.keyboard.press('Escape')
-    await closed()
-    const layers = await page.evaluate(() => {
-      const modal = document.createElement('div'); modal.className = 'modal'; document.body.append(modal)
-      const backdrop = document.createElement('div'); backdrop.className = 'modal-backdrop'; document.body.append(backdrop)
-      const read = (el) => Number(getComputedStyle(el).zIndex)
-      const result = { menu: read(document.querySelector('.sidebar')), modal: read(modal), modalBackdrop: read(backdrop), toast: read(document.querySelector('.toast-box')) }
-      modal.remove(); backdrop.remove(); return result
-    })
-    assert.ok(layers.menu < layers.modalBackdrop && layers.menu < layers.modal && layers.menu < layers.toast)
-    await open()
-    await page.click('.sidebar-foot button')
+    await page.keyboard.press('Escape'); await closed()
+    await open(); await page.click('.sidebar-foot button')
     await page.waitForFunction(() => location.pathname === '/login')
-    assert.equal(await page.evaluate(() => document.body.style.overflow), 'auto')
+    assert.equal(await page.evaluate(() => document.body.style.overflow), '')
     assert.equal(await page.evaluate(() => window.__signedOut), true)
-    await go(390)
-    await open()
+    await go(390); await open()
     await page.evaluate(() => { history.pushState({}, '', '/'); dispatchEvent(new PopStateEvent('popstate')) })
     await page.waitForFunction(() => !document.querySelector('.staff-shell'))
-    assert.equal(await page.evaluate(() => document.body.style.overflow), 'auto')
+    assert.equal(await page.evaluate(() => document.body.style.overflow), '')
+    assert.equal(await page.evaluate(() => document.documentElement.style.overflow), '')
     assert.deepEqual(errors, [])
-    console.log('PASS: seven widths; exact desktop pixel parity; click/Escape/link/route/resize/logout/unmount; hidden navigation accessibility; normal body scrolling; short viewport; reduced motion; print and layer ordering.')
+    console.log('PASS: exact desktop pixel parity at 992/1024/1440; all eight admin routes at 390/820; short viewport; transitions; reduced motion; resize; print; logout and unmount cleanup.')
     console.log('Screenshots:', images)
   }
-} finally { await browser.close() }
+} finally { await browser.close(); await originalServer?.close() }
